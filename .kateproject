@@ -1,0 +1,19 @@
+{
+	"name": "GamingTime@vulkan_engine",
+	"directory": "C:/Users/david/Documents/repos/vulkan_engine",
+	"files": [ { "list": [ "", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeCInformation.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeCXXInformation.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeCommonLanguageInclude.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeFindKate.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeGenericSystem.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeInitializeConfigs.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeLanguageInformation.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeRCInformation.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeSystemSpecificInformation.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/CMakeSystemSpecificInitialize.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Compiler/CMakeCommonCompilerMacros.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Compiler/GNU-C.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Compiler/GNU-CXX.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Compiler/GNU.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows-GNU-C-ABI.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows-GNU-C.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows-GNU-CXX-ABI.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows-GNU-CXX.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows-GNU.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows-windres.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/Windows.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/Platform/WindowsPaths.cmake", "C:/Program Files/CMake/share/cmake-3.21/Modules/ProcessorCount.cmake", "C:/Users/david/Documents/repos/vulkan_engine/CMakeFiles/3.21.1/CMakeCCompiler.cmake", "C:/Users/david/Documents/repos/vulkan_engine/CMakeFiles/3.21.1/CMakeCXXCompiler.cmake", "C:/Users/david/Documents/repos/vulkan_engine/CMakeFiles/3.21.1/CMakeRCCompiler.cmake", "C:/Users/david/Documents/repos/vulkan_engine/CMakeFiles/3.21.1/CMakeSystem.cmake", "C:/Users/david/Documents/repos/vulkan_engine/CMakeLists.txt", "C:/Users/david/Documents/repos/vulkan_engine/include/engine/device/device.cpp", "C:/Users/david/Documents/repos/vulkan_engine/include/engine/engine.cpp", "C:/Users/david/Documents/repos/vulkan_engine/include/engine/window/window.cpp", "C:/Users/david/Documents/repos/vulkan_engine/source/main.cpp"] } ],
+	"build": {
+		"directory": "C:/Users/david/Documents/repos/vulkan_engine",
+		"default_target": "all",
+		"clean_target": "clean",
+		"build": "C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/vulkan_engine\"  all",
+		"clean": "C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/vulkan_engine\"  clean",
+		"quick": "C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/vulkan_engine\"  install",
+		"targets":[
+			 {"name":"all", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/vulkan_engine\"  all"}
+			,{"name":"clean", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/vulkan_engine\"  clean"}
+			,{"name":"GamingTime", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/vulkan_engine\"  GamingTime"}
+			,{"name":"GamingTime/fast", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/vulkan_engine\"  GamingTime/fast"}
+			,{"name":"rebuild_cache", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/vulkan_engine\"  rebuild_cache"}
+	] }
+}

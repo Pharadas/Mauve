@@ -18,3 +18,5 @@ if %ERRORLEVEL% EQU 0 echo Shaders compiled succesfully
 
 if %ERRORLEVEL% EQU 0 cd build
 if %ERRORLEVEL% EQU 0 GamingTime.exe
+
+cd..

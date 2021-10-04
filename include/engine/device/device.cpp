@@ -1,10 +1,16 @@
 #include <engine/device/device.hpp>
+#include <engine/buffer_helper.hpp>
 
 #include <vector>
 #include <stdexcept>
 #include <set>
 
-void Device::pick_physical_device(VkInstance instance, VkSurfaceKHR* surface) {
+#include <GLFW/glfw3.h>
+
+VkDevice _device;
+VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
+
+void Device::pick_physical_device(VkInstance instance, VkSurfaceKHR surface) {
 	_surface = surface;
 	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -28,10 +34,21 @@ void Device::pick_physical_device(VkInstance instance, VkSurfaceKHR* surface) {
 	}
 }
 
-bool Device::is_device_suitable(VkPhysicalDevice device) {
-	QueueFamilyIndices indices = find_queue_families(device);
+bool Device::is_device_suitable(VkPhysicalDevice physicalDevice) {
+	QueueFamilyIndices indices = find_queue_families(physicalDevice);
 
-	return indices.isComplete();
+	bool extensionsSupported = check_device_extension_support(physicalDevice);
+
+	bool swapChainAdequate = false;
+	if (extensionsSupported) {
+		SwapChainSupportDetails swapChainSupport = query_swap_chain_support(physicalDevice);
+		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+	}
+	
+    VkPhysicalDeviceFeatures supportedFeatures;
+    vkGetPhysicalDeviceFeatures(physicalDevice, &supportedFeatures);
+
+	return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
 }
 
 QueueFamilyIndices Device::find_queue_families(VkPhysicalDevice device) {
@@ -50,7 +67,7 @@ QueueFamilyIndices Device::find_queue_families(VkPhysicalDevice device) {
 		}
 
 		VkBool32 presentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, *_surface, &presentSupport);
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, _surface, &presentSupport);
 
 		if (presentSupport) {
 			indices.presentFamily = i;
@@ -83,6 +100,7 @@ void Device::create_logical_device(bool enableValidationLayers, std::vector<cons
 	}
 
 	VkPhysicalDeviceFeatures deviceFeatures{};
+	deviceFeatures.samplerAnisotropy = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -92,7 +110,8 @@ void Device::create_logical_device(bool enableValidationLayers, std::vector<cons
 
 	createInfo.pEnabledFeatures = &deviceFeatures;
 
-	createInfo.enabledExtensionCount = 0;
+	createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+	createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
 	if (enableValidationLayers) {
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
@@ -107,4 +126,64 @@ void Device::create_logical_device(bool enableValidationLayers, std::vector<cons
 
 	vkGetDeviceQueue(_device, indices.graphicsFamily.value(), 0, &_graphicsQueue);
 	vkGetDeviceQueue(_device, indices.presentFamily.value(), 0, &_presentQueue);
+}
+
+bool Device::check_device_extension_support(VkPhysicalDevice device) {
+	uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+    std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+    for (const auto& extension : availableExtensions) {
+        requiredExtensions.erase(extension.extensionName);
+    }
+
+    return requiredExtensions.empty();
+}
+
+SwapChainSupportDetails Device::query_swap_chain_support(VkPhysicalDevice device) {
+	SwapChainSupportDetails details;
+
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, _surface, &details.capabilities);
+
+	uint32_t formatCount;
+	vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface, &formatCount, nullptr);
+
+	if (formatCount != 0) {
+		details.formats.resize(formatCount);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface, &formatCount, details.formats.data());
+	}
+
+	uint32_t presentModeCount;
+	vkGetPhysicalDeviceSurfacePresentModesKHR(device, _surface, &presentModeCount, nullptr);
+
+	if (presentModeCount != 0) {
+		details.presentModes.resize(presentModeCount);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, _surface, &presentModeCount, details.presentModes.data());
+	}
+
+	return details;
+}
+
+VkSurfaceFormatKHR Device::choose_swap_surface_format(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+	for (const auto& availableFormat : availableFormats) {
+		if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+			return availableFormat;
+		}
+	}
+
+	return availableFormats[0];
+}
+
+VkPresentModeKHR Device::choose_swap_present_mode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
+	for (const auto& availablePresentMode : availablePresentModes) {
+		if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+			return availablePresentMode;
+		}
+	}
+
+	return VK_PRESENT_MODE_FIFO_KHR;
 }

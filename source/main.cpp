@@ -1,19 +1,33 @@
-#include <vulkan/vulkan.h>
-#include <engine/engine.hpp>
+// #define REBUILD_SHIT
 
-#include <iostream>
-#include <stdexcept>
-#include <cstdlib>
+#ifndef REBUILD_SHIT
+    #include <vulkan/vulkan.h>
+    #include <engine/engine.hpp>
 
-int main() {
-	Engine engine;
+    #include <iostream>
+    #include <stdexcept>
+    #include <cstdlib>
 
-    try {
-        engine.run();
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return EXIT_FAILURE;
+    int main() {
+        Engine engine;
+
+        try {
+            engine.run();
+        } catch (const std::exception& e) {
+            std::cerr << e.what() << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        return EXIT_SUCCESS;
     }
 
-    return EXIT_SUCCESS;
-}
+#else
+
+    #include <iostream>
+
+    int main() {
+        std::cout << "frick off, man" << std::endl;
+        return 0;
+    }
+
+#endif

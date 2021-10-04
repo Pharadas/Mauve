@@ -6,14 +6,20 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 
 INCLUDE_DIRECTORIES(include/)
 INCLUDE_DIRECTORIES(include/engine/)
-INCLUDE_DIRECTORIES(include/engine/window/)
 INCLUDE_DIRECTORIES(include/engine/device/)
+INCLUDE_DIRECTORIES(include/engine/window/)
+INCLUDE_DIRECTORIES(include/engine/pipeline/)
+INCLUDE_DIRECTORIES(include/engine/descriptors/)
+INCLUDE_DIRECTORIES(include/engine/texture/)
 
 file(GLOB SOURCES "*/.cpp"
 				  "source/*.cpp"
 				  "include/engine/*.cpp"
+				  "include/engine/device/*.cpp"
 				  "include/engine/window/*.cpp"
-				  "include/engine/device/*.cpp")
+				  "include/engine/pipeline/*.cpp"
+				  "include/engine/descriptors/*.cpp"
+				  "include/engine/texture/*.cpp")
 
 set (CMAKE_CXX_STANDARD 17)
 

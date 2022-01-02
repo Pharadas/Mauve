@@ -1,13 +1,15 @@
 #include <engine/engine.hpp>
-#include <engine/world_object/world_object.hpp>
 #include <engine/buffer_helper.hpp>
 #include <engine/helper_functions.hpp>
+
+#define MAX_VERTICES 10000;
 
 void Engine::run() {
 	_engineWindow.init_window("Vulkan Gamin", 800, 600);
 	glfwSetWindowUserPointer(_engineWindow._window, this);
 	glfwSetFramebufferSizeCallback(_engineWindow._window, framebufferResizeCallback);
 	init_vulkan();
+	init_scene();
 	main_loop();
 	cleanup();
 }
@@ -22,26 +24,63 @@ void Engine::init_vulkan() {
 	_engineWindow.create_image_views();
 	_engineWindow.create_renderpass();
 
-	_engineDescriptors.create_descriptor_set_layout();
+	// _engineDescriptors.create_descriptor_set_layout();
 
-	_enginePipeline.create_graphics_pipeline(_device, _engineWindow._swapChainExtent, _engineWindow._renderPass, _engineDescriptors._descriptorSetLayout);
+	// _enginePipeline.create_graphics_pipeline(_device, _engineWindow._swapChainExtent, _engineWindow._renderPass, _engineDescriptors._descriptorSetLayout);
 	create_command_pool();
 	_engineWindow.create_depth_resources();
 	_engineWindow.create_framebuffers(_device);
 
-	_engineTexture.create_texture_image("texture/videoman.png", _commandPool, _engineDevice._graphicsQueue);
-	_engineTexture.create_texture_image_view();
+	// _engineTexture.create_texture_image("textures/videoman.jpg", _commandPool, _engineDevice._graphicsQueue);
+	// _engineTexture.create_texture_image_view();
 	create_texture_sampler();
 
-	create_vertex_buffer();
-	create_index_buffer();
+	// create_vertex_buffer();
+	// create_index_buffer();
 
-	create_uniform_buffers();
-	_engineDescriptors.create_descriptor_pool(_engineWindow._swapChainImages);
-	_engineDescriptors.create_descriptor_sets(_engineWindow._swapChainImages, _uniformBuffers, _engineTexture._textureImageView, _textureSampler);
+	// create_uniform_buffers();
+	// _engineDescriptors.create_descriptor_pool(_engineWindow._swapChainImages);
+	// _engineDescriptors.create_descriptor_sets(_engineWindow._swapChainImages, _uniformBuffers, _engineTexture._textureImageView, _textureSampler);
 
 	create_command_buffers();
 	create_sync_objects();
+}
+
+void Engine::init_scene() {
+	std::vector<Vertex> vertices = {
+		{{-1, -1,  1}, {1, 0, 1}, {0, 1}}, // 0
+		{{ 1, -1,  1}, {1, 0, 1}, {1, 1}}, // 1
+		{{-1,  1,  1}, {1, 0, 1}, {0, 0}}, // 2
+		{{ 1,  1,  1}, {1, 0, 1}, {1, 0}}, // 3
+		{{ 1, -1,  1}, {1, 0, 1}, {0, 1}}, // 4
+		{{ 1, -1, -1}, {1, 0, 1}, {1, 1}}, // 5
+		{{ 1,  1,  1}, {1, 0, 1}, {0, 0}}, // 6
+		{{ 1,  1, -1}, {1, 0, 1}, {1, 0}}, // 7
+		{{ 1, -1, -1}, {1, 0, 1}, {0, 1}}, // 8
+		{{-1, -1, -1}, {1, 0, 1}, {1, 1}}, // 9
+		{{ 1,  1, -1}, {1, 0, 1}, {0, 0}}, // 10
+		{{-1,  1, -1}, {1, 0, 1}, {1, 0}}, // 11
+		{{-1, -1, -1}, {1, 0, 1}, {0, 1}}, // 12
+		{{-1, -1,  1}, {1, 0, 1}, {1, 1}}, // 13
+		{{-1,  1, -1}, {1, 0, 1}, {0, 0}}, // 14
+		{{-1,  1,  1}, {1, 0, 1}, {1, 0}}, // 15
+		{{ 1,  1, -1}, {1, 0, 1}, {0, 1}}, // 16
+		{{-1,  1, -1}, {1, 0, 1}, {1, 1}}, // 17
+		{{ 1,  1,  1}, {1, 0, 1}, {0, 0}}, // 18
+		{{-1,  1,  1}, {1, 0, 1}, {1, 0}}, // 19
+		{{ 1, -1,  1}, {1, 0, 1}, {0, 1}}, // 20
+		{{-1, -1,  1}, {1, 0, 1}, {1, 1}}, // 21
+		{{ 1, -1, -1}, {1, 0, 1}, {0, 0}}, // 22
+		{{-1, -1, -1}, {1, 0, 1}, {1, 0}}, // 23
+	};
+
+	meshesMap.insert(std::make_pair("cube", new Mesh(vertices, _commandPool, _engineDevice._graphicsQueue)));
+	texturesMap.insert(std::make_pair("videoman", new Texture("textures/videoman.jpg", _commandPool, _engineDevice._graphicsQueue)));
+	materialsMap.insert(std::make_pair("default", new Material(_engineWindow._renderPass, _engineWindow._swapChainExtent)));
+	materialsMap.insert(std::make_pair("textured", new Textured_Material(*texturesMap["videoman"], _textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent)));
+
+	worldObjectsMap.insert(std::make_pair("cube", new WorldObject(meshesMap["cube"], materialsMap["default"])));
+	worldObjectsMap.insert(std::make_pair("cube2", new WorldObject(meshesMap["cube"], materialsMap["textured"])));
 }
 
 void Engine::main_loop() {
@@ -59,12 +98,17 @@ void Engine::main_loop() {
 			framesPassed = 0;
 		}
 
+		objectsToDraw.push_back(worldObjectsMap["cube"]);
+		objectsToDraw.push_back(worldObjectsMap["cube2"]);
+		// objectsToDraw.push_back(worldObjectsMap["cube3"]);
+		worldObjectsMap["cube"]->rotation += .1f;
+
 		process_input();
 
 		glfwPollEvents();
 		draw_frame();
+		objectsToDraw.clear();
 	}
-
 
 	vkDeviceWaitIdle(_device);
 }
@@ -72,19 +116,23 @@ void Engine::main_loop() {
 void Engine::cleanup() {
 	cleanup_swapchain();
 
+	for (auto mesh : meshesMap) {
+		mesh.second->cleanup();
+	}
+
+	for (auto material : materialsMap) {
+		material.second->cleanup();
+	}
+
+	for (auto texture : texturesMap) {
+		texture.second->cleanup();
+	}
+
 	_engineWindow.cleanup_depth_image();
 
 	vkDestroySampler(_device, _textureSampler, nullptr);
 
-	_engineTexture.cleanup();
-
-	_engineDescriptors.cleanup_descriptor_set_layouts();
-
-	vkDestroyBuffer(_device, _indexBuffer, nullptr);
-	vkFreeMemory(_device, _indexBufferMemory, nullptr);
-
-	vkDestroyBuffer(_device, _vertexBuffer, nullptr);
-	vkFreeMemory(_device, _vertexBufferMemory, nullptr);
+	// _engineTexture.cleanup();
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(_device, _renderFinishedSemaphores[i], nullptr);
@@ -165,7 +213,7 @@ void Engine::destroy_debug_utils_messenger_EXT(VkInstance instance, VkDebugUtils
 void Engine::populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
 	createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT; // VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 
 	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 	createInfo.pfnUserCallback = debug_callback;
 }
@@ -284,6 +332,7 @@ void Engine::create_command_pool() {
 	VkCommandPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
 	if (vkCreateCommandPool(_device, &poolInfo, nullptr, &_commandPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create command pool!");
@@ -291,6 +340,7 @@ void Engine::create_command_pool() {
 }
 
 void Engine::create_command_buffers() {
+	commandBuffers;
 	commandBuffers.resize(_engineWindow._swapchainFrameBuffers.size());
 
 	VkCommandBufferAllocateInfo allocInfo{};
@@ -301,46 +351,6 @@ void Engine::create_command_buffers() {
 
 	if (vkAllocateCommandBuffers(_device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate command buffers!");
-	}
-
-	for (size_t i = 0; i < commandBuffers.size(); i++) {
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-		if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS) {
-			throw std::runtime_error("failed to begin recording command buffer!");
-		}
-
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = _engineWindow._renderPass;
-		renderPassInfo.framebuffer = _engineWindow._swapchainFrameBuffers[i];
-		renderPassInfo.renderArea.offset = {0, 0};
-		renderPassInfo.renderArea.extent = _engineWindow._swapChainExtent;
-
-		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
-		clearValues[1].depthStencil = {1.0f, 0};
-
-		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-		renderPassInfo.pClearValues = clearValues.data();
-
-		vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-			vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _enginePipeline._graphicsPipeline);
-
-			VkBuffer vertexBuffers[] = {_vertexBuffer};
-			VkDeviceSize offsets[] = {0};
-			vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
-			vkCmdBindIndexBuffer(commandBuffers[i], _indexBuffer, 0, VK_INDEX_TYPE_UINT16);
-
-			vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _enginePipeline._pipelineLayout, 0, 1, &_engineDescriptors._descriptorSets[i], 0, nullptr);
-
-			vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
-		vkCmdEndRenderPass(commandBuffers[i]);
-
-		if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to record command buffer!");
-		}
 	}
 }
 
@@ -357,51 +367,114 @@ void Engine::draw_frame() {
 		throw std::runtime_error("failed to acquire swap chain image!");
 	}
 
-	// ACTUALIZACION DE LOS BUFFERS ////////////////////////////////////////
-	update_uniform_buffer(imageIndex);
-
 	if (_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
 		vkWaitForFences(_device, 1, &_imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
 	}
 	_imagesInFlight[imageIndex] = _inFlightFences[_currentFrame];
 
+	// setup submit info for VkQueueSubmit
 	VkSubmitInfo submitInfo{};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
 	VkSemaphore waitSemaphores[] = {_imageAvailableSemaphores[_currentFrame]};
 	VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
-	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores = waitSemaphores;
-	submitInfo.pWaitDstStageMask = waitStages;
+		submitInfo.waitSemaphoreCount = 1;
+		submitInfo.pWaitSemaphores = waitSemaphores;
+		submitInfo.pWaitDstStageMask = waitStages;
 
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
+		// * en un solo command buffer voy a grabar todos los commandos de vkdraw
+		submitInfo.commandBufferCount = 1;
+		submitInfo.pCommandBuffers = &commandBuffers[imageIndex]; // para decirle a vkqueuesubmit cual buffer usar ahora (porque se ciclan cada frame)
 
 	VkSemaphore signalSemaphores[] = {_renderFinishedSemaphores[_currentFrame]};
-	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = signalSemaphores;
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores = signalSemaphores;
 
 	vkResetFences(_device, 1, &_inFlightFences[_currentFrame]);
+
+	// setup command buffer to record on this frame
+	VkCommandBufferBeginInfo bufferBeginInfo{};
+		bufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		bufferBeginInfo.pNext = nullptr;
+		bufferBeginInfo.pInheritanceInfo = nullptr;
+		bufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+	// // * Actualizar los ubo con la informacion de este frame
+	// for (auto object : objectsToDraw) {
+	// 	object.update_push_constants(mesh_matrix);
+	// }
+
+	// * Agregar los vertices de cada objeto una lista global de vertices
+	// implementacion
+
+	// * Meter la lista global de vertices a global_vertex_buffer
+	// implementacion
+
+	vkBeginCommandBuffer(commandBuffers[imageIndex], &bufferBeginInfo);
+
+	VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = _engineWindow._renderPass;
+		renderPassInfo.framebuffer = _engineWindow._swapchainFrameBuffers[imageIndex];
+		renderPassInfo.renderArea.offset = {0, 0};
+		renderPassInfo.renderArea.extent = _engineWindow._swapChainExtent;
+
+		std::array<VkClearValue, 2> clearValues{};
+			clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+			clearValues[1].depthStencil = {1.0f, 0};
+
+		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassInfo.pClearValues = clearValues.data();
+
+	// now we begin the renderpass so that we can record commands to the command buffer
+	vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		// * Actualizar el buffer global de los WorldObjects
+		glm::mat4 view = _camera.GetViewMatrix();
+		glm::mat4 proj = glm::perspective(glm::radians(90.f), (float) _engineWindow._swapChainExtent.width / (float) _engineWindow._swapChainExtent.height, 0.1f, 200.0f);
+		proj[1][1] *= -1;
+		// glm::mat4 model = glm::rotate(glm::mat4{ 1.0f }, glm::radians(deltaTime * 0.4f), glm::vec3(0, 1, 0));
+
+		// * Calcular mesh_matrix sin el modelo
+		glm::mat4 mesh_matrix = proj * view;
+
+		MeshPushConstants meshConstants;
+		meshConstants.render_matrix = mesh_matrix;
+
+		int counter = 0;
+		for (auto object : objectsToDraw) {
+			glm::mat4 model{1.f};
+			model = glm::rotate(model, glm::radians(object->rotation), glm::vec3(1, 1, 1));
+			model = glm::scale(model, object->scale);
+			model = glm::translate(model, object->position);
+
+			meshConstants.render_matrix = mesh_matrix * model;
+			object->draw(commandBuffers[imageIndex], counter, meshConstants);
+			counter++;
+		}
+
+	vkCmdEndRenderPass(commandBuffers[imageIndex]);
+	vkEndCommandBuffer(commandBuffers[imageIndex]);
 
 	if (vkQueueSubmit(_engineDevice._graphicsQueue, 1, &submitInfo, _inFlightFences[_currentFrame]) != VK_SUCCESS) {
 		throw std::runtime_error("failed to submit draw command buffer!");
 	}
 
 	VkPresentInfoKHR presentInfo{};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
-	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = signalSemaphores;
+		presentInfo.waitSemaphoreCount = 1;
+		presentInfo.pWaitSemaphores = signalSemaphores;
 
 	VkSwapchainKHR swapChains[] = {_engineWindow._swapChain};
-	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains = swapChains;
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = swapChains;
 
-	presentInfo.pImageIndices = &imageIndex;
+		presentInfo.pImageIndices = &imageIndex;
 
-	result = vkQueuePresentKHR(_engineDevice._presentQueue, &presentInfo);
+	result = vkQueuePresentKHR(_engineDevice._presentQueue, &presentInfo); // aqui mete la imagen creada al queue para presentarla cuando pueda
 
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || _frameBuffer_resized) {
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || _frameBuffer_resized) { // checar si cambio el tamano de la pantalla, si si, recrear la swapchain
 		_frameBuffer_resized = false;
 		recreate_swapchain();
 	} else if (result != VK_SUCCESS) {
@@ -433,7 +506,9 @@ void Engine::create_sync_objects() {
 	}
 }
 
+// esta funcion solo se deberia llamar cuando se cambie de tamano de pantalla
 void Engine::recreate_swapchain() {
+	// TODO Esta funcion deja sin destruir 2 VkImage's, VkDeviceMemory's y VkImageView's
 	int width = 0, height = 0;
 	glfwGetFramebufferSize(_engineWindow._window, &width, &height);
 	while (width == 0 || height == 0) {
@@ -445,17 +520,25 @@ void Engine::recreate_swapchain() {
 
 	cleanup_swapchain();
 
+	// call cleanup functions on all material objects
+
 	create_swapchain();
 	_engineWindow.create_image_views();
 	_engineWindow.create_renderpass();
-	_enginePipeline.create_graphics_pipeline(_device, _engineWindow._swapChainExtent, _engineWindow._renderPass, _engineDescriptors._descriptorSetLayout);
+
 	_engineWindow.create_depth_resources();
 
 	_engineWindow.create_framebuffers(_device);
-	create_uniform_buffers();
-	_engineDescriptors.create_descriptor_pool(_engineWindow._swapChainImages);
-	_engineDescriptors.create_descriptor_sets(_engineWindow._swapChainImages, _uniformBuffers, _engineTexture._textureImageView, _textureSampler);
 	create_command_buffers();
+
+	// * clear all materials
+	// materialsMap.clear();
+	std::cout << "rebuilding materials\n";
+
+	// * Recreate materials
+	for (auto material : materialsMap) {
+		material.second->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
+	}
 
 	_imagesInFlight.resize(_engineWindow._swapChainImages.size(), VK_NULL_HANDLE);
 }
@@ -467,8 +550,6 @@ void Engine::cleanup_swapchain() {
 
     vkFreeCommandBuffers(_device, _commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
 
-    vkDestroyPipeline(_device, _enginePipeline._graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(_device, _enginePipeline._pipelineLayout, nullptr);
     vkDestroyRenderPass(_device, _engineWindow._renderPass, nullptr);
 
     for (size_t i = 0; i < _engineWindow._swapChainImageViews.size(); i++) {
@@ -476,113 +557,6 @@ void Engine::cleanup_swapchain() {
     }
 
     vkDestroySwapchainKHR(_device, _engineWindow._swapChain, nullptr);
-
-	for (size_t i = 0; i < _engineWindow._swapChainImages.size(); i++) {
-        vkDestroyBuffer(_device, _uniformBuffers[i], nullptr);
-        vkFreeMemory(_device, _uniformBuffersMemory[i], nullptr);
-    }
-
-	_engineDescriptors.destroy_pool();
-
-}
-
-void Engine::create_vertex_buffer() {
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	create_buffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(_device, stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), (size_t) bufferSize);
-	vkUnmapMemory(_device, stagingBufferMemory);
-
-	create_buffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _vertexBuffer, _vertexBufferMemory);
-
-	copy_buffer(stagingBuffer, _vertexBuffer, bufferSize);
-
-	vkDestroyBuffer(_device, stagingBuffer, nullptr);
-	vkFreeMemory(_device, stagingBufferMemory, nullptr);
-}
-
-void Engine::copy_buffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
-	VkCommandBufferAllocateInfo allocInfo{};
-	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandPool = _commandPool;
-	allocInfo.commandBufferCount = 1;
-
-	VkCommandBuffer commandBuffer;
-	vkAllocateCommandBuffers(_device, &allocInfo, &commandBuffer);
-
-	VkCommandBufferBeginInfo beginInfo{};
-	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-	vkBeginCommandBuffer(commandBuffer, &beginInfo);
-
-		VkBufferCopy copyRegion{};
-		copyRegion.size = size;
-		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-
-	vkEndCommandBuffer(commandBuffer);
-
-	VkSubmitInfo submitInfo{};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffer;
-
-	vkQueueSubmit(_engineDevice._graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-	vkQueueWaitIdle(_engineDevice._graphicsQueue);
-
-	vkFreeCommandBuffers(_device, _commandPool, 1, &commandBuffer);
-}
-
-void Engine::create_index_buffer() {
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
-
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    create_buffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-    void* data;
-    vkMapMemory(_device, stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, indices.data(), (size_t) bufferSize);
-    vkUnmapMemory(_device, stagingBufferMemory);
-
-    create_buffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _indexBuffer, _indexBufferMemory);
-
-    copy_buffer(stagingBuffer, _indexBuffer, bufferSize);
-
-    vkDestroyBuffer(_device, stagingBuffer, nullptr);
-    vkFreeMemory(_device, stagingBufferMemory, nullptr);
-}
-
-void Engine::create_uniform_buffers() {
-	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-
-	_uniformBuffers.resize(_engineWindow._swapChainImages.size());
-	_uniformBuffersMemory.resize(_engineWindow._swapChainImages.size());
-
-	for (size_t i = 0; i < _engineWindow._swapChainImages.size(); i++) {
-		create_buffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, _uniformBuffers[i], _uniformBuffersMemory[i]);
-	}
-}
-
-void Engine::update_uniform_buffer(uint32_t currentImage) {
-	UniformBufferObject ubo{};
-	ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(1.0f, 0.0f, 1.0f));
-	rotation += 10 * deltaTime;
-	// ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.view = _camera.GetViewMatrix();
-	ubo.proj = glm::perspective(glm::radians(45.0f), _engineWindow._swapChainExtent.width / (float) _engineWindow._swapChainExtent.height, 0.1f, 10.0f);
-	ubo.proj[1][1] *= -1;
-
-	void* data;
-	vkMapMemory(_device, _uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
-		memcpy(data, &ubo, sizeof(ubo));
-	vkUnmapMemory(_device, _uniformBuffersMemory[currentImage]);
 }
 
 void Engine::create_texture_sampler() {
@@ -631,4 +605,24 @@ void Engine::process_input() {
 		_camera.ProcessKeyboard(UP, deltaTime);
 	if (glfwGetKey(_engineWindow._window, GLFW_KEY_Q) == GLFW_PRESS)
 		_camera.ProcessKeyboard(DOWN, deltaTime);
+}
+
+void Engine::create_vertex_buffer() {
+	VkDeviceSize bufferSize = sizeof(Vertex) * MAX_VERTICES;
+
+	// VkBuffer stagingBuffer;
+	// VkDeviceMemory stagingBufferMemory;
+	// create_buffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+	// void* data;
+	// vkMapMemory(_device, stagingBufferMemory, 0, bufferSize, 0, &data);
+	// 	memcpy(data, vertices.data(), (size_t) bufferSize);
+	// vkUnmapMemory(_device, stagingBufferMemory);
+
+	create_buffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, global_vertex_buffer, global_vertex_buffer_memory);
+
+	// copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
+
+	// vkDestroyBuffer(_device, stagingBuffer, nullptr);
+	// vkFreeMemory(_device, stagingBufferMemory, nullptr);
 }

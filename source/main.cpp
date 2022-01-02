@@ -1,10 +1,11 @@
-// #define REBUILD_SHIT
+// #define REBUILD_PROJECT
 
-#ifndef REBUILD_SHIT
+#ifndef REBUILD_PROJECT
     #include <vulkan/vulkan.h>
     #include <engine/engine.hpp>
 
     #include <iostream>
+    #include <string>
     #include <stdexcept>
     #include <cstdlib>
 
@@ -14,7 +15,8 @@
         try {
             engine.run();
         } catch (const std::exception& e) {
-            std::cerr << e.what() << std::endl;
+            // std::cerr << e.what() << std::endl;
+            std::cout << "gaming";
             return EXIT_FAILURE;
         }
 
@@ -22,8 +24,8 @@
     }
 
 #else
-
     #include <iostream>
+    #include <vulkan/vulkan.h>
 
     int main() {
         std::cout << "frick off, man" << std::endl;

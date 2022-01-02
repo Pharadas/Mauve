@@ -1,10 +1,11 @@
 #pragma once
 
+#include <vulkan/vulkan.h>
+
 #include <engine/window/window.hpp>
 #include <engine/device/device.hpp>
-#include <engine/pipeline/pipeline.hpp>
-#include <engine/descriptors/descriptor.hpp>
 #include <engine/texture/texture.hpp>
+#include <engine/world_object/world_object.hpp>
 #include <camera.hpp>
 
 #include <engine/device_data.hpp>
@@ -21,6 +22,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <vector>
+#include <map>
 
 class Engine {
 public:
@@ -48,12 +50,18 @@ private:
 	std::vector<VkFence> _imagesInFlight;
 	size_t _currentFrame = 0;
 
-	VkBuffer _vertexBuffer;
-    VkDeviceMemory _vertexBufferMemory;
-	VkBuffer _indexBuffer;
-	VkDeviceMemory _indexBufferMemory;
-	std::vector<VkBuffer> _uniformBuffers;
-	std::vector<VkDeviceMemory> _uniformBuffersMemory;
+	VkDescriptorSet globalDescriptorSet;
+
+	std::unordered_map<std::string, Mesh*> meshesMap;
+	std::unordered_map<std::string, Material*> materialsMap;
+	std::unordered_map<std::string, WorldObject*> worldObjectsMap;
+	std::unordered_map<std::string, Texture*> texturesMap;
+	std::vector<WorldObject*> objectsToDraw;
+	VkBuffer global_vertex_buffer;
+	VkDeviceMemory global_vertex_buffer_memory;
+
+	// testing
+	VkDescriptorImageInfo imageInfo = {};
 
 	VkSampler _textureSampler;
 
@@ -62,17 +70,14 @@ private:
 
 	Window _engineWindow;
 	Device _engineDevice;
-	Pipeline _enginePipeline;
-	Descriptors _engineDescriptors;
 	Camera _camera;
-	
-	Texture _engineTexture;
 
-	float rotation = 0.f;
+	// Texture _engineTexture;
 
 	// private methods
 	// init vulkan and main functions
 	void init_vulkan();
+	void init_scene();
 	void main_loop();
 	void cleanup();
 
@@ -95,18 +100,11 @@ private:
 	void recreate_swapchain();
 	void cleanup_swapchain();
 
-	// renderpass
-	// void create_renderpass();
-
 	// buffers
 	void create_command_pool();
 	void create_command_buffers();
 	void create_vertex_buffer();
-	void copy_buffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 	void create_index_buffer();
-	void create_uniform_buffers();
-
-	void update_uniform_buffer(uint32_t currentImage);
 
 	// drawing
 	void draw_frame();

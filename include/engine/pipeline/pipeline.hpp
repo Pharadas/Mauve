@@ -1,17 +1,14 @@
-#pragma once
+// #pragma once
 
-#include <engine/helper_functions.hpp>
-#include <vulkan/vulkan.h>
+// #include <engine/helper_functions.hpp>
+// #include <vulkan/vulkan.h>
 
-class Pipeline {
-public:
-    VkPipeline _graphicsPipeline;
-    VkPipelineLayout _pipelineLayout;
+// class Pipeline {
+// public:
+//     void create_graphics_pipeline(VkDevice device, VkExtent2D swapchainExtent, VkRenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout, const char* vertexShaderPath, const char* fragmentShaderPath);
+//     void cleanup();
 
-    void create_graphics_pipeline(VkDevice device, VkExtent2D swapchainExtent, VkRenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout);
-    void cleanup(VkDevice device);
+// private: 
 
-private: 
-
-    VkShaderModule create_shader_module(const std::vector<char>& code, VkDevice device);
-};
+//     VkShaderModule create_shader_module(const std::vector<char>& code, VkDevice device);
+// };

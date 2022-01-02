@@ -4,7 +4,6 @@
 
 #include <vulkan/vulkan.h>
 #include <experimental/optional>
-#include <optional>
 #include <vector>
 
 struct QueueFamilyIndices {

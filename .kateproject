@@ -1,19 +1,20 @@
 {
-	"name": "GamingTime@VulkanEngine",
-	"directory": "C:/Users/david/Documents/repos/VulkanEngine",
+	"name": "Mauve@VulkanEngine",
+	"directory": "C:/Users/Pharadas/Documents/repos/VulkanEngine",
 	"files": [ { "git": 1 } ],
 	"build": {
-		"directory": "C:/Users/david/Documents/repos/VulkanEngine",
+		"directory": "C:/Users/Pharadas/Documents/repos/VulkanEngine",
 		"default_target": "all",
 		"clean_target": "clean",
-		"build": "C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/VulkanEngine\"  all",
-		"clean": "C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/VulkanEngine\"  clean",
-		"quick": "C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/VulkanEngine\"  install",
+		"build": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  all",
+		"clean": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  clean",
+		"quick": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  install",
 		"targets":[
-			 {"name":"all", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/VulkanEngine\"  all"}
-			,{"name":"clean", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/VulkanEngine\"  clean"}
-			,{"name":"GamingTime", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/VulkanEngine\"  GamingTime"}
-			,{"name":"GamingTime/fast", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/VulkanEngine\"  GamingTime/fast"}
-			,{"name":"rebuild_cache", "build_cmd":"C:/MinGW/bin/mingw32-make.exe -C \"C:/Users/david/Documents/repos/VulkanEngine\"  rebuild_cache"}
+			 {"name":"all", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  all"}
+			,{"name":"clean", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  clean"}
+			,{"name":"Mauve", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  Mauve"}
+			,{"name":"Mauve/fast", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  Mauve/fast"}
+			,{"name":"edit_cache", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  edit_cache"}
+			,{"name":"rebuild_cache", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  rebuild_cache"}
 	] }
 }

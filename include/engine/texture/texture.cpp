@@ -9,9 +9,14 @@
 #include <engine/buffer_helper.hpp>
 #include <engine/helper_functions.hpp>
 
+Texture::Texture(const char* texturePath, VkCommandPool commandPool, VkQueue graphicsQueue) {
+    create_texture_image(texturePath, commandPool, graphicsQueue);
+    _textureImageView = create_image_view(_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+}
+
 void Texture::create_texture_image(const char* texturePath, VkCommandPool commandPool, VkQueue graphicsQueue) {
     int texWidth, texHeight, texChannels;
-    stbi_uc* pixels = stbi_load("textures/videoman.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc* pixels = stbi_load(texturePath, &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
 
     if (!pixels) {
@@ -39,9 +44,9 @@ void Texture::create_texture_image(const char* texturePath, VkCommandPool comman
     vkFreeMemory(_device, stagingBufferMemory, nullptr);
 }
 
-void Texture::create_texture_image_view() {
-    _textureImageView = create_image_view(_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
-}
+// void Texture::create_texture_image_view() {
+//     _textureImageView = create_image_view(_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+// }
 
 void Texture::transition_image_layout(VkCommandPool commandPool, VkQueue graphicsQueue, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
     VkCommandBuffer commandBuffer = begin_single_time_commands(commandPool);

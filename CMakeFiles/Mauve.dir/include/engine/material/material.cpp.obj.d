@@ -1,9 +1,9 @@
 CMakeFiles/Mauve.dir/include/engine/material/material.cpp.obj: \
- C:\Users\Pharadas\Documents\repos\VulkanEngine\include\engine\material\material.cpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/material/materials.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/descriptors/descriptor.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vk_platform.h \
+ C:\Users\Pharadas\Documents\repos\Mauve\include\engine\material\material.cpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/material/materials.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/descriptors/descriptor.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vk_platform.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stddef.h \
  C:/mingw64/x86_64-w64-mingw32/include/stddef.h \
  C:/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
@@ -15,7 +15,7 @@ CMakeFiles/Mauve.dir/include/engine/material/material.cpp.obj: \
  C:/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stdint.h \
  C:/mingw64/x86_64-w64-mingw32/include/stdint.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan_core.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan_core.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/vector \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_algobase.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/c++config.h \
@@ -132,9 +132,9 @@ CMakeFiles/Mauve.dir/include/engine/material/material.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/optional \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/enable_special_members.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/unordered_map.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/buffer_helper.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/device_data.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/helper_functions.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/buffer_helper.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/device_data.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/helper_functions.hpp \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/fstream \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/istream \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ios \
@@ -161,9 +161,9 @@ CMakeFiles/Mauve.dir/include/engine/material/material.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/basic_file.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/c++io.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/fstream.tcc \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/mesh/mesh.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/glm.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/_fixes.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/mesh/mesh.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/glm.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/_fixes.hpp \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cmath \
  C:/mingw64/x86_64-w64-mingw32/include/math.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/specfun.h \
@@ -180,160 +180,160 @@ CMakeFiles/Mauve.dir/include/engine/material/material.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/tr1/poly_hermite.tcc \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/tr1/poly_laguerre.tcc \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/tr1/riemann_zeta.tcc \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/setup.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/setup.hpp \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cassert \
  C:/mingw64/x86_64-w64-mingw32/include/assert.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstddef \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/simd/platform.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/simd/platform.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/climits \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cfloat \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/float.h \
  C:/mingw64/x86_64-w64-mingw32/include/float.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/fwd.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/qualifier.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/setup.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/vec2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_bool2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_vec2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_vec2.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/compute_vector_relational.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_bool2_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_float2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_float2_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_double2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_double2_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_int2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_int2_sized.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/scalar_int_sized.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/setup.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_uint2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_uint2_sized.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/scalar_uint_sized.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/vec3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_bool3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_vec3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_vec3.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_bool3_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_float3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_float3_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_double3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_double3_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_int3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_int3_sized.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_uint3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_uint3_sized.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/vec4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_bool4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_vec4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_vec4.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_bool4_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_float4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_float4_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_double4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_double4_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_int4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_int4_sized.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_uint4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/vector_uint4_sized.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/mat2x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double2x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat2x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat2x2.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/matrix.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/mat2x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double2x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat2x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat2x3.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double2x3_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float2x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float2x3_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/mat2x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double2x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat2x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat2x4.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double2x4_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float2x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float2x4_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/mat3x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double3x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat3x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat3x2.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double3x2_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float3x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float3x2_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/mat3x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double3x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat3x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat3x3.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double3x3_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float3x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float3x3_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/mat3x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double3x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat3x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat3x4.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double3x4_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float3x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float3x4_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/mat4x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double4x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat4x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat4x2.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double4x2_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float4x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float4x2_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/mat4x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double4x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat4x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat4x3.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double4x3_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float4x3.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float4x3_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/mat4x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double4x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat4x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_mat4x4.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double4x4_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float4x4.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float4x4_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/func_matrix.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/geometric.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/func_geometric.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/exponential.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_vec1.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_vec1.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/func_exponential.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/vector_relational.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/func_vector_relational.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/_vectorize.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/common.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/func_common.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/compute_common.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_double2x2_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float2x2.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_float2x2_precision.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/trigonometric.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/func_trigonometric.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/packing.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/func_packing.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_half.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/type_half.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/integer.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/detail/func_integer.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/gtc/matrix_transform.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_projection.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/gtc/constants.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/scalar_constants.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/scalar_constants.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/gtc/constants.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_projection.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_clip_space.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_clip_space.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_transform.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/ext/matrix_transform.inl \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/glm/gtc/matrix_transform.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/fwd.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/qualifier.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/setup.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/vec2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_bool2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_vec2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_vec2.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/compute_vector_relational.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_bool2_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_float2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_float2_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_double2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_double2_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_int2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_int2_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/scalar_int_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/setup.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_uint2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_uint2_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/scalar_uint_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/vec3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_bool3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_vec3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_vec3.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_bool3_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_float3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_float3_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_double3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_double3_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_int3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_int3_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_uint3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_uint3_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/vec4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_bool4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_vec4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_vec4.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_bool4_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_float4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_float4_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_double4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_double4_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_int4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_int4_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_uint4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_uint4_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/mat2x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double2x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat2x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat2x2.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/matrix.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/mat2x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double2x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat2x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat2x3.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double2x3_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float2x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float2x3_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/mat2x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double2x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat2x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat2x4.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double2x4_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float2x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float2x4_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/mat3x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double3x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat3x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat3x2.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double3x2_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float3x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float3x2_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/mat3x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double3x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat3x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat3x3.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double3x3_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float3x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float3x3_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/mat3x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double3x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat3x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat3x4.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double3x4_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float3x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float3x4_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/mat4x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double4x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat4x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat4x2.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double4x2_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float4x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float4x2_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/mat4x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double4x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat4x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat4x3.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double4x3_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float4x3.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float4x3_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/mat4x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double4x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat4x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_mat4x4.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double4x4_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float4x4.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float4x4_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/func_matrix.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/geometric.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/func_geometric.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/exponential.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_vec1.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_vec1.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/func_exponential.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/vector_relational.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/func_vector_relational.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/_vectorize.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/common.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/func_common.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/compute_common.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_double2x2_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float2x2.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_float2x2_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/trigonometric.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/func_trigonometric.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/packing.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/func_packing.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_half.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_half.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/integer.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/func_integer.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/matrix_transform.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_projection.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/constants.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/scalar_constants.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/scalar_constants.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/constants.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_projection.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_clip_space.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_clip_space.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_transform.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_transform.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/matrix_transform.inl \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstring \
  C:/mingw64/x86_64-w64-mingw32/include/string.h \
  C:/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/texture/texture.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/texture/texture.hpp \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/iostream

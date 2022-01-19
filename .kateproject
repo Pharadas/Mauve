@@ -1,20 +1,19 @@
 {
-	"name": "Mauve@VulkanEngine",
-	"directory": "C:/Users/Pharadas/Documents/repos/VulkanEngine",
+	"name": "Mauve@Mauve",
+	"directory": "C:/Users/Pharadas/Documents/repos/Mauve",
 	"files": [ { "git": 1 } ],
 	"build": {
-		"directory": "C:/Users/Pharadas/Documents/repos/VulkanEngine",
+		"directory": "C:/Users/Pharadas/Documents/repos/Mauve",
 		"default_target": "all",
 		"clean_target": "clean",
-		"build": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  all",
-		"clean": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  clean",
-		"quick": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  install",
+		"build": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  all",
+		"clean": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  clean",
+		"quick": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  install",
 		"targets":[
-			 {"name":"all", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  all"}
-			,{"name":"clean", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  clean"}
-			,{"name":"Mauve", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  Mauve"}
-			,{"name":"Mauve/fast", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  Mauve/fast"}
-			,{"name":"edit_cache", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  edit_cache"}
-			,{"name":"rebuild_cache", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/VulkanEngine\"  rebuild_cache"}
+			 {"name":"all", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  all"}
+			,{"name":"clean", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  clean"}
+			,{"name":"Mauve", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  Mauve"}
+			,{"name":"Mauve/fast", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  Mauve/fast"}
+			,{"name":"rebuild_cache", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  rebuild_cache"}
 	] }
 }

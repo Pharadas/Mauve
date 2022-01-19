@@ -13,8 +13,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 struct MeshPushConstants {
-	glm::vec4 data;
-	glm::mat4 render_matrix;
+	// glm::vec4 data;
+    int numOfTexture;
+	alignas(16) glm::mat4 render_matrix;
+	// glm::mat4 render_matrix;
 };
 
 class Material {
@@ -33,11 +35,12 @@ public:
     VkPipelineLayout pipelineLayout;
 
     VkDescriptorSet        descriptorSets;
-    VkDescriptorSetLayout  descriptorSetLayout;
+    VkDescriptorSetLayout  descriptorSetLayouts;
     DescriptorBuilder      builder;
     DescriptorAllocator    descriptorAllocator;
     DescriptorLayoutCache  descriptorLayoutCache;
     VkDescriptorBufferInfo descriptorBufferInfo;
+    int descriptorLayouts = 0;
 
 private:
 
@@ -49,7 +52,21 @@ private:
 
 class Textured_Material : public Material {
 public:
-    Textured_Material(Texture texture, VkSampler sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent);
+    Textured_Material(std::vector<VkImageView> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent);
+    virtual void setup_descriptor_set(VkCommandBuffer cmdBffr);
+    virtual void recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent);
+
+private:
+    // * Types y flags especificas de cada material, pero todas tienen transformaciones para 3d, asi que son estas por default
+    std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
+        {VK_DESCRIPTOR_TYPE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}, // Texture
+        {VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, VK_SHADER_STAGE_FRAGMENT_BIT}
+    };
+};
+
+class Textured_Lit_Material : public Material {
+public:
+    Textured_Lit_Material(Texture texture, VkSampler sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent);
     virtual void build_material_pipeline(char const* vertShaderPath, char const* fragShaderPath, VkRenderPass renderPass, VkExtent2D swapchainExtent);
     virtual void setup_descriptor_set(VkCommandBuffer cmdBffr);
     virtual void recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent);
@@ -57,6 +74,8 @@ public:
 private:
     // * Types y flags especificas de cada material, pero todas tienen transformaciones para 3d, asi que son estas por default
     std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
-        {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT} // Texture
+        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT}, // Light info
+        {VK_DESCRIPTOR_TYPE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}, // Texture
+        {VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, VK_SHADER_STAGE_FRAGMENT_BIT}
     };
 };

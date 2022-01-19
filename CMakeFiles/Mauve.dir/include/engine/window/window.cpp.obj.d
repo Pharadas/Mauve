@@ -1,7 +1,7 @@
 CMakeFiles/Mauve.dir/include/engine/window/window.cpp.obj: \
- C:\Users\Pharadas\Documents\repos\VulkanEngine\include\engine\window\window.cpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/window/window.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/GLFW/glfw3.h \
+ C:\Users\Pharadas\Documents\repos\Mauve\include\engine\window\window.cpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/window/window.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/GLFW/glfw3.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stddef.h \
  C:/mingw64/x86_64-w64-mingw32/include/stddef.h \
  C:/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
@@ -13,12 +13,12 @@ CMakeFiles/Mauve.dir/include/engine/window/window.cpp.obj: \
  C:/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stdint.h \
  C:/mingw64/x86_64-w64-mingw32/include/stdint.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vk_platform.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan_core.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vk_platform.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan_core.h \
  C:/mingw64/x86_64-w64-mingw32/include/GL/gl.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/device/device.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/device_data.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/device/device.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/device_data.hpp \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/experimental/optional \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/utility \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/c++config.h \
@@ -126,7 +126,7 @@ CMakeFiles/Mauve.dir/include/engine/window/window.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_vector.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_bvector.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/vector.tcc \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/helper_functions.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/helper_functions.hpp \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/fstream \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/istream \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ios \

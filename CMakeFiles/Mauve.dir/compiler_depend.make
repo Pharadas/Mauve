@@ -942,6 +942,11 @@ CMakeFiles/Mauve.dir/include/engine/engine.cpp.obj: include/engine/engine.cpp \
   include/glm/ext/matrix_transform.inl \
   include/glm/gtc/matrix_transform.inl \
   include/camera.hpp \
+  include/tiny_obj_loader.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/map \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_tree.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_map.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multimap.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/chrono \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ratio \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ctime \
@@ -949,11 +954,7 @@ CMakeFiles/Mauve.dir/include/engine/engine.cpp.obj: include/engine/engine.cpp \
   C:/mingw64/x86_64-w64-mingw32/include/_timeval.h \
   C:/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/parse_numbers.h \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/iostream \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/map \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_tree.h \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_map.h \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multimap.h
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/iostream
 
 CMakeFiles/Mauve.dir/include/engine/helper_functions.cpp.obj: include/engine/helper_functions.cpp \
   include/engine/helper_functions.hpp \
@@ -2762,6 +2763,11 @@ CMakeFiles/Mauve.dir/source/main.cpp.obj: source/main.cpp \
   include/glm/ext/matrix_transform.inl \
   include/glm/gtc/matrix_transform.inl \
   include/camera.hpp \
+  include/tiny_obj_loader.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/map \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_tree.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_map.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multimap.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/chrono \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ratio \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ctime \
@@ -2769,11 +2775,7 @@ CMakeFiles/Mauve.dir/source/main.cpp.obj: source/main.cpp \
   C:/mingw64/x86_64-w64-mingw32/include/_timeval.h \
   C:/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/parse_numbers.h \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/iostream \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/map \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_tree.h \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_map.h \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multimap.h
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/iostream
 
 
 include/engine/texture/texture.cpp:
@@ -3514,6 +3516,12 @@ include/engine/engine.hpp:
 
 include/camera.hpp:
 
+include/tiny_obj_loader.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_map.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multimap.h:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ratio:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ctime:
@@ -3521,10 +3529,6 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ctime:
 C:/mingw64/x86_64-w64-mingw32/include/time.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/pthread_time.h:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_map.h:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multimap.h:
 
 include/engine/material/material.cpp:
 

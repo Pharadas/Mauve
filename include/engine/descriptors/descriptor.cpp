@@ -37,7 +37,7 @@ DescriptorBuilder DescriptorBuilder::begin(DescriptorLayoutCache* layoutCache, D
     return builder;
 }
 
-DescriptorBuilder& DescriptorBuilder::bind_image(uint32_t binding, VkDescriptorImageInfo* imageInfo, VkDescriptorType type, VkShaderStageFlags stageFlags) {
+DescriptorBuilder&  DescriptorBuilder::bind_texture_array(uint32_t binding, int amountTextures, VkDescriptorImageInfo* imageInfo, VkDescriptorType type, VkShaderStageFlags stageFlags) {
     //create the descriptor binding for the layout
     VkDescriptorSetLayoutBinding newBinding{};
 
@@ -54,10 +54,68 @@ DescriptorBuilder& DescriptorBuilder::bind_image(uint32_t binding, VkDescriptorI
     newWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     newWrite.pNext = nullptr;
 
-    newWrite.descriptorCount = 1;
+    newWrite.descriptorCount = amountTextures;
     newWrite.descriptorType = type;
     newWrite.dstBinding = binding;
     newWrite.pImageInfo = imageInfo;
+
+    writes.push_back(newWrite);
+    return *this;
+}
+
+DescriptorBuilder& DescriptorBuilder::bind_sampler(uint32_t binding, VkSampler* sampler, VkDescriptorSet set, VkDescriptorType type, VkShaderStageFlags stageFlags) {
+    VkDescriptorImageInfo samplerInfo = {};
+        samplerInfo.sampler = *sampler;
+
+    //create the descriptor binding for the layout
+    VkDescriptorSetLayoutBinding newBinding{};
+
+        newBinding.descriptorCount = 1;
+        newBinding.descriptorType = type;
+        newBinding.pImmutableSamplers = 0;
+        newBinding.stageFlags = stageFlags;
+        newBinding.binding = binding;
+
+    bindings.push_back(newBinding);
+
+    //create the descriptor write
+    VkWriteDescriptorSet newWrite{};
+        newWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        newWrite.pNext = nullptr;
+
+        newWrite.descriptorCount = 1;
+        newWrite.descriptorType = type;
+        newWrite.dstBinding = binding;
+        newWrite.dstSet = set;
+        newWrite.pImageInfo = &samplerInfo;
+
+    writes.push_back(newWrite);
+    return *this;
+}
+
+DescriptorBuilder& DescriptorBuilder::bind_image(uint32_t binding, std::vector<VkDescriptorImageInfo> &imageInfo, VkDescriptorSet set, VkDescriptorType type, VkShaderStageFlags stageFlags) {
+    //create the descriptor binding for the layout
+    VkDescriptorSetLayoutBinding newBinding{};
+        std::cout << imageInfo.size() << '\n';
+        newBinding.descriptorCount = imageInfo.size();
+        newBinding.descriptorType = type;
+        newBinding.pImmutableSamplers = 0;
+        newBinding.stageFlags = stageFlags;
+        newBinding.binding = binding;
+
+    bindings.push_back(newBinding);
+
+    //create the descriptor write
+    VkWriteDescriptorSet newWrite{};
+        newWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        newWrite.pNext = nullptr;
+
+        newWrite.dstArrayElement = 0;
+        newWrite.descriptorCount = imageInfo.size();
+        newWrite.descriptorType = type;
+        newWrite.dstBinding = binding;
+        newWrite.dstSet = set;
+        newWrite.pImageInfo = &imageInfo[0];
 
     writes.push_back(newWrite);
     return *this;
@@ -114,7 +172,7 @@ bool DescriptorBuilder::build(VkDescriptorSet& set){
 	return true;
 }
 
-bool DescriptorBuilder::build(VkDescriptorSet& set, VkDescriptorSetLayout& layout){
+bool DescriptorBuilder::build(VkDescriptorSet& set, VkDescriptorSetLayout& layout) {
 	//build layout first
 	VkDescriptorSetLayoutCreateInfo layoutInfo{};
         layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -299,8 +357,7 @@ size_t DescriptorLayoutCache::DescriptorLayoutInfo::hash() const{
 
     size_t result = hash<size_t>()(bindings.size());
 
-    for (const VkDescriptorSetLayoutBinding& b : bindings)
-    {
+    for (const VkDescriptorSetLayoutBinding& b : bindings) {
         //pack the binding data into a single int64. Not fully correct but it's ok
         size_t binding_hash = b.binding | b.descriptorType << 8 | b.descriptorCount << 16 | b.stageFlags << 24;
 

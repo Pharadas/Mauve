@@ -8,7 +8,7 @@ layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
 
 layout(push_constant) uniform constants {
-    vec4 data;
+    int numOfTexture;
     mat4 render_matrix;
 } PushConstants;
 

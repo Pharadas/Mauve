@@ -7,6 +7,7 @@
 #include <engine/texture/texture.hpp>
 #include <engine/world_object/world_object.hpp>
 #include <camera.hpp>
+#include <tiny_obj_loader.h>
 
 #include <engine/device_data.hpp>
 
@@ -33,8 +34,12 @@ public:
 private:
 	// private members
 	VkInstance _instance;
-	const std::vector<const char*> _validationLayers = {"VK_LAYER_KHRONOS_validation"};
+	const std::vector<const char*> _validationLayers = {
+		"VK_LAYER_KHRONOS_validation"
+	};
+
 	bool _enableValidationLayers = true;
+
 	VkDebugUtilsMessengerEXT _debugMessenger;
 
 	VkCommandPool _commandPool;
@@ -55,7 +60,9 @@ private:
 	std::unordered_map<std::string, Mesh*> meshesMap;
 	std::unordered_map<std::string, Material*> materialsMap;
 	std::unordered_map<std::string, WorldObject*> worldObjectsMap;
-	std::unordered_map<std::string, Texture*> texturesMap;
+	// std::unordered_map<std::string, std::pair<Texture, int>> texturesMap;
+	std::vector<std::string> texturesList;
+	std::vector<VkImageView> texturesImageViews;
 	std::vector<WorldObject*> objectsToDraw;
 	VkBuffer global_vertex_buffer;
 	VkDeviceMemory global_vertex_buffer_memory;
@@ -72,8 +79,6 @@ private:
 	Device _engineDevice;
 	Camera _camera;
 
-	// Texture _engineTexture;
-
 	// private methods
 	// init vulkan and main functions
 	void init_vulkan();
@@ -83,6 +88,9 @@ private:
 
 	// initialization
 	void create_instance();
+	void init_textures();
+	void init_materials();
+	void init_meshes();
 
 	// extensions
 	std::vector<const char*> getRequiredExtensions();
@@ -113,6 +121,7 @@ private:
 
 	// texture setup
 	void create_texture_sampler();
+	void add_texture(std::string textureName, const char* texturePath);
 
 	void process_input();
 };

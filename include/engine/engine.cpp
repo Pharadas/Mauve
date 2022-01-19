@@ -9,6 +9,7 @@ void Engine::run() {
 	glfwSetWindowUserPointer(_engineWindow._window, this);
 	glfwSetFramebufferSizeCallback(_engineWindow._window, framebufferResizeCallback);
 	init_vulkan();
+
 	init_scene();
 	main_loop();
 	cleanup();
@@ -46,41 +47,27 @@ void Engine::init_vulkan() {
 	create_sync_objects();
 }
 
+void addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, std::vector<Vertex> &verticesList) {
+	verticesList.push_back({v1, {1, 0, 1}, {1, 0}});
+	verticesList.push_back({v2, {1, 0, 1}, {1, 1}});
+	verticesList.push_back({v3, {1, 0, 1}, {0, 0}});
+}
+
 void Engine::init_scene() {
-	std::vector<Vertex> vertices = {
-		{{-1, -1,  1}, {1, 0, 1}, {0, 1}}, // 0
-		{{ 1, -1,  1}, {1, 0, 1}, {1, 1}}, // 1
-		{{-1,  1,  1}, {1, 0, 1}, {0, 0}}, // 2
-		{{ 1,  1,  1}, {1, 0, 1}, {1, 0}}, // 3
-		{{ 1, -1,  1}, {1, 0, 1}, {0, 1}}, // 4
-		{{ 1, -1, -1}, {1, 0, 1}, {1, 1}}, // 5
-		{{ 1,  1,  1}, {1, 0, 1}, {0, 0}}, // 6
-		{{ 1,  1, -1}, {1, 0, 1}, {1, 0}}, // 7
-		{{ 1, -1, -1}, {1, 0, 1}, {0, 1}}, // 8
-		{{-1, -1, -1}, {1, 0, 1}, {1, 1}}, // 9
-		{{ 1,  1, -1}, {1, 0, 1}, {0, 0}}, // 10
-		{{-1,  1, -1}, {1, 0, 1}, {1, 0}}, // 11
-		{{-1, -1, -1}, {1, 0, 1}, {0, 1}}, // 12
-		{{-1, -1,  1}, {1, 0, 1}, {1, 1}}, // 13
-		{{-1,  1, -1}, {1, 0, 1}, {0, 0}}, // 14
-		{{-1,  1,  1}, {1, 0, 1}, {1, 0}}, // 15
-		{{ 1,  1, -1}, {1, 0, 1}, {0, 1}}, // 16
-		{{-1,  1, -1}, {1, 0, 1}, {1, 1}}, // 17
-		{{ 1,  1,  1}, {1, 0, 1}, {0, 0}}, // 18
-		{{-1,  1,  1}, {1, 0, 1}, {1, 0}}, // 19
-		{{ 1, -1,  1}, {1, 0, 1}, {0, 1}}, // 20
-		{{-1, -1,  1}, {1, 0, 1}, {1, 1}}, // 21
-		{{ 1, -1, -1}, {1, 0, 1}, {0, 0}}, // 22
-		{{-1, -1, -1}, {1, 0, 1}, {1, 0}}, // 23
-	};
+	init_textures();
+	init_materials();
+	init_meshes();
 
-	meshesMap.insert(std::make_pair("cube", new Mesh(vertices, _commandPool, _engineDevice._graphicsQueue)));
-	texturesMap.insert(std::make_pair("videoman", new Texture("textures/videoman.jpg", _commandPool, _engineDevice._graphicsQueue)));
-	materialsMap.insert(std::make_pair("default", new Material(_engineWindow._renderPass, _engineWindow._swapChainExtent)));
-	materialsMap.insert(std::make_pair("textured", new Textured_Material(*texturesMap["videoman"], _textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent)));
-
-	worldObjectsMap.insert(std::make_pair("cube", new WorldObject(meshesMap["cube"], materialsMap["default"])));
-	worldObjectsMap.insert(std::make_pair("cube2", new WorldObject(meshesMap["cube"], materialsMap["textured"])));
+	// worldObjectsMap.insert(std::make_pair("icosahedron", new WorldObject(meshesMap["icosahedron"], materialsMap["default"])));
+	worldObjectsMap.insert(std::make_pair("icosahedron_videoman", new WorldObject(meshesMap["icosahedron"], materialsMap["textured"])));
+	worldObjectsMap.insert(std::make_pair("icosahedron_space", new WorldObject(meshesMap["icosahedron"], materialsMap["textured"])));
+	worldObjectsMap["icosahedron_videoman"]->numTex = 0;
+	worldObjectsMap["icosahedron_space"]->numTex = 1;
+	// worldObjectsMap["icosahedron_space"]->position = glm::vec3(1, 1, 1);
+	worldObjectsMap["icosahedron_videoman"]->scale = glm::vec3(1, 1, 1);
+	worldObjectsMap["icosahedron_space"]->scale = glm::vec3(100, 100, 100);
+	// // worldObjectsMap.insert(std::make_pair("cube2", new WorldObject(meshesMap["cube"], materialsMap["textured"])));
+	// worldObjectsMap["icosahedron_textured"]->position = glm::vec3(1, 1, 1);
 }
 
 void Engine::main_loop() {
@@ -98,10 +85,10 @@ void Engine::main_loop() {
 			framesPassed = 0;
 		}
 
-		objectsToDraw.push_back(worldObjectsMap["cube"]);
-		objectsToDraw.push_back(worldObjectsMap["cube2"]);
-		// objectsToDraw.push_back(worldObjectsMap["cube3"]);
-		worldObjectsMap["cube"]->rotation += .1f;
+		// objectsToDraw.push_back(worldObjectsMap["icosahedron"]);
+		// objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman"]);
+		objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
+		// worldObjectsMap["icosahedron"]->rotation += .1f;
 
 		process_input();
 
@@ -124,15 +111,12 @@ void Engine::cleanup() {
 		material.second->cleanup();
 	}
 
-	for (auto texture : texturesMap) {
-		texture.second->cleanup();
-	}
+	// for (auto texture : texturesMap) {
+	// 	// texture.second->cleanup();
+	// }
 
 	_engineWindow.cleanup_depth_image();
-
 	vkDestroySampler(_device, _textureSampler, nullptr);
-
-	// _engineTexture.cleanup();
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(_device, _renderFinishedSemaphores[i], nullptr);
@@ -213,7 +197,8 @@ void Engine::destroy_debug_utils_messenger_EXT(VkInstance instance, VkDebugUtils
 void Engine::populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
 	createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT; // VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 
+	// VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 
+	createInfo.messageSeverity =  VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 	createInfo.pfnUserCallback = debug_callback;
 }
@@ -286,15 +271,15 @@ void Engine::create_swapchain() {
 	}
 
 	VkSwapchainCreateInfoKHR createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.surface = _engineWindow._surface;
+		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+		createInfo.surface = _engineWindow._surface;
 
-	createInfo.minImageCount = imageCount;
-	createInfo.imageFormat = surfaceFormat.format;
-	createInfo.imageColorSpace = surfaceFormat.colorSpace;
-	createInfo.imageExtent = extent;
-	createInfo.imageArrayLayers = 1;
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		createInfo.minImageCount = imageCount;
+		createInfo.imageFormat = surfaceFormat.format;
+		createInfo.imageColorSpace = surfaceFormat.colorSpace;
+		createInfo.imageExtent = extent;
+		createInfo.imageArrayLayers = 1;
+		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
 	QueueFamilyIndices indices = _engineDevice.find_queue_families(_physicalDevice);
 	uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(), indices.presentFamily.value()};
@@ -431,7 +416,7 @@ void Engine::draw_frame() {
 
 		// * Actualizar el buffer global de los WorldObjects
 		glm::mat4 view = _camera.GetViewMatrix();
-		glm::mat4 proj = glm::perspective(glm::radians(90.f), (float) _engineWindow._swapChainExtent.width / (float) _engineWindow._swapChainExtent.height, 0.1f, 200.0f);
+		glm::mat4 proj = glm::perspective(glm::radians(90.f), (float) _engineWindow._swapChainExtent.width / (float) _engineWindow._swapChainExtent.height, 0.001f, 1000.0f);
 		proj[1][1] *= -1;
 		// glm::mat4 model = glm::rotate(glm::mat4{ 1.0f }, glm::radians(deltaTime * 0.4f), glm::vec3(0, 1, 0));
 
@@ -449,6 +434,7 @@ void Engine::draw_frame() {
 			model = glm::translate(model, object->position);
 
 			meshConstants.render_matrix = mesh_matrix * model;
+			meshConstants.numOfTexture = object->numTex;
 			object->draw(commandBuffers[imageIndex], counter, meshConstants);
 			counter++;
 		}
@@ -564,19 +550,29 @@ void Engine::create_texture_sampler() {
 	vkGetPhysicalDeviceProperties(_physicalDevice, &properties);
 
 	VkSamplerCreateInfo samplerInfo{};
-	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-	samplerInfo.magFilter = VK_FILTER_LINEAR;
-	samplerInfo.minFilter = VK_FILTER_LINEAR;
-	samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-	samplerInfo.anisotropyEnable = VK_TRUE;
-	samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
-	samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-	samplerInfo.unnormalizedCoordinates = VK_FALSE;
-	samplerInfo.compareEnable = VK_FALSE;
-	samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		// samplerInfo.magFilter = VK_FILTER_LINEAR;
+		// samplerInfo.minFilter = VK_FILTER_LINEAR;
+
+		samplerInfo.magFilter = VK_FILTER_NEAREST;
+		samplerInfo.minFilter = VK_FILTER_NEAREST;
+
+		// samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		// samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		// samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+
+		samplerInfo.anisotropyEnable = VK_TRUE;
+		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+		samplerInfo.unnormalizedCoordinates = VK_FALSE;
+		samplerInfo.compareEnable = VK_FALSE;
+		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
 	if (vkCreateSampler(_device, &samplerInfo, nullptr, &_textureSampler) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create texture sampler!");
@@ -625,4 +621,94 @@ void Engine::create_vertex_buffer() {
 
 	// vkDestroyBuffer(_device, stagingBuffer, nullptr);
 	// vkFreeMemory(_device, stagingBufferMemory, nullptr);
+}
+
+void Engine::add_texture(std::string textureName, const char* texturePath) {
+	texturesImageViews.push_back(Texture(texturePath, _commandPool, _engineDevice._graphicsQueue)._textureImageView);
+	texturesList.push_back(textureName);
+}
+
+void Engine::init_textures() {
+	// * Inicializar aqui todas  last texturas
+	add_texture("videoman", "textures/videoman.jpg");
+	add_texture("space", "textures/space.jpg");
+}
+
+void Engine::init_materials() {
+	// materialsMap.insert(std::make_pair("default", new Material(_engineWindow._renderPass, _engineWindow._swapChainExtent)));
+	materialsMap.insert(std::make_pair("textured", new Textured_Material(texturesImageViews, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent)));
+	materialsMap.insert(std::make_pair("textured_lit", new Textured_Lit_Material(texturesImageViews, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent)))
+}
+
+void Engine::init_meshes() {
+	std::vector<Vertex> vertices = {
+		{{-1, -1,  1}, {1, 0, 1}, {0, 1}}, // 0
+		{{ 1, -1,  1}, {1, 0, 1}, {1, 1}}, // 1
+		{{-1,  1,  1}, {1, 0, 1}, {0, 0}}, // 2
+		{{ 1,  1,  1}, {1, 0, 1}, {1, 0}}, // 3
+		{{ 1, -1,  1}, {1, 0, 1}, {0, 1}}, // 4
+		{{ 1, -1, -1}, {1, 0, 1}, {1, 1}}, // 5
+		{{ 1,  1,  1}, {1, 0, 1}, {0, 0}}, // 6
+		{{ 1,  1, -1}, {1, 0, 1}, {1, 0}}, // 7
+		{{ 1, -1, -1}, {1, 0, 1}, {0, 1}}, // 8
+		{{-1, -1, -1}, {1, 0, 1}, {1, 1}}, // 9
+		{{ 1,  1, -1}, {1, 0, 1}, {0, 0}}, // 10
+		{{-1,  1, -1}, {1, 0, 1}, {1, 0}}, // 11
+		{{-1, -1, -1}, {1, 0, 1}, {0, 1}}, // 12
+		{{-1, -1,  1}, {1, 0, 1}, {1, 1}}, // 13
+		{{-1,  1, -1}, {1, 0, 1}, {0, 0}}, // 14
+		{{-1,  1,  1}, {1, 0, 1}, {1, 0}}, // 15
+		{{ 1,  1, -1}, {1, 0, 1}, {0, 1}}, // 16
+		{{-1,  1, -1}, {1, 0, 1}, {1, 1}}, // 17
+		{{ 1,  1,  1}, {1, 0, 1}, {0, 0}}, // 18
+		{{-1,  1,  1}, {1, 0, 1}, {1, 0}}, // 19
+		{{ 1, -1,  1}, {1, 0, 1}, {0, 1}}, // 20
+		{{-1, -1,  1}, {1, 0, 1}, {1, 1}}, // 21
+		{{ 1, -1, -1}, {1, 0, 1}, {0, 0}}, // 22
+		{{-1, -1, -1}, {1, 0, 1}, {1, 0}}, // 23
+	};
+	std::vector<Vertex> icosahedron = {};
+
+	float phi = (1.0f + sqrt(5.0f)) * 0.5f; // golden ratio
+	float a = 1.0f;
+	float b = 1.0f / phi;
+
+	// add vertices
+	auto v1  = glm::vec3(0, b, -a);
+	auto v2  = glm::vec3(b, a, 0);
+	auto v3  = glm::vec3(-b, a, 0);
+	auto v4  = glm::vec3(0, b, a);
+	auto v5  = glm::vec3(0, -b, a);
+	auto v6  = glm::vec3(-a, 0, b);
+	auto v7  = glm::vec3(0, -b, -a);
+	auto v8  = glm::vec3(a, 0, -b);
+	auto v9  = glm::vec3(a, 0, b);
+	auto v10 = glm::vec3(-a, 0, -b);
+	auto v11 = glm::vec3(b, -a, 0);
+	auto v12 = glm::vec3(-b, -a, 0);
+
+	addTriangle(v3, v2, v1, icosahedron);
+	addTriangle(v2, v3, v4, icosahedron);
+	addTriangle(v6, v5, v4, icosahedron);
+	addTriangle(v5, v9, v4, icosahedron);
+	addTriangle(v8, v7, v1, icosahedron);
+	addTriangle(v7, v10, v1, icosahedron);
+	addTriangle(v12, v11, v5, icosahedron);
+	addTriangle(v11, v12, v7, icosahedron);
+	addTriangle(v10, v6, v3, icosahedron);
+	addTriangle(v6, v10, v12, icosahedron);
+	addTriangle(v9, v8, v2, icosahedron);
+	addTriangle(v8, v9, v11, icosahedron);
+	addTriangle(v3, v6, v4, icosahedron);
+	addTriangle(v9, v2, v4, icosahedron);
+	addTriangle(v10, v3, v1, icosahedron);
+	addTriangle(v2, v8, v1, icosahedron);
+	addTriangle(v12, v10, v7, icosahedron);
+	addTriangle(v8, v11, v7, icosahedron);
+	addTriangle(v6, v12, v5, icosahedron);
+	addTriangle(v11, v9, v5, icosahedron);
+
+	// meshesMap.insert(std::make_pair("cube", new Mesh(vertices, _commandPool, _engineDevice._graphicsQueue)));
+	meshesMap.insert(std::make_pair("icosahedron", new Mesh(icosahedron, _commandPool, _engineDevice._graphicsQueue)));
+	
 }

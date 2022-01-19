@@ -68,7 +68,9 @@ public:
 	static DescriptorBuilder begin(DescriptorLayoutCache* layoutCache, DescriptorAllocator* allocator);
 
 	DescriptorBuilder& bind_buffer(uint32_t binding, VkDescriptorBufferInfo* bufferInfo, VkDescriptorType type, VkShaderStageFlags stageFlags);
-	DescriptorBuilder& bind_image(uint32_t binding, VkDescriptorImageInfo* imageInfo, VkDescriptorType type, VkShaderStageFlags stageFlags);
+	DescriptorBuilder& bind_image(uint32_t binding, std::vector<VkDescriptorImageInfo> &imageInfo, VkDescriptorSet set, VkDescriptorType type, VkShaderStageFlags stageFlags);
+	DescriptorBuilder& bind_texture_array(uint32_t binding, int amountTextures, VkDescriptorImageInfo* imageInfo, VkDescriptorType type, VkShaderStageFlags stageFlags);
+    DescriptorBuilder& bind_sampler(uint32_t binding, VkSampler* sampler, VkDescriptorSet set, VkDescriptorType type, VkShaderStageFlags stageFlags);
 
 	bool build(VkDescriptorSet& set, VkDescriptorSetLayout& layout);
 	bool build(VkDescriptorSet& set);

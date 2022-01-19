@@ -1,9 +1,9 @@
 CMakeFiles/Mauve.dir/include/engine/device/device.cpp.obj: \
- C:\Users\Pharadas\Documents\repos\VulkanEngine\include\engine\device\device.cpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/device/device.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/device_data.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vk_platform.h \
+ C:\Users\Pharadas\Documents\repos\Mauve\include\engine\device\device.cpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/device/device.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/device_data.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vk_platform.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stddef.h \
  C:/mingw64/x86_64-w64-mingw32/include/stddef.h \
  C:/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
@@ -15,7 +15,7 @@ CMakeFiles/Mauve.dir/include/engine/device/device.cpp.obj: \
  C:/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stdint.h \
  C:/mingw64/x86_64-w64-mingw32/include/stdint.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan_core.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan_core.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/experimental/optional \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/utility \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/c++config.h \
@@ -123,7 +123,7 @@ CMakeFiles/Mauve.dir/include/engine/device/device.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_vector.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_bvector.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/vector.tcc \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/buffer_helper.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/buffer_helper.hpp \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/set \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_tree.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ext/aligned_buffer.h \
@@ -131,5 +131,5 @@ CMakeFiles/Mauve.dir/include/engine/device/device.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/optional \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_set.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multiset.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/GLFW/glfw3.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/GLFW/glfw3.h \
  C:/mingw64/x86_64-w64-mingw32/include/GL/gl.h

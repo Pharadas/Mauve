@@ -1,6 +1,6 @@
 CMakeFiles/Mauve.dir/include/engine/texture/texture.cpp.obj: \
- C:\Users\Pharadas\Documents\repos\VulkanEngine\include\engine\texture\texture.cpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/stb_image.h \
+ C:\Users\Pharadas\Documents\repos\Mauve\include\engine\texture\texture.cpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/stb_image.h \
  C:/mingw64/x86_64-w64-mingw32/include/stdio.h \
  C:/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
  C:/mingw64/x86_64-w64-mingw32/include/_mingw.h \
@@ -75,9 +75,9 @@ CMakeFiles/Mauve.dir/include/engine/texture/texture.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/xmmintrin.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/mmintrin.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/mm_malloc.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vk_platform.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan_core.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vk_platform.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan_core.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/stdexcept \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/exception \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/exception.h \
@@ -138,10 +138,10 @@ CMakeFiles/Mauve.dir/include/engine/texture/texture.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstdio \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cerrno \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/basic_string.tcc \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/device_data.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/texture/texture.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/buffer_helper.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/helper_functions.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/device_data.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/texture/texture.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/buffer_helper.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/helper_functions.hpp \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/vector \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_construct.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_uninitialized.h \

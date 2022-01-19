@@ -1,9 +1,9 @@
 CMakeFiles/Mauve.dir/include/engine/buffer_helper.cpp.obj: \
- C:\Users\Pharadas\Documents\repos\VulkanEngine\include\engine\buffer_helper.cpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/buffer_helper.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/engine/device_data.hpp \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vk_platform.h \
+ C:\Users\Pharadas\Documents\repos\Mauve\include\engine\buffer_helper.cpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/buffer_helper.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/device_data.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vk_platform.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stddef.h \
  C:/mingw64/x86_64-w64-mingw32/include/stddef.h \
  C:/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
@@ -15,7 +15,7 @@ CMakeFiles/Mauve.dir/include/engine/buffer_helper.cpp.obj: \
  C:/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/stdint.h \
  C:/mingw64/x86_64-w64-mingw32/include/stdint.h \
- C:/Users/Pharadas/Documents/repos/VulkanEngine/include/vulkan/vulkan_core.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/vulkan/vulkan_core.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/stdexcept \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/exception \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/c++config.h \

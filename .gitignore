@@ -98,3 +98,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Compiled shaders
+*.spv

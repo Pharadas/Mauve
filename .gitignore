@@ -103,4 +103,4 @@ Mkfile.old
 dkms.conf
 
 # Compiled shaders
-# **/shaders/
+**/shaders/

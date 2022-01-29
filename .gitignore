@@ -20,7 +20,9 @@ _deps
 *.slo
 *.lo
 *.o
-*.obj
+*.*.obj
+*.swp
+*.frag.spv
 
 # Precompiled Headers
 *.gch
@@ -69,6 +71,7 @@ _deps
 *.a
 *.la
 *.lo
+*.[oa]
 
 # Shared objects (inc. Windows DLLs)
 *.dll
@@ -100,4 +103,4 @@ Mkfile.old
 dkms.conf
 
 # Compiled shaders
-*.spv
+# **/shaders/

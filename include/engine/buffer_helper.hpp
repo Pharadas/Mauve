@@ -5,6 +5,11 @@
 #include <vulkan/vulkan.h>
 #include <stdexcept>
 
+struct Buffer {
+   VkBuffer       buffer;
+   VkDeviceMemory bufferMemory;
+};
+
 VkCommandBuffer begin_single_time_commands(VkCommandPool commandPool);
 
 void end_single_time_commands(VkCommandPool commandPool, VkCommandBuffer commandBuffer, VkQueue graphicsQueue);

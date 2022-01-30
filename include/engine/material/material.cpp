@@ -1,7 +1,7 @@
 #include <engine/material/materials.hpp>
 #include <iostream>
 
-Material::Material(VkRenderPass renderPass, VkExtent2D swapchainExtent) {
+Material::Material(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer) {
     build_material_pipeline("shaders/basic.vert.spv", "shaders/basic.frag.spv", renderPass, swapchainExtent);
 }
 
@@ -174,8 +174,8 @@ void Material::resize_cleanup() {
 }
 
 void Material::cleanup() {
-    vkDestroyPipelineLayout(_device, pipelineLayout, nullptr);
-    vkDestroyPipeline(_device, pipeline, nullptr);
+    // vkDestroyPipelineLayout(_device, pipelineLayout, nullptr);
+    // vkDestroyPipeline(_device, pipeline, nullptr);
 
     // vkDestroyDescriptorSetLayout(_device, descriptorSetLayout, nullptr);
     descriptorAllocator.cleanup();
@@ -201,18 +201,24 @@ VkShaderModule Material::create_shader_module(const std::vector<char>& code) {
     return shaderModule;
 }
 
-Textured_Material::Textured_Material(std::vector<VkImageView> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent) : Material(renderPass, swapchainExtent) {
+Textured_Material::Textured_Material(std::vector<Texture> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer) : Material(renderPass, swapchainExtent, globalProjectionBuffer) {
+    // * Crear buffer para el struct GlobalProjectionInfo
+    VkDescriptorBufferInfo bufferInfo {};
+        bufferInfo.buffer = globalProjectionBuffer;
+        bufferInfo.offset = 0;
+        bufferInfo.range = sizeof(GlobalProjectionInfo) * maxObjects;
+
     std::vector<VkDescriptorImageInfo> imagesInfo(textures.size());
     for (size_t i = 0; i < textures.size(); i++) {
         imagesInfo[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        imagesInfo[i].imageView = textures[i];
-        imagesInfo[i].sampler = VK_NULL_HANDLE;
+        imagesInfo[i].imageView = textures[i]._textureImageView;
+        imagesInfo[i].sampler = *sampler;
     }
 
     descriptorLayouts = 1;
     // * Build the descriptor sets
     builder = DescriptorBuilder::begin(&descriptorLayoutCache, &descriptorAllocator);
-        builder.bind_sampler(0, sampler, descriptorSets, typesAndFlags[0].first, typesAndFlags[0].second);
+        builder.bind_buffer(0, &bufferInfo, typesAndFlags[0].first, typesAndFlags[0].second);
         builder.bind_image(1, imagesInfo, descriptorSets, typesAndFlags[1].first, typesAndFlags[1].second);
     builder.build(descriptorSets, descriptorSetLayouts);
 
@@ -221,7 +227,6 @@ Textured_Material::Textured_Material(std::vector<VkImageView> textures, VkSample
 }
 
 void Textured_Material::setup_descriptor_set(VkCommandBuffer cmdBffr) {
-	// vkCmdBindDescriptorSets(cmdBffr, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets, 0, 0);
 	vkCmdBindDescriptorSets(cmdBffr, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets, 0, 0);
 }
 
@@ -230,6 +235,52 @@ void Textured_Material::recreate(VkRenderPass renderPass, VkExtent2D swapchainEx
     build_material_pipeline("shaders/basic_textured.vert.spv", "shaders/basic_textured.frag.spv", renderPass, swapchainExtent);
 }
 
-// Textured_Lit_Material::Textured_Lit_Material(Texture texture, VkSampler sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent) : Material(renderPass, swapchainExtent) {
+Textured_Lit_Material::Textured_Lit_Material(std::vector<Texture> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer) : Material(renderPass, swapchainExtent, globalProjectionBuffer) {
+    // * Crear buffer para el struct GlobalProjectionInfo
+    VkDescriptorBufferInfo bufferInfo {};
+        bufferInfo.buffer = globalProjectionBuffer;
+        bufferInfo.offset = 0;
+        bufferInfo.range = sizeof(GlobalProjectionInfo) * maxObjects;
 
-// }
+    // * Crear buffer para el struct LightingInfo
+    create_buffer(sizeof(LightingInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, lightingUniformBuffer, lightingUniformBufferMemory);
+    VkDescriptorBufferInfo lightingBuffer {};
+        lightingBuffer.buffer = lightingUniformBuffer;
+        lightingBuffer.offset = 0;
+        lightingBuffer.range = sizeof(LightingInfo);
+
+    std::vector<VkDescriptorImageInfo> imagesInfo(textures.size());
+    for (size_t i = 0; i < textures.size(); i++) {
+        imagesInfo[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        imagesInfo[i].imageView = textures[i]._textureImageView;
+        imagesInfo[i].sampler = *sampler;
+    }
+
+    descriptorLayouts = 1;
+    // * Build the descriptor sets
+    builder = DescriptorBuilder::begin(&descriptorLayoutCache, &descriptorAllocator);
+        builder.bind_buffer(0, &bufferInfo, typesAndFlags[0].first, typesAndFlags[0].second);
+        builder.bind_image(1, imagesInfo, descriptorSets, typesAndFlags[1].first, typesAndFlags[1].second);
+        builder.bind_buffer(2, &lightingBuffer, typesAndFlags[2].first, typesAndFlags[2].second);
+    builder.build(descriptorSets, descriptorSetLayouts);
+
+    // build material pipeline
+    build_material_pipeline("shaders/textured_lit.vert.spv", "shaders/textured_lit.frag.spv", renderPass, swapchainExtent);
+}
+
+void Textured_Lit_Material::setup_descriptor_set(VkCommandBuffer cmdBffr) {
+    updateLightingInfo();
+	vkCmdBindDescriptorSets(cmdBffr, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets, 0, 0);
+}
+
+void Textured_Lit_Material::recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent) {
+    resize_cleanup();
+    build_material_pipeline("shaders/textured_lit.vert.spv", "shaders/textured_lit.frag.spv", renderPass, swapchainExtent);
+}
+
+void Textured_Lit_Material::updateLightingInfo() {
+    void* data;
+    vkMapMemory(_device, lightingUniformBufferMemory, 0, sizeof(LightingInfo), 0, &data);
+        memcpy(data, &lightInfo, sizeof(LightingInfo));
+    vkUnmapMemory(_device, lightingUniformBufferMemory);
+}

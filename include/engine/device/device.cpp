@@ -102,6 +102,11 @@ void Device::create_logical_device(bool enableValidationLayers, std::vector<cons
 	VkPhysicalDeviceFeatures deviceFeatures{};
 	deviceFeatures.samplerAnisotropy = VK_TRUE;
 
+	// * Necesario para poder usar gl_BaseInstance en los shaders
+	VkPhysicalDeviceVulkan11Features vulkan_11_features {};
+		vulkan_11_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
+		vulkan_11_features.shaderDrawParameters = VK_TRUE;
+
 	VkPhysicalDeviceDescriptorIndexingFeatures descriptor_indexing_features{};
 		descriptor_indexing_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES;
 
@@ -122,7 +127,8 @@ void Device::create_logical_device(bool enableValidationLayers, std::vector<cons
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-		createInfo.pNext = &descriptor_indexing_features;
+		// createInfo.pNext = &descriptor_indexing_features;
+		createInfo.pNext = &vulkan_11_features;
 
 	if (enableValidationLayers) {
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());

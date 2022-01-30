@@ -28,10 +28,21 @@ private:
     VkDeviceMemory globalBufferMemory;
 };
 
-// class TexturedWorldObject : WorldObject {
-// public:
-//     TexturedWorldObject(Mesh* inputMesh, Textured_Material* inputMaterial, std::string inputTexture);
-//     // virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
+class TexturedWorldObject : public WorldObject {
+public:
+    TexturedWorldObject(Mesh* inputMesh, Material* inputMaterial, int texNum);
+    virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
 
-// 	std::string texture;
-// };
+	int texture;
+};
+
+class TexturedLitWorldObject : public WorldObject {
+public:
+    TexturedLitWorldObject(Mesh* inputMesh, Textured_Lit_Material* inputMaterial, int texNum, glm::vec3 inputColor);
+    virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
+
+private:
+    Textured_Lit_Material* material;
+	int texture;
+    glm::vec3 color;
+};

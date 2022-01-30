@@ -48,6 +48,7 @@ private:
 	VkSemaphore _imageAvailableSemaphore;
 	VkSemaphore _renderFinishedSemaphore;
 	const int MAX_FRAMES_IN_FLIGHT = 2;
+	const int MAX_OBJECTS = 1000;
 
 	std::vector<VkSemaphore> _imageAvailableSemaphores;
 	std::vector<VkSemaphore> _renderFinishedSemaphores;
@@ -60,12 +61,16 @@ private:
 	std::unordered_map<std::string, Mesh*> meshesMap;
 	std::unordered_map<std::string, Material*> materialsMap;
 	std::unordered_map<std::string, WorldObject*> worldObjectsMap;
-	// std::unordered_map<std::string, std::pair<Texture, int>> texturesMap;
 	std::vector<std::string> texturesList;
-	std::vector<VkImageView> texturesImageViews;
+	std::vector<Texture> texturesVector;
 	std::vector<WorldObject*> objectsToDraw;
+
 	VkBuffer global_vertex_buffer;
 	VkDeviceMemory global_vertex_buffer_memory;
+
+	VkBuffer global_projection_buffer;
+	VkDeviceMemory global_projection_buffer_memory;
+	// Buffer projection_buffer {global_projection_buffer, global_projection_buffer_memory};
 
 	// testing
 	VkDescriptorImageInfo imageInfo = {};
@@ -109,6 +114,7 @@ private:
 	void cleanup_swapchain();
 
 	// buffers
+	void create_global_projection_buffer();
 	void create_command_pool();
 	void create_command_buffers();
 	void create_vertex_buffer();
@@ -123,6 +129,7 @@ private:
 	void create_texture_sampler();
 	void add_texture(std::string textureName, const char* texturePath);
 
+	void update_materials();
 	void process_input();
 };
 

@@ -4,6 +4,21 @@
 
 #define MAX_VERTICES 10000;
 
+void addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, std::vector<Vertex> &verticesList) {
+	glm::vec3 V = v2 - v1;
+	glm::vec3 U = v3 - v1;
+
+	glm::vec3 normal;
+
+	normal.x = (U.y * V.z) - (U.z * V.y);
+	normal.y = (U.z * V.x) - (U.x * V.z);
+	normal.z = (U.x * V.y) - (U.y * V.x);
+
+	verticesList.push_back({v1, normal, {1, 0}});
+	verticesList.push_back({v2, normal, {1, 1}});
+	verticesList.push_back({v3, normal, {0, 0}});
+}
+
 void Engine::run() {
 	_engineWindow.init_window("Vulkan Gamin", 800, 600);
 	glfwSetWindowUserPointer(_engineWindow._window, this);
@@ -25,32 +40,15 @@ void Engine::init_vulkan() {
 	_engineWindow.create_image_views();
 	_engineWindow.create_renderpass();
 
-	// _engineDescriptors.create_descriptor_set_layout();
-
-	// _enginePipeline.create_graphics_pipeline(_device, _engineWindow._swapChainExtent, _engineWindow._renderPass, _engineDescriptors._descriptorSetLayout);
 	create_command_pool();
 	_engineWindow.create_depth_resources();
 	_engineWindow.create_framebuffers(_device);
 
-	// _engineTexture.create_texture_image("textures/videoman.jpg", _commandPool, _engineDevice._graphicsQueue);
-	// _engineTexture.create_texture_image_view();
 	create_texture_sampler();
 
-	// create_vertex_buffer();
-	// create_index_buffer();
-
-	// create_uniform_buffers();
-	// _engineDescriptors.create_descriptor_pool(_engineWindow._swapChainImages);
-	// _engineDescriptors.create_descriptor_sets(_engineWindow._swapChainImages, _uniformBuffers, _engineTexture._textureImageView, _textureSampler);
-
+	create_global_projection_buffer();
 	create_command_buffers();
 	create_sync_objects();
-}
-
-void addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, std::vector<Vertex> &verticesList) {
-	verticesList.push_back({v1, {1, 0, 1}, {1, 0}});
-	verticesList.push_back({v2, {1, 0, 1}, {1, 1}});
-	verticesList.push_back({v3, {1, 0, 1}, {0, 0}});
 }
 
 void Engine::init_scene() {
@@ -59,15 +57,15 @@ void Engine::init_scene() {
 	init_meshes();
 
 	// worldObjectsMap.insert(std::make_pair("icosahedron", new WorldObject(meshesMap["icosahedron"], materialsMap["default"])));
-	worldObjectsMap.insert(std::make_pair("icosahedron_videoman", new WorldObject(meshesMap["icosahedron"], materialsMap["textured"])));
-	worldObjectsMap.insert(std::make_pair("icosahedron_space", new WorldObject(meshesMap["icosahedron"], materialsMap["textured"])));
-	worldObjectsMap["icosahedron_videoman"]->numTex = 0;
-	worldObjectsMap["icosahedron_space"]->numTex = 1;
-	// worldObjectsMap["icosahedron_space"]->position = glm::vec3(1, 1, 1);
-	worldObjectsMap["icosahedron_videoman"]->scale = glm::vec3(1, 1, 1);
+	// worldObjectsMap.insert(std::make_pair("icosahedron_videoman", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 0)));
+	worldObjectsMap.insert(std::make_pair("icosahedron_space", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 1)));
+	worldObjectsMap.insert(std::make_pair("icosahedron_light", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 0)));
+	worldObjectsMap.insert(std::make_pair("icosahedron_videoman_lit", new TexturedLitWorldObject(meshesMap["icosahedron"], dynamic_cast<Textured_Lit_Material*>(materialsMap["textured_lit"]), 1, glm::vec3(1.0f, 0.5f, 0.31f))));
+
+	// worldObjectsMap["icosahedron_videoman_lit"]->scale = glm::vec3(1, 1, 1);
 	worldObjectsMap["icosahedron_space"]->scale = glm::vec3(100, 100, 100);
-	// // worldObjectsMap.insert(std::make_pair("cube2", new WorldObject(meshesMap["cube"], materialsMap["textured"])));
-	// worldObjectsMap["icosahedron_textured"]->position = glm::vec3(1, 1, 1);
+	worldObjectsMap["icosahedron_light"]->scale = glm::vec3(.2f, .2f, .2f);
+	worldObjectsMap["icosahedron_light"]->position = glm::vec3(5, 5, 5);
 }
 
 void Engine::main_loop() {
@@ -85,14 +83,14 @@ void Engine::main_loop() {
 			framesPassed = 0;
 		}
 
-		// objectsToDraw.push_back(worldObjectsMap["icosahedron"]);
-		// objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman"]);
+		objectsToDraw.push_back(worldObjectsMap["icosahedron_light"]);
 		objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
-		// worldObjectsMap["icosahedron"]->rotation += .1f;
+		objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman_lit"]);
 
 		process_input();
 
 		glfwPollEvents();
+		// update_materials();
 		draw_frame();
 		objectsToDraw.clear();
 	}
@@ -111,8 +109,12 @@ void Engine::cleanup() {
 		material.second->cleanup();
 	}
 
-	// for (auto texture : texturesMap) {
-	// 	// texture.second->cleanup();
+	for (auto tex : texturesVector) {
+		tex.cleanup();
+	}
+
+	// for (auto worldObject : worldObjectsMap) {
+	// 	worldObject.second->cleanup();
 	// }
 
 	_engineWindow.cleanup_depth_image();
@@ -196,11 +198,11 @@ void Engine::destroy_debug_utils_messenger_EXT(VkInstance instance, VkDebugUtils
 
 void Engine::populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
 	createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-	// VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | 
-	createInfo.messageSeverity =  VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-	createInfo.pfnUserCallback = debug_callback;
+		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | 
+		createInfo.messageSeverity =  VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+		createInfo.pfnUserCallback = debug_callback;
 }
 
 void Engine::setup_debug_messenger() {
@@ -384,17 +386,6 @@ void Engine::draw_frame() {
 		bufferBeginInfo.pInheritanceInfo = nullptr;
 		bufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-	// // * Actualizar los ubo con la informacion de este frame
-	// for (auto object : objectsToDraw) {
-	// 	object.update_push_constants(mesh_matrix);
-	// }
-
-	// * Agregar los vertices de cada objeto una lista global de vertices
-	// implementacion
-
-	// * Meter la lista global de vertices a global_vertex_buffer
-	// implementacion
-
 	vkBeginCommandBuffer(commandBuffers[imageIndex], &bufferBeginInfo);
 
 	VkRenderPassBeginInfo renderPassInfo{};
@@ -418,7 +409,6 @@ void Engine::draw_frame() {
 		glm::mat4 view = _camera.GetViewMatrix();
 		glm::mat4 proj = glm::perspective(glm::radians(90.f), (float) _engineWindow._swapChainExtent.width / (float) _engineWindow._swapChainExtent.height, 0.001f, 1000.0f);
 		proj[1][1] *= -1;
-		// glm::mat4 model = glm::rotate(glm::mat4{ 1.0f }, glm::radians(deltaTime * 0.4f), glm::vec3(0, 1, 0));
 
 		// * Calcular mesh_matrix sin el modelo
 		glm::mat4 mesh_matrix = proj * view;
@@ -426,17 +416,31 @@ void Engine::draw_frame() {
 		MeshPushConstants meshConstants;
 		meshConstants.render_matrix = mesh_matrix;
 
-		int counter = 0;
-		for (auto object : objectsToDraw) {
-			glm::mat4 model{1.f};
-			model = glm::rotate(model, glm::radians(object->rotation), glm::vec3(1, 1, 1));
-			model = glm::scale(model, object->scale);
-			model = glm::translate(model, object->position);
+		GlobalProjectionInfo objectsProjectionsForBuffer[MAX_OBJECTS] = {};
 
-			meshConstants.render_matrix = mesh_matrix * model;
-			meshConstants.numOfTexture = object->numTex;
-			object->draw(commandBuffers[imageIndex], counter, meshConstants);
-			counter++;
+		for (int i = 0; i < objectsToDraw.size(); i++) {
+			glm::mat4 model{1.f};
+				model = glm::rotate(model, glm::radians(objectsToDraw[i]->rotation), glm::vec3(1, 1, 1));
+				model = glm::scale(model, objectsToDraw[i]->scale);
+				model = glm::translate(model, objectsToDraw[i]->position);
+				meshConstants.render_matrix = mesh_matrix * model; // * Por ahora lo dejo solo por la alineacion, me da flojera moverle xd
+
+			GlobalProjectionInfo gpi = {};
+				gpi.model = model;
+				gpi.proj = proj;
+				gpi.view = view;
+
+			objectsProjectionsForBuffer[i] = gpi;
+		}
+
+		// * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
+		void* data;
+		vkMapMemory(_device, global_projection_buffer_memory, 0, sizeof(GlobalProjectionInfo) * MAX_OBJECTS, 0, &data);
+			memcpy(data, &objectsProjectionsForBuffer, sizeof(GlobalProjectionInfo) * MAX_OBJECTS);
+		vkUnmapMemory(_device, global_projection_buffer_memory);
+
+		for (int i = 0; i < objectsToDraw.size(); i++) {
+			objectsToDraw[i]->draw(commandBuffers[imageIndex], i, meshConstants);
 		}
 
 	vkCmdEndRenderPass(commandBuffers[imageIndex]);
@@ -624,7 +628,7 @@ void Engine::create_vertex_buffer() {
 }
 
 void Engine::add_texture(std::string textureName, const char* texturePath) {
-	texturesImageViews.push_back(Texture(texturePath, _commandPool, _engineDevice._graphicsQueue)._textureImageView);
+	texturesVector.push_back(Texture(texturePath, _commandPool, _engineDevice._graphicsQueue));
 	texturesList.push_back(textureName);
 }
 
@@ -636,8 +640,8 @@ void Engine::init_textures() {
 
 void Engine::init_materials() {
 	// materialsMap.insert(std::make_pair("default", new Material(_engineWindow._renderPass, _engineWindow._swapChainExtent)));
-	materialsMap.insert(std::make_pair("textured", new Textured_Material(texturesImageViews, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent)));
-	materialsMap.insert(std::make_pair("textured_lit", new Textured_Lit_Material(texturesImageViews, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent)))
+	materialsMap.insert(std::make_pair("textured", new Textured_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer)));
+	materialsMap.insert(std::make_pair("textured_lit", new Textured_Lit_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer)));
 }
 
 void Engine::init_meshes() {
@@ -710,5 +714,14 @@ void Engine::init_meshes() {
 
 	// meshesMap.insert(std::make_pair("cube", new Mesh(vertices, _commandPool, _engineDevice._graphicsQueue)));
 	meshesMap.insert(std::make_pair("icosahedron", new Mesh(icosahedron, _commandPool, _engineDevice._graphicsQueue)));
-	
+}
+
+// * Actualiza la informacion que es independiente del world object
+void Engine::update_materials() {
+	// dynamic_cast<Textured_Lit_Material&>(*materialsMap["textured_lit"]).lightInfo.lightPos = (worldObjectsMap["icosahedron_light"])->position;
+	// dynamic_cast<Textured_Lit_Material&>(*materialsMap["textured_lit"]).lightInfo.viewPos = _camera.Position;
+}
+
+void Engine::create_global_projection_buffer() {
+	create_buffer(sizeof(GlobalProjectionInfo) * MAX_OBJECTS, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_projection_buffer, global_projection_buffer_memory);
 }

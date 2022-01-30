@@ -12,16 +12,27 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+struct LightingInfo {
+    glm::vec3 objectColor;
+    glm::vec3 lightColor;
+    glm::vec3 lightPos;
+    glm::vec3 viewPos;
+};
+
 struct MeshPushConstants {
-	// glm::vec4 data;
     int numOfTexture;
 	alignas(16) glm::mat4 render_matrix;
-	// glm::mat4 render_matrix;
+};
+
+struct GlobalProjectionInfo {
+    alignas(16) glm::mat4 model;
+    alignas(16) glm::mat4 view;
+    alignas(16) glm::mat4 proj;
 };
 
 class Material {
 public:
-    Material(VkRenderPass renderPass, VkExtent2D swapchainExtent);
+    Material(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer);
     virtual void build_material_pipeline(char const* vertShaderPath, char const* fragShaderPath, VkRenderPass renderPass, VkExtent2D swapchainExtent);
     void record_draw_command(VkCommandBuffer cmdBffr);
     void rebuild_material();
@@ -40,42 +51,52 @@ public:
     DescriptorAllocator    descriptorAllocator;
     DescriptorLayoutCache  descriptorLayoutCache;
     VkDescriptorBufferInfo descriptorBufferInfo;
+
     int descriptorLayouts = 0;
+    int maxObjects = 1000;
 
 private:
 
     VkDeviceMemory         bufferMemory;
 
-    int maxObjects = 100;
     int currObject = 0;
 };
 
+// * TEXTURED MATERIAL //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class Textured_Material : public Material {
 public:
-    Textured_Material(std::vector<VkImageView> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent);
+    Textured_Material(std::vector<Texture> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer);
     virtual void setup_descriptor_set(VkCommandBuffer cmdBffr);
     virtual void recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent);
 
 private:
     // * Types y flags especificas de cada material, pero todas tienen transformaciones para 3d, asi que son estas por default
     std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
-        {VK_DESCRIPTOR_TYPE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}, // Texture
-        {VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, VK_SHADER_STAGE_FRAGMENT_BIT}
+        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_ALL}, // * Informacion de transformaciones
+        {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT} // * Combined image sampler
     };
 };
 
+// * TEXTURED LIT MATERIAL ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class Textured_Lit_Material : public Material {
 public:
-    Textured_Lit_Material(Texture texture, VkSampler sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent);
-    virtual void build_material_pipeline(char const* vertShaderPath, char const* fragShaderPath, VkRenderPass renderPass, VkExtent2D swapchainExtent);
+    Textured_Lit_Material(std::vector<Texture> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer);
     virtual void setup_descriptor_set(VkCommandBuffer cmdBffr);
     virtual void recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent);
+    void updateLightingInfo();
+
+    LightingInfo lightInfo;
 
 private:
+    VkBuffer       lightingUniformBuffer;
+    VkDeviceMemory lightingUniformBufferMemory;
+
     // * Types y flags especificas de cada material, pero todas tienen transformaciones para 3d, asi que son estas por default
     std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
-        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT}, // Light info
-        {VK_DESCRIPTOR_TYPE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}, // Texture
-        {VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, VK_SHADER_STAGE_FRAGMENT_BIT}
+        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT}, // * Informacion de transformaciones
+        {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}, // * Combined image sampler
+        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT}, // * Light info
     };
 };

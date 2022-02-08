@@ -46,7 +46,7 @@ void Engine::init_vulkan() {
 
 	create_texture_sampler();
 
-	create_global_projection_buffer();
+	create_global_projection_buffers();
 	create_command_buffers();
 	create_sync_objects();
 }
@@ -66,6 +66,10 @@ void Engine::init_scene() {
 	worldObjectsMap["icosahedron_space"]->scale = glm::vec3(100, 100, 100);
 	worldObjectsMap["icosahedron_light"]->scale = glm::vec3(.2f, .2f, .2f);
 	worldObjectsMap["icosahedron_light"]->position = glm::vec3(5, 5, 5);
+
+	worldObjectsMap["icosahedron_videoman_lit"]->color = glm::vec3(1.0f, 0.5f, 0.31f);
+
+	worldObjectsMap["icosahedron_light"]->color = glm::vec3(.5f, .5f, .5f);
 }
 
 void Engine::main_loop() {
@@ -84,8 +88,9 @@ void Engine::main_loop() {
 		}
 
 		objectsToDraw.push_back(worldObjectsMap["icosahedron_light"]);
-		objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
+		// objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
 		objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman_lit"]);
+		worldObjectsMap["icosahedron_videoman_lit"]->rotation += 1;
 
 		process_input();
 
@@ -417,8 +422,10 @@ void Engine::draw_frame() {
 		meshConstants.render_matrix = mesh_matrix;
 
 		GlobalProjectionInfo objectsProjectionsForBuffer[MAX_OBJECTS] = {};
+		LightingInfo 			lightingInfoForBuffer[MAX_OBJECTS] 		  = {};
 
 		for (int i = 0; i < objectsToDraw.size(); i++) {
+			// * Llenar el buffer de GlobalProjectionInfo
 			glm::mat4 model{1.f};
 				model = glm::rotate(model, glm::radians(objectsToDraw[i]->rotation), glm::vec3(1, 1, 1));
 				model = glm::scale(model, objectsToDraw[i]->scale);
@@ -431,18 +438,36 @@ void Engine::draw_frame() {
 				gpi.view = view;
 
 			objectsProjectionsForBuffer[i] = gpi;
+
+			// * Llenar el buffer de LightingInfo
+			LightingInfo li = {};
+				li.viewPos = _camera.Position;
+				li.objectColor = objectsToDraw[i]->color;
+				li.lightPos = worldObjectsMap["icosahedron_light"]->position;
+				li.lightColor = glm::vec3(1, 1, 1);
+
+			lightingInfoForBuffer[i] = li;
 		}
 
-		// * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
 		void* data;
+		// * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
 		vkMapMemory(_device, global_projection_buffer_memory, 0, sizeof(GlobalProjectionInfo) * MAX_OBJECTS, 0, &data);
 			memcpy(data, &objectsProjectionsForBuffer, sizeof(GlobalProjectionInfo) * MAX_OBJECTS);
 		vkUnmapMemory(_device, global_projection_buffer_memory);
+
+		// * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
+		vkMapMemory(_device, global_lighting_info_buffer_memory, 0, sizeof(LightingInfo) * MAX_OBJECTS, 0, &data);
+			memcpy(data, &lightingInfoForBuffer, sizeof(LightingInfo) * MAX_OBJECTS);
+		vkUnmapMemory(_device, global_lighting_info_buffer_memory);
 
 		for (int i = 0; i < objectsToDraw.size(); i++) {
 			objectsToDraw[i]->draw(commandBuffers[imageIndex], i, meshConstants);
 		}
 
+		for (auto material : materialsMap) {
+			material.second->currObject = 0;
+		}
+		
 	vkCmdEndRenderPass(commandBuffers[imageIndex]);
 	vkEndCommandBuffer(commandBuffers[imageIndex]);
 
@@ -641,7 +666,8 @@ void Engine::init_textures() {
 void Engine::init_materials() {
 	// materialsMap.insert(std::make_pair("default", new Material(_engineWindow._renderPass, _engineWindow._swapChainExtent)));
 	materialsMap.insert(std::make_pair("textured", new Textured_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer)));
-	materialsMap.insert(std::make_pair("textured_lit", new Textured_Lit_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer)));
+	materialsMap.insert(std::make_pair("textured_lit", new Textured_Lit_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer, global_lighting_info_buffer)));
+	
 }
 
 void Engine::init_meshes() {
@@ -722,6 +748,7 @@ void Engine::update_materials() {
 	// dynamic_cast<Textured_Lit_Material&>(*materialsMap["textured_lit"]).lightInfo.viewPos = _camera.Position;
 }
 
-void Engine::create_global_projection_buffer() {
+void Engine::create_global_projection_buffers() {
 	create_buffer(sizeof(GlobalProjectionInfo) * MAX_OBJECTS, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_projection_buffer, global_projection_buffer_memory);
+	create_buffer(sizeof(LightingInfo) 			 * MAX_OBJECTS, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_lighting_info_buffer, global_lighting_info_buffer_memory);
 }

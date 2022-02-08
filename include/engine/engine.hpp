@@ -70,7 +70,8 @@ private:
 
 	VkBuffer global_projection_buffer;
 	VkDeviceMemory global_projection_buffer_memory;
-	// Buffer projection_buffer {global_projection_buffer, global_projection_buffer_memory};
+	VkBuffer global_lighting_info_buffer;
+	VkDeviceMemory global_lighting_info_buffer_memory;
 
 	// testing
 	VkDescriptorImageInfo imageInfo = {};
@@ -114,7 +115,7 @@ private:
 	void cleanup_swapchain();
 
 	// buffers
-	void create_global_projection_buffer();
+	void create_global_projection_buffers();
 	void create_command_pool();
 	void create_command_buffers();
 	void create_vertex_buffer();

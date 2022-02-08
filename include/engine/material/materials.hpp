@@ -21,6 +21,7 @@ struct LightingInfo {
 
 struct MeshPushConstants {
     int numOfTexture;
+    int numOfObjectWithinMaterial;
 	alignas(16) glm::mat4 render_matrix;
 };
 
@@ -55,11 +56,11 @@ public:
     int descriptorLayouts = 0;
     int maxObjects = 1000;
 
+    int currObject = 0;
+
 private:
 
     VkDeviceMemory         bufferMemory;
-
-    int currObject = 0;
 };
 
 // * TEXTURED MATERIAL //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +83,7 @@ private:
 
 class Textured_Lit_Material : public Material {
 public:
-    Textured_Lit_Material(std::vector<Texture> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer);
+    Textured_Lit_Material(std::vector<Texture> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer, VkBuffer lightingInfoBuffer);
     virtual void setup_descriptor_set(VkCommandBuffer cmdBffr);
     virtual void recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent);
     void updateLightingInfo();

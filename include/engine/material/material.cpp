@@ -235,19 +235,18 @@ void Textured_Material::recreate(VkRenderPass renderPass, VkExtent2D swapchainEx
     build_material_pipeline("shaders/basic_textured.vert.spv", "shaders/basic_textured.frag.spv", renderPass, swapchainExtent);
 }
 
-Textured_Lit_Material::Textured_Lit_Material(std::vector<Texture> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer) : Material(renderPass, swapchainExtent, globalProjectionBuffer) {
+Textured_Lit_Material::Textured_Lit_Material(std::vector<Texture> textures, VkSampler* sampler, VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer, VkBuffer lightingInfoBuffer) : Material(renderPass, swapchainExtent, globalProjectionBuffer) {
     // * Crear buffer para el struct GlobalProjectionInfo
     VkDescriptorBufferInfo bufferInfo {};
         bufferInfo.buffer = globalProjectionBuffer;
         bufferInfo.offset = 0;
         bufferInfo.range = sizeof(GlobalProjectionInfo) * maxObjects;
 
-    // * Crear buffer para el struct LightingInfo
-    create_buffer(sizeof(LightingInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, lightingUniformBuffer, lightingUniformBufferMemory);
+    // * Crear buffer para el struct LightingInfo (este buffer va a tener todos los lightingStructs de todos los objetos que usen este material)
     VkDescriptorBufferInfo lightingBuffer {};
-        lightingBuffer.buffer = lightingUniformBuffer;
+        lightingBuffer.buffer = lightingInfoBuffer;
         lightingBuffer.offset = 0;
-        lightingBuffer.range = sizeof(LightingInfo);
+        lightingBuffer.range = sizeof(LightingInfo) * maxObjects;
 
     std::vector<VkDescriptorImageInfo> imagesInfo(textures.size());
     for (size_t i = 0; i < textures.size(); i++) {
@@ -269,7 +268,7 @@ Textured_Lit_Material::Textured_Lit_Material(std::vector<Texture> textures, VkSa
 }
 
 void Textured_Lit_Material::setup_descriptor_set(VkCommandBuffer cmdBffr) {
-    updateLightingInfo();
+    // updateLightingInfo();
 	vkCmdBindDescriptorSets(cmdBffr, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets, 0, 0);
 }
 

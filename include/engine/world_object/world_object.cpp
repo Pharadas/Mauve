@@ -10,6 +10,8 @@ void WorldObject::draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants 
 	vkCmdBindPipeline(cmdBffr, VK_PIPELINE_BIND_POINT_GRAPHICS, material->pipeline);
 	// material->setup_gpi(GPI, instance);
 	material->setup_descriptor_set(cmdBffr);
+	pushConstants.numOfObjectWithinMaterial = material->currObject;
+	material->currObject++;
 
 	vkCmdPushConstants(cmdBffr, material->pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(MeshPushConstants), &pushConstants);
 	VkDeviceSize offset = 0;
@@ -32,6 +34,8 @@ TexturedWorldObject::TexturedWorldObject(Mesh* inputMesh, Material* inputMateria
 void TexturedWorldObject::draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants) {
 	// * La funcion draw() del objeto se encarga de actualizar el pushConstant con el numero de textura correcto
 	pushConstants.numOfTexture = texture;
+	pushConstants.numOfObjectWithinMaterial = material->currObject;
+	material->currObject++;
 
 	vkCmdBindPipeline(cmdBffr, VK_PIPELINE_BIND_POINT_GRAPHICS, material->pipeline);
 	material->setup_descriptor_set(cmdBffr);
@@ -53,13 +57,10 @@ TexturedLitWorldObject::TexturedLitWorldObject(Mesh* inputMesh, Textured_Lit_Mat
 void TexturedLitWorldObject::draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants) {
 	// * La funcion draw() del objeto se encarga de actualizar el pushConstant con el numero de textura correcto
 	pushConstants.numOfTexture = texture;
-	LightingInfo lightInfo = {};
-		lightInfo.lightColor = glm::vec3(1.f, 1.f, 1.f);
-		lightInfo.objectColor = color;
+	pushConstants.numOfObjectWithinMaterial = material->currObject;
+	material->currObject++;
 
 	vkCmdBindPipeline(cmdBffr, VK_PIPELINE_BIND_POINT_GRAPHICS, material->pipeline);
-	// * Se hace un dynamic cast para poder acceder a la informacion especifica de la clase derivada
-	dynamic_cast<Textured_Lit_Material*>(material)->lightInfo.lightColor = color;
 	material->setup_descriptor_set(cmdBffr);
 
 	vkCmdPushConstants(cmdBffr, material->pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(MeshPushConstants), &pushConstants);

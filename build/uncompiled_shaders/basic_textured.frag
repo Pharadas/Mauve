@@ -10,6 +10,7 @@ layout(location = 0) out vec4 outColor;
 
 layout(push_constant) uniform constants {
     int numOfTexture;
+    int numOfObjectWithinMaterial;
     mat4 render_matrix;
 } PushConstants;
 

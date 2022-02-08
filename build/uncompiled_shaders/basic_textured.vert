@@ -21,6 +21,7 @@ layout(std140,set = 0, binding = 0) readonly buffer ObjectBuffer{
 
 layout(push_constant) uniform constants {
     int numOfTexture;
+    int numOfObjectWithinMaterial;
     mat4 render_matrix;
 } PushConstants;
 

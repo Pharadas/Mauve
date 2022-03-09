@@ -2,9 +2,9 @@
 
 // MESH IMPLEMENTATION ////////////////////////////////////////////////////////////////////////////
 Mesh::Mesh(std::vector<Vertex> inputVertices, VkCommandPool commandPool, VkQueue graphicsQueue) {
-    vertices = inputVertices;
+	vertices = inputVertices;
 
-    create_vertex_buffer(commandPool, graphicsQueue);
+	create_vertex_buffer(commandPool, graphicsQueue);
 }
 
 void Mesh::create_index_buffer(VkCommandPool commandPool, VkQueue graphicsQueue) {

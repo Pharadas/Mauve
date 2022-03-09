@@ -5,6 +5,7 @@ project("Mauve")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 
 INCLUDE_DIRECTORIES(include/)
+INCLUDE_DIRECTORIES(include/game/)
 INCLUDE_DIRECTORIES(include/engine/)
 INCLUDE_DIRECTORIES(include/engine/device/)
 INCLUDE_DIRECTORIES(include/engine/window/)
@@ -17,6 +18,7 @@ INCLUDE_DIRECTORIES(include/engine/world_object/)
 
 file(GLOB SOURCES "*/.cpp"
 				  "source/*.cpp"
+				  "include/game/*.cpp"
 				  "include/engine/*.cpp"
 				  "include/engine/device/*.cpp"
 				  "include/engine/window/*.cpp"

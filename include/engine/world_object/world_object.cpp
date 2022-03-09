@@ -2,8 +2,8 @@
 #include <iostream>
 
 WorldObject::WorldObject(Mesh* inputMesh, Material* inputMaterial) {
-    mesh = inputMesh;
-    material = inputMaterial;
+	mesh = inputMesh;
+	material = inputMaterial;
 }
 
 void WorldObject::draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants) {

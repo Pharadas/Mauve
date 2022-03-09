@@ -17,6 +17,24 @@ void addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, std::vector<Vertex> &
 	verticesList.push_back({v1, normal, {1, 0}});
 	verticesList.push_back({v2, normal, {1, 1}});
 	verticesList.push_back({v3, normal, {0, 0}});
+
+	// std::cout << "{";
+	// std::cout << "{" << v1.x << ", " << v1.y << ", " << v1.z << "},";
+	// std::cout << "{" << normal.x << ", " << normal.y << ", " << normal.z << "},";
+	// std::cout << "{1, 0}";
+	// std::cout << "}\n";
+
+	// std::cout << "{";
+	// std::cout << "{" << v2.x << ", " << v2.y << ", " << v2.z << "},";
+	// std::cout << "{" << normal.x << ", " << normal.y << ", " << normal.z << "},";
+	// std::cout << "{1, 1}";
+	// std::cout << "}\n";
+
+	// std::cout << "{";
+	// std::cout << "{" << v3.x << ", " << v3.y << ", " << v3.z << "},";
+	// std::cout << "{" << normal.x << ", " << normal.y << ", " << normal.z << "},";
+	// std::cout << "{0, 0}";
+	// std::cout << "}\n";
 }
 
 void Engine::run() {
@@ -55,24 +73,14 @@ void Engine::init_scene() {
 	init_textures();
 	init_materials();
 	init_meshes();
+	init_world();
 
-	// worldObjectsMap.insert(std::make_pair("icosahedron", new WorldObject(meshesMap["icosahedron"], materialsMap["default"])));
-	// worldObjectsMap.insert(std::make_pair("icosahedron_videoman", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 0)));
-	worldObjectsMap.insert(std::make_pair("icosahedron_space", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 1)));
 	worldObjectsMap.insert(std::make_pair("icosahedron_light", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 0)));
-	worldObjectsMap.insert(std::make_pair("icosahedron_videoman_lit", new TexturedLitWorldObject(meshesMap["icosahedron"], dynamic_cast<Textured_Lit_Material*>(materialsMap["textured_lit"]), 1, glm::vec3(1.0f, 0.5f, 0.31f))));
-
-	// worldObjectsMap["icosahedron_videoman_lit"]->scale = glm::vec3(1, 1, 1);
-	worldObjectsMap["icosahedron_space"]->scale = glm::vec3(100, 100, 100);
-	worldObjectsMap["icosahedron_light"]->scale = glm::vec3(.2f, .2f, .2f);
-	worldObjectsMap["icosahedron_light"]->position = glm::vec3(5, 5, 5);
-
-	worldObjectsMap["icosahedron_videoman_lit"]->color = glm::vec3(1.0f, 0.5f, 0.31f);
-
-	worldObjectsMap["icosahedron_light"]->color = glm::vec3(.5f, .5f, .5f);
 }
 
 void Engine::main_loop() {
+	Chunk thisChunk(glm::vec2(0, 0), perlin, _commandPool, _engineDevice._graphicsQueue, materialsMap["textured"]);
+
 	float fractionsOfSecondPassed = 0;
 	int framesPassed = 0;
 	while (!glfwWindowShouldClose(_engineWindow._window)) {
@@ -87,10 +95,13 @@ void Engine::main_loop() {
 			framesPassed = 0;
 		}
 
-		objectsToDraw.push_back(worldObjectsMap["icosahedron_light"]);
-		// objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
-		objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman_lit"]);
-		worldObjectsMap["icosahedron_videoman_lit"]->rotation += 1;
+		// objectsToDraw.push_back(worldObjectsMap["worldCube"]);
+		objectsToDraw.push_back(thisChunk.chunkRenderableObject.get());
+		// objectsToDraw.push_back(worldObjectsMap["icosahedron_light"]);
+		// // objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
+		// objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman_lit"]);
+		// worldObjectsMap["icosahedron_videoman_lit"]->rotation += 1;
+
 
 		process_input();
 
@@ -204,7 +215,7 @@ void Engine::destroy_debug_utils_messenger_EXT(VkInstance instance, VkDebugUtils
 void Engine::populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
 	createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | 
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
 		createInfo.messageSeverity =  VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 		createInfo.pfnUserCallback = debug_callback;
@@ -422,7 +433,7 @@ void Engine::draw_frame() {
 		meshConstants.render_matrix = mesh_matrix;
 
 		GlobalProjectionInfo objectsProjectionsForBuffer[MAX_OBJECTS] = {};
-		LightingInfo 			lightingInfoForBuffer[MAX_OBJECTS] 		  = {};
+		LightingInfo lightingInfoForBuffer[MAX_OBJECTS] 		  = {};
 
 		for (int i = 0; i < objectsToDraw.size(); i++) {
 			// * Llenar el buffer de GlobalProjectionInfo
@@ -467,7 +478,7 @@ void Engine::draw_frame() {
 		for (auto material : materialsMap) {
 			material.second->currObject = 0;
 		}
-		
+
 	vkCmdEndRenderPass(commandBuffers[imageIndex]);
 	vkEndCommandBuffer(commandBuffers[imageIndex]);
 
@@ -635,21 +646,7 @@ void Engine::process_input() {
 void Engine::create_vertex_buffer() {
 	VkDeviceSize bufferSize = sizeof(Vertex) * MAX_VERTICES;
 
-	// VkBuffer stagingBuffer;
-	// VkDeviceMemory stagingBufferMemory;
-	// create_buffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	// void* data;
-	// vkMapMemory(_device, stagingBufferMemory, 0, bufferSize, 0, &data);
-	// 	memcpy(data, vertices.data(), (size_t) bufferSize);
-	// vkUnmapMemory(_device, stagingBufferMemory);
-
 	create_buffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, global_vertex_buffer, global_vertex_buffer_memory);
-
-	// copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
-
-	// vkDestroyBuffer(_device, stagingBuffer, nullptr);
-	// vkFreeMemory(_device, stagingBufferMemory, nullptr);
 }
 
 void Engine::add_texture(std::string textureName, const char* texturePath) {
@@ -667,7 +664,6 @@ void Engine::init_materials() {
 	// materialsMap.insert(std::make_pair("default", new Material(_engineWindow._renderPass, _engineWindow._swapChainExtent)));
 	materialsMap.insert(std::make_pair("textured", new Textured_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer)));
 	materialsMap.insert(std::make_pair("textured_lit", new Textured_Lit_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer, global_lighting_info_buffer)));
-	
 }
 
 void Engine::init_meshes() {
@@ -698,6 +694,7 @@ void Engine::init_meshes() {
 		{{-1, -1, -1}, {1, 0, 1}, {1, 0}}, // 23
 	};
 	std::vector<Vertex> icosahedron = {};
+	std::vector<Vertex> cube = {};
 
 	float phi = (1.0f + sqrt(5.0f)) * 0.5f; // golden ratio
 	float a = 1.0f;
@@ -738,8 +735,89 @@ void Engine::init_meshes() {
 	addTriangle(v6, v12, v5, icosahedron);
 	addTriangle(v11, v9, v5, icosahedron);
 
+	glm::vec3 list[] = {
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f,-1.0f, 1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{1.0f, 1.0f,-1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f, 1.0f,-1.0f},
+		{1.0f,-1.0f, 1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{1.0f,-1.0f,-1.0f},
+		{1.0f, 1.0f,-1.0f},
+		{1.0f,-1.0f,-1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{-1.0f, 1.0f,-1.0f},
+		{1.0f,-1.0f, 1.0f},
+		{-1.0f,-1.0f, 1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{-1.0f,-1.0f, 1.0f},
+		{1.0f,-1.0f, 1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{1.0f,-1.0f,-1.0f},
+		{1.0f, 1.0f,-1.0f},
+		{1.0f,-1.0f,-1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{1.0f,-1.0f, 1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{1.0f, 1.0f,-1.0f},
+		{-1.0f, 1.0f,-1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{-1.0f, 1.0f,-1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{1.0f,-1.0f, 1.0},
+	};
+
+	for (int i = 0; i < 36; i += 3) {
+		addTriangle(list[i], list[i + 1], list[i + 2], cube);
+	}
+
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+
 	// meshesMap.insert(std::make_pair("cube", new Mesh(vertices, _commandPool, _engineDevice._graphicsQueue)));
 	meshesMap.insert(std::make_pair("icosahedron", new Mesh(icosahedron, _commandPool, _engineDevice._graphicsQueue)));
+	meshesMap.insert(std::make_pair("cube", 		  new Mesh(cube, 			_commandPool, _engineDevice._graphicsQueue)));
 }
 
 // * Actualiza la informacion que es independiente del world object
@@ -751,4 +829,7 @@ void Engine::update_materials() {
 void Engine::create_global_projection_buffers() {
 	create_buffer(sizeof(GlobalProjectionInfo) * MAX_OBJECTS, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_projection_buffer, global_projection_buffer_memory);
 	create_buffer(sizeof(LightingInfo) 			 * MAX_OBJECTS, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_lighting_info_buffer, global_lighting_info_buffer_memory);
+}
+
+void Engine::init_world() {
 }

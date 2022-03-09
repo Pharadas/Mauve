@@ -6,6 +6,7 @@
 #include <engine/device/device.hpp>
 #include <engine/texture/texture.hpp>
 #include <engine/world_object/world_object.hpp>
+#include <game/chunk.hpp>
 #include <camera.hpp>
 #include <tiny_obj_loader.h>
 
@@ -38,7 +39,7 @@ private:
 		"VK_LAYER_KHRONOS_validation"
 	};
 
-	bool _enableValidationLayers = true;
+	bool _enableValidationLayers = false;
 
 	VkDebugUtilsMessengerEXT _debugMessenger;
 
@@ -85,6 +86,10 @@ private:
 	Device _engineDevice;
 	Camera _camera;
 
+	// Noise
+	const siv::PerlinNoise::seed_type seed = 2912929u;
+	const siv::PerlinNoise perlin {seed};
+
 	// private methods
 	// init vulkan and main functions
 	void init_vulkan();
@@ -97,6 +102,7 @@ private:
 	void init_textures();
 	void init_materials();
 	void init_meshes();
+	void init_world();
 
 	// extensions
 	std::vector<const char*> getRequiredExtensions();

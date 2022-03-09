@@ -392,6 +392,30 @@ include/engine/world_object/world_object.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Mauve.dir\build.make CMakeFiles/Mauve.dir/include/engine/world_object/world_object.cpp.s
 .PHONY : include/engine/world_object/world_object.cpp.s
 
+include/game/chunk.obj: include/game/chunk.cpp.obj
+.PHONY : include/game/chunk.obj
+
+# target to build an object file
+include/game/chunk.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Mauve.dir\build.make CMakeFiles/Mauve.dir/include/game/chunk.cpp.obj
+.PHONY : include/game/chunk.cpp.obj
+
+include/game/chunk.i: include/game/chunk.cpp.i
+.PHONY : include/game/chunk.i
+
+# target to preprocess a source file
+include/game/chunk.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Mauve.dir\build.make CMakeFiles/Mauve.dir/include/game/chunk.cpp.i
+.PHONY : include/game/chunk.cpp.i
+
+include/game/chunk.s: include/game/chunk.cpp.s
+.PHONY : include/game/chunk.s
+
+# target to generate assembly for a file
+include/game/chunk.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Mauve.dir\build.make CMakeFiles/Mauve.dir/include/game/chunk.cpp.s
+.PHONY : include/game/chunk.cpp.s
+
 source/main.obj: source/main.cpp.obj
 .PHONY : source/main.obj
 
@@ -458,6 +482,9 @@ help:
 	@echo ... include/engine/world_object/world_object.obj
 	@echo ... include/engine/world_object/world_object.i
 	@echo ... include/engine/world_object/world_object.s
+	@echo ... include/game/chunk.obj
+	@echo ... include/game/chunk.i
+	@echo ... include/game/chunk.s
 	@echo ... source/main.obj
 	@echo ... source/main.i
 	@echo ... source/main.s

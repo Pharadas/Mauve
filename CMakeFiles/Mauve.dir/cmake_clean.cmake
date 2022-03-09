@@ -21,6 +21,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/Mauve.dir/include/engine/window/window.cpp.obj.d"
   "CMakeFiles/Mauve.dir/include/engine/world_object/world_object.cpp.obj"
   "CMakeFiles/Mauve.dir/include/engine/world_object/world_object.cpp.obj.d"
+  "CMakeFiles/Mauve.dir/include/game/chunk.cpp.obj"
+  "CMakeFiles/Mauve.dir/include/game/chunk.cpp.obj.d"
   "CMakeFiles/Mauve.dir/source/main.cpp.obj"
   "CMakeFiles/Mauve.dir/source/main.cpp.obj.d"
   "build/Mauve.exe"

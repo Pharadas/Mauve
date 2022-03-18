@@ -172,6 +172,6 @@ void Window::create_depth_resources() {
 
 void Window::cleanup_depth_image(){
 	vkDestroyImageView(_device, _depthImageView, nullptr);
-    vkDestroyImage(_device, _depthImage, nullptr);
-    vkFreeMemory(_device, _depthImageMemory, nullptr);
+	vkDestroyImage(_device, _depthImage, nullptr);
+	vkFreeMemory(_device, _depthImageMemory, nullptr);
 }

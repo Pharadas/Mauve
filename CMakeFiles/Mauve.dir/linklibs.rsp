@@ -1,1 +1,1 @@
-  -LC:/Users/Pharadas/Documents/repos/Mauve/lib  -Wl,-Bstatic -lglfw3 -Wl,-Bdynamic -lvulkan-1 -ltinyobjloader -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
+  -LC:/Users/Pharadas/Documents/repos/Mauve/lib  -Wl,-Bstatic -lglfw3 -Wl,-Bdynamic -lvulkan-1 -ltinyobjloader -llstdc++fs -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

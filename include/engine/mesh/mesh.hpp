@@ -4,6 +4,8 @@
 
 #include<engine/buffer_helper.hpp>
 
+#include <iostream>
+
 #include <vector>
 #include <array>
 #include <cstring>
@@ -46,15 +48,21 @@ struct Vertex {
 
 class Mesh {
 public:
-    Mesh(std::vector<Vertex> inputVertices, VkCommandPool commandPool, VkQueue graphicsQueue);
+    Mesh();
+    Mesh(std::vector<Vertex> inputVertices);
+    // Mesh(std::vector<Vertex> inputVertices, VkCommandPool commandPool, VkQueue graphicsQueue);
     // Mesh(std::vector<Vertex> inputVertices, std::vector<uint16_t> inputIndices, VkCommandPool commandPool, VkQueue graphicsQueue);
+
     void cleanup();
+    void build(VkCommandPool commandPool, VkQueue graphicsQueue);
+    void addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
+
+    std::vector<Vertex>   vertices;
+    std::vector<uint16_t> indices;
 
     bool isIndexed;
     VkBuffer vertexBuffer = VK_NULL_HANDLE;
     VkBuffer indexBuffer = VK_NULL_HANDLE;
-    std::vector<Vertex> vertices;
-    std::vector<uint16_t> indices;
 
 private:
     void create_vertex_buffer(VkCommandPool commandPool, VkQueue graphicsQueue);

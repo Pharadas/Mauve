@@ -1,10 +1,54 @@
 #include <engine/mesh/mesh.hpp>
 
 // MESH IMPLEMENTATION ////////////////////////////////////////////////////////////////////////////
-Mesh::Mesh(std::vector<Vertex> inputVertices, VkCommandPool commandPool, VkQueue graphicsQueue) {
-	vertices = inputVertices;
+// Mesh::Mesh(std::vector<Vertex> inputVertices, VkCommandPool commandPool, VkQueue graphicsQueue) {
+// 	vertices = inputVertices;
 
+// 	create_vertex_buffer(commandPool, graphicsQueue);
+// }
+
+Mesh::Mesh() {}
+
+Mesh::Mesh(std::vector<Vertex> inputVertices) {
+	vertices = inputVertices;
+}
+
+// * Wrapper de create_vertex_buffer para que el usuario no tenga acceso a esta funcion
+void Mesh::build(VkCommandPool commandPool, VkQueue graphicsQueue) {
 	create_vertex_buffer(commandPool, graphicsQueue);
+}
+
+void Mesh::addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3) {
+	glm::vec3 V = v2 - v1;
+	glm::vec3 U = v3 - v1;
+
+	glm::vec3 normal;
+
+	normal.x = (U.y * V.z) - (U.z * V.y);
+	normal.y = (U.z * V.x) - (U.x * V.z);
+	normal.z = (U.x * V.y) - (U.y * V.x);
+
+	vertices.push_back({v1, normal, {1, 0}});
+	vertices.push_back({v2, normal, {1, 1}});
+	vertices.push_back({v3, normal, {0, 0}});
+
+	// std::cout << "{";
+	// std::cout << "{" << v1.x << ", " << v1.y << ", " << v1.z << "},";
+	// std::cout << "{" << normal.x << ", " << normal.y << ", " << normal.z << "},";
+	// std::cout << "{1, 0}";
+	// std::cout << "}\n";
+
+	// std::cout << "{";
+	// std::cout << "{" << v2.x << ", " << v2.y << ", " << v2.z << "},";
+	// std::cout << "{" << normal.x << ", " << normal.y << ", " << normal.z << "},";
+	// std::cout << "{1, 1}";
+	// std::cout << "}\n";
+
+	// std::cout << "{";
+	// std::cout << "{" << v3.x << ", " << v3.y << ", " << v3.z << "},";
+	// std::cout << "{" << normal.x << ", " << normal.y << ", " << normal.z << "},";
+	// std::cout << "{0, 0}";
+	// std::cout << "}\n";
 }
 
 void Mesh::create_index_buffer(VkCommandPool commandPool, VkQueue graphicsQueue) {

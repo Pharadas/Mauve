@@ -102,5 +102,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+.vscode/
+
 # Compiled shaders
 **/shaders/

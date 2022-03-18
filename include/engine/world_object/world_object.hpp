@@ -4,13 +4,14 @@
 #include <array>
 #include <cstring>
 #include <vector>
+#include <memory>
 
 #include <engine/buffer_helper.hpp>
 #include <engine/material/materials.hpp>
 
 class WorldObject {
 public:
-    WorldObject(Mesh* inputMesh, Material* inputMaterial);
+    WorldObject(std::shared_ptr<Mesh> inputMesh, std::shared_ptr<Material> inputMaterial);
     void update_push_constants(glm::mat4 matrix);
     virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
     void cleanup();
@@ -29,21 +30,21 @@ private:
     VkDeviceMemory globalBufferMemory;
 };
 
-class TexturedWorldObject : public WorldObject {
-public:
-    TexturedWorldObject(Mesh* inputMesh, Material* inputMaterial, int texNum);
-    virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
+// class TexturedWorldObject : public WorldObject {
+// public:
+//     TexturedWorldObject(Mesh* inputMesh, Material* inputMaterial, int texNum);
+//     virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
 
-	int texture;
-};
+// 	int texture;
+// };
 
-class TexturedLitWorldObject : public WorldObject {
-public:
-    TexturedLitWorldObject(Mesh* inputMesh, Textured_Lit_Material* inputMaterial, int texNum, glm::vec3 inputColor);
-    virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
+// class TexturedLitWorldObject : public WorldObject {
+// public:
+//     TexturedLitWorldObject(Mesh* inputMesh, Textured_Lit_Material* inputMaterial, int texNum, glm::vec3 inputColor);
+//     virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
 
-private:
-    Textured_Lit_Material* material;
-	int texture;
-    glm::vec3 color;
-};
+// private:
+//     Textured_Lit_Material* material;
+// 	int texture;
+//     glm::vec3 color;
+// };

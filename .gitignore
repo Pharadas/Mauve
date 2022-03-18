@@ -106,3 +106,5 @@ dkms.conf
 
 # Compiled shaders
 **/shaders/
+
+CMakeFiles/**

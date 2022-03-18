@@ -1181,12 +1181,36 @@ CMakeFiles/Mauve.dir/include/engine/engine.cpp.obj: include/engine/engine.cpp \
   C:/mingw64/x86_64-w64-mingw32/include/winsvc.h \
   C:/mingw64/x86_64-w64-mingw32/include/mcx.h \
   C:/mingw64/x86_64-w64-mingw32/include/imm.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/filesystem \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/fs_fwd.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/chrono \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ratio \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ctime \
   C:/mingw64/x86_64-w64-mingw32/include/time.h \
   C:/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/parse_numbers.h
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/parse_numbers.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/fs_path.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/locale \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/locale_facets_nonio.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/time_members.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/messages_members.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/locale_facets_nonio.tcc \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/locale_conv.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stringfwd.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/allocator.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/codecvt.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/unique_ptr.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/codecvt \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/quoted_string.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/sstream \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/sstream.tcc \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/algorithm \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_algo.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/algorithmfwd.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_heap.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/uniform_int_dist.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/fs_dir.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/fs_ops.h
 
 CMakeFiles/Mauve.dir/include/engine/helper_functions.cpp.obj: include/engine/helper_functions.cpp \
   include/engine/helper_functions.hpp \
@@ -3444,6 +3468,8 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cwchar:
 
 include/glm/ext/matrix_double3x4.hpp:
 
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/locale_facets_nonio.h:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/postypes.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/concept_check.h:
@@ -3581,6 +3607,8 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/range_access.h:
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/initializer_list:
 
 include/glm/detail/type_vec3.inl:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/sstream:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/basic_string.h:
 
@@ -4124,6 +4152,8 @@ include/glm/gtc/constants.hpp:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/fmaintrin.h:
 
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/fs_dir.h:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/locale_classes.tcc:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/xopintrin.h:
@@ -4388,6 +4418,8 @@ C:/mingw64/x86_64-w64-mingw32/include/_timeval.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/inaddr.h:
 
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/fs_fwd.h:
+
 C:/mingw64/x86_64-w64-mingw32/include/psdk_inc/_socket_types.h:
 
 include/engine/world_object/world_object.cpp:
@@ -4440,6 +4472,8 @@ C:/mingw64/x86_64-w64-mingw32/include/prsht.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/imm.h:
 
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/filesystem:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/chrono:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ratio:
@@ -4447,6 +4481,26 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ratio:
 C:/mingw64/x86_64-w64-mingw32/include/time.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/pthread_time.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/fs_path.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/locale:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/time_members.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/messages_members.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/locale_facets_nonio.tcc:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/locale_conv.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/codecvt:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/quoted_string.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/sstream.tcc:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/fs_ops.h:
 
 include/engine/material/material.cpp:
 

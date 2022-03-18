@@ -4,48 +4,50 @@
 
 #define MAX_VERTICES 10000;
 
-void addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, std::vector<Vertex> &verticesList) {
-	glm::vec3 V = v2 - v1;
-	glm::vec3 U = v3 - v1;
-
-	glm::vec3 normal;
-
-	normal.x = (U.y * V.z) - (U.z * V.y);
-	normal.y = (U.z * V.x) - (U.x * V.z);
-	normal.z = (U.x * V.y) - (U.y * V.x);
-
-	verticesList.push_back({v1, normal, {1, 0}});
-	verticesList.push_back({v2, normal, {1, 1}});
-	verticesList.push_back({v3, normal, {0, 0}});
-
-	// std::cout << "{";
-	// std::cout << "{" << v1.x << ", " << v1.y << ", " << v1.z << "},";
-	// std::cout << "{" << normal.x << ", " << normal.y << ", " << normal.z << "},";
-	// std::cout << "{1, 0}";
-	// std::cout << "}\n";
-
-	// std::cout << "{";
-	// std::cout << "{" << v2.x << ", " << v2.y << ", " << v2.z << "},";
-	// std::cout << "{" << normal.x << ", " << normal.y << ", " << normal.z << "},";
-	// std::cout << "{1, 1}";
-	// std::cout << "}\n";
-
-	// std::cout << "{";
-	// std::cout << "{" << v3.x << ", " << v3.y << ", " << v3.z << "},";
-	// std::cout << "{" << normal.x << ", " << normal.y << ", " << normal.z << "},";
-	// std::cout << "{0, 0}";
-	// std::cout << "}\n";
-}
-
-void Engine::run() {
+void Engine::init() {
 	_engineWindow.init_window("Vulkan Gamin", 800, 600);
 	glfwSetWindowUserPointer(_engineWindow._window, this);
 	glfwSetFramebufferSizeCallback(_engineWindow._window, framebufferResizeCallback);
 	init_vulkan();
 
-	init_scene();
-	main_loop();
-	cleanup();
+	init_materials();
+	// init_scene();
+	// main_loop();
+	// cleanup();
+}
+
+void Engine::draw() {
+	// * Calculos para fps
+	float currentFrame = glfwGetTime();
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+	fractionsOfSecondPassed += deltaTime;
+	framesPassed++;
+	if (fractionsOfSecondPassed > 1) {
+		std::cout << "fps: " << framesPassed << "      \r";
+		fractionsOfSecondPassed = 0;
+		framesPassed = 0;
+	}
+
+	if (glfwWindowShouldClose(_engineWindow._window))
+		running = false;
+
+	process_input();
+
+	glfwPollEvents();
+	// update_materials();
+	draw_frame();
+	objectsToDraw.clear();
+}
+
+void Engine::uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr) {
+	// * Asignar memoria este mesh
+	meshPtr->build(_commandPool, _engineDevice._graphicsQueue);
+}
+
+void Engine::uploadMaterialToEngine(std::shared_ptr<Material> materialPtr) {
+	// * Asignar memoria este mesh
+	materialPtr->build(_engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer);
 }
 
 void Engine::init_vulkan() {
@@ -75,59 +77,47 @@ void Engine::init_scene() {
 	init_meshes();
 	init_world();
 
-	worldObjectsMap.insert(std::make_pair("icosahedron_light", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 0)));
+	// worldObjectsMap.insert(std::make_pair("icosahedron_light", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 0)));
 }
 
-void Engine::main_loop() {
-	Chunk thisChunk(glm::vec2(0, 0), perlin, _commandPool, _engineDevice._graphicsQueue, materialsMap["textured"]);
+// void Engine::main_loop() {
+// 	Chunk thisChunk(glm::vec2(0, 0), perlin, _commandPool, _engineDevice._graphicsQueue, materialsMap["textured"]);
 
-	float fractionsOfSecondPassed = 0;
-	int framesPassed = 0;
-	while (!glfwWindowShouldClose(_engineWindow._window)) {
-		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-		fractionsOfSecondPassed += deltaTime;
-		framesPassed++;
-		if (fractionsOfSecondPassed > 1) {
-			std::cout << "fps: " << framesPassed << "      \r";
-			fractionsOfSecondPassed = 0;
-			framesPassed = 0;
-		}
+// 	while (!glfwWindowShouldClose(_engineWindow._window)) {
+		
 
-		// objectsToDraw.push_back(worldObjectsMap["worldCube"]);
-		objectsToDraw.push_back(thisChunk.chunkRenderableObject.get());
-		// objectsToDraw.push_back(worldObjectsMap["icosahedron_light"]);
-		// // objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
-		// objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman_lit"]);
-		// worldObjectsMap["icosahedron_videoman_lit"]->rotation += 1;
+// 		// objectsToDraw.push_back(worldObjectsMap["worldCube"]);
+// 		objectsToDraw.push_back(thisChunk.chunkRenderableObject.get());
+// 		// objectsToDraw.push_back(worldObjectsMap["icosahedron_light"]);
+// 		// // objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
+// 		// objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman_lit"]);
+// 		// worldObjectsMap["icosahedron_videoman_lit"]->rotation += 1;
+// 	}
 
-
-		process_input();
-
-		glfwPollEvents();
-		// update_materials();
-		draw_frame();
-		objectsToDraw.clear();
-	}
-
-	vkDeviceWaitIdle(_device);
-}
+// 	vkDeviceWaitIdle(_device);
+// }
 
 void Engine::cleanup() {
+	vkDestroyBuffer(_device, global_projection_buffer, nullptr);
+	vkDestroyBuffer(_device, global_lighting_info_buffer, nullptr);
+	vkFreeMemory(_device, global_projection_buffer_memory, nullptr);
+	vkFreeMemory(_device, global_lighting_info_buffer_memory, nullptr);
+
 	cleanup_swapchain();
 
-	for (auto mesh : meshesMap) {
-		mesh.second->cleanup();
-	}
+	defaultMaterial.get()->cleanup();
 
-	for (auto material : materialsMap) {
-		material.second->cleanup();
-	}
+	// for (auto mesh : meshesMap) {
+	// 	mesh.second->cleanup();
+	// }
 
-	for (auto tex : texturesVector) {
-		tex.cleanup();
-	}
+	// for (auto material : materialsMap) {
+	// 	material.second->cleanup();
+	// }
+
+	// for (auto tex : texturesVector) {
+	// 	tex.cleanup();
+	// }
 
 	// for (auto worldObject : worldObjectsMap) {
 	// 	worldObject.second->cleanup();
@@ -136,24 +126,24 @@ void Engine::cleanup() {
 	_engineWindow.cleanup_depth_image();
 	vkDestroySampler(_device, _textureSampler, nullptr);
 
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        vkDestroySemaphore(_device, _renderFinishedSemaphores[i], nullptr);
-        vkDestroySemaphore(_device, _imageAvailableSemaphores[i], nullptr);
-        vkDestroyFence(_device, _inFlightFences[i], nullptr);
-    }
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+		vkDestroySemaphore(_device, _renderFinishedSemaphores[i], nullptr);
+		vkDestroySemaphore(_device, _imageAvailableSemaphores[i], nullptr);
+		vkDestroyFence(_device, _inFlightFences[i], nullptr);
+	}
 
-    vkDestroyCommandPool(_device, _commandPool, nullptr);
+	vkDestroyCommandPool(_device, _commandPool, nullptr);
 
-    vkDestroyDevice(_device, nullptr);
+	vkDestroyDevice(_device, nullptr);
 
-    if (_enableValidationLayers) {
-        destroy_debug_utils_messenger_EXT(_instance, _debugMessenger, nullptr);
-    }
+	if (_enableValidationLayers) {
+		destroy_debug_utils_messenger_EXT(_instance, _debugMessenger, nullptr);
+	}
 
-    vkDestroySurfaceKHR(_instance, _engineWindow._surface, nullptr);
-    vkDestroyInstance(_instance, nullptr);
+	vkDestroySurfaceKHR(_instance, _engineWindow._surface, nullptr);
+	vkDestroyInstance(_instance, nullptr);
 
-    _engineWindow.cleanup();
+	_engineWindow.cleanup();
 }
 
 void Engine::create_instance() {
@@ -433,7 +423,7 @@ void Engine::draw_frame() {
 		meshConstants.render_matrix = mesh_matrix;
 
 		GlobalProjectionInfo objectsProjectionsForBuffer[MAX_OBJECTS] = {};
-		LightingInfo lightingInfoForBuffer[MAX_OBJECTS] 		  = {};
+		LightingInfo 			lightingInfoForBuffer[MAX_OBJECTS] 		  = {};
 
 		for (int i = 0; i < objectsToDraw.size(); i++) {
 			// * Llenar el buffer de GlobalProjectionInfo
@@ -450,14 +440,14 @@ void Engine::draw_frame() {
 
 			objectsProjectionsForBuffer[i] = gpi;
 
-			// * Llenar el buffer de LightingInfo
-			LightingInfo li = {};
-				li.viewPos = _camera.Position;
-				li.objectColor = objectsToDraw[i]->color;
-				li.lightPos = worldObjectsMap["icosahedron_light"]->position;
-				li.lightColor = glm::vec3(1, 1, 1);
+			// // * Llenar el buffer de LightingInfo
+			// LightingInfo li = {};
+			// 	li.viewPos = _camera.Position;
+			// 	li.objectColor = objectsToDraw[i]->color;
+			// 	li.lightPos = worldObjectsMap["icosahedron_light"]->position;
+			// 	li.lightColor = glm::vec3(1, 1, 1);
 
-			lightingInfoForBuffer[i] = li;
+			// lightingInfoForBuffer[i] = li;
 		}
 
 		void* data;
@@ -545,6 +535,7 @@ void Engine::recreate_swapchain() {
 	vkDeviceWaitIdle(_device);
 
 	cleanup_swapchain();
+	_engineWindow.cleanup_depth_image();
 
 	// call cleanup functions on all material objects
 
@@ -557,14 +548,16 @@ void Engine::recreate_swapchain() {
 	_engineWindow.create_framebuffers(_device);
 	create_command_buffers();
 
-	// * clear all materials
-	// materialsMap.clear();
-	std::cout << "rebuilding materials\n";
+	defaultMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
 
-	// * Recreate materials
-	for (auto material : materialsMap) {
-		material.second->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
-	}
+	// // * clear all materials
+	// // materialsMap.clear();
+	// std::cout << "rebuilding materials\n";
+
+	// // * Recreate materials
+	// for (auto material : materialsMap) {
+	// 	material.second->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
+	// }
 
 	_imagesInFlight.resize(_engineWindow._swapChainImages.size(), VK_NULL_HANDLE);
 }
@@ -662,8 +655,18 @@ void Engine::init_textures() {
 
 void Engine::init_materials() {
 	// materialsMap.insert(std::make_pair("default", new Material(_engineWindow._renderPass, _engineWindow._swapChainExtent)));
-	materialsMap.insert(std::make_pair("textured", new Textured_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer)));
-	materialsMap.insert(std::make_pair("textured_lit", new Textured_Lit_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer, global_lighting_info_buffer)));
+	// materialsMap.insert(std::make_pair("textured", new Textured_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer)));
+	// materialsMap.insert(std::make_pair("textured_lit", new Textured_Lit_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer, global_lighting_info_buffer)));
+	defaultMaterial = std::make_shared<Material>();
+	uploadMaterialToEngine(defaultMaterial);
+
+	init_all_textures();
+	// texturedMaterial = std::make_shared<Textured_Material>();
+	// uploadMaterialToEngine(texturedMaterial);
+}
+
+void Engine::init_all_textures() {
+	
 }
 
 void Engine::init_meshes() {
@@ -695,45 +698,6 @@ void Engine::init_meshes() {
 	};
 	std::vector<Vertex> icosahedron = {};
 	std::vector<Vertex> cube = {};
-
-	float phi = (1.0f + sqrt(5.0f)) * 0.5f; // golden ratio
-	float a = 1.0f;
-	float b = 1.0f / phi;
-
-	// add vertices
-	auto v1  = glm::vec3(0, b, -a);
-	auto v2  = glm::vec3(b, a, 0);
-	auto v3  = glm::vec3(-b, a, 0);
-	auto v4  = glm::vec3(0, b, a);
-	auto v5  = glm::vec3(0, -b, a);
-	auto v6  = glm::vec3(-a, 0, b);
-	auto v7  = glm::vec3(0, -b, -a);
-	auto v8  = glm::vec3(a, 0, -b);
-	auto v9  = glm::vec3(a, 0, b);
-	auto v10 = glm::vec3(-a, 0, -b);
-	auto v11 = glm::vec3(b, -a, 0);
-	auto v12 = glm::vec3(-b, -a, 0);
-
-	addTriangle(v3, v2, v1, icosahedron);
-	addTriangle(v2, v3, v4, icosahedron);
-	addTriangle(v6, v5, v4, icosahedron);
-	addTriangle(v5, v9, v4, icosahedron);
-	addTriangle(v8, v7, v1, icosahedron);
-	addTriangle(v7, v10, v1, icosahedron);
-	addTriangle(v12, v11, v5, icosahedron);
-	addTriangle(v11, v12, v7, icosahedron);
-	addTriangle(v10, v6, v3, icosahedron);
-	addTriangle(v6, v10, v12, icosahedron);
-	addTriangle(v9, v8, v2, icosahedron);
-	addTriangle(v8, v9, v11, icosahedron);
-	addTriangle(v3, v6, v4, icosahedron);
-	addTriangle(v9, v2, v4, icosahedron);
-	addTriangle(v10, v3, v1, icosahedron);
-	addTriangle(v2, v8, v1, icosahedron);
-	addTriangle(v12, v10, v7, icosahedron);
-	addTriangle(v8, v11, v7, icosahedron);
-	addTriangle(v6, v12, v5, icosahedron);
-	addTriangle(v11, v9, v5, icosahedron);
 
 	glm::vec3 list[] = {
 		{-1.0f,-1.0f,-1.0f},
@@ -774,9 +738,9 @@ void Engine::init_meshes() {
 		{1.0f,-1.0f, 1.0},
 	};
 
-	for (int i = 0; i < 36; i += 3) {
-		addTriangle(list[i], list[i + 1], list[i + 2], cube);
-	}
+	// for (int i = 0; i < 36; i += 3) {
+	// 	addTriangle(list[i], list[i + 1], list[i + 2], cube);
+	// }
 
 	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
 	// cube.push_back({{-1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
@@ -816,8 +780,8 @@ void Engine::init_meshes() {
 	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
 
 	// meshesMap.insert(std::make_pair("cube", new Mesh(vertices, _commandPool, _engineDevice._graphicsQueue)));
-	meshesMap.insert(std::make_pair("icosahedron", new Mesh(icosahedron, _commandPool, _engineDevice._graphicsQueue)));
-	meshesMap.insert(std::make_pair("cube", 		  new Mesh(cube, 			_commandPool, _engineDevice._graphicsQueue)));
+	// meshesMap.insert(std::make_pair("icosahedron", new Mesh(icosahedron, _commandPool, _engineDevice._graphicsQueue)));
+	// meshesMap.insert(std::make_pair("cube", 		  new Mesh(cube, 			_commandPool, _engineDevice._graphicsQueue)));
 }
 
 // * Actualiza la informacion que es independiente del world object

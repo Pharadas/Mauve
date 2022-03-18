@@ -6,7 +6,6 @@
 #include <engine/device/device.hpp>
 #include <engine/texture/texture.hpp>
 #include <engine/world_object/world_object.hpp>
-#include <game/chunk.hpp>
 #include <camera.hpp>
 #include <tiny_obj_loader.h>
 
@@ -18,6 +17,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <windows.h>
+#include <string>
+#include <limits.h>
+
 #include <chrono>
 #include <iostream>
 #include <cstring>
@@ -25,12 +28,24 @@
 #include <stdexcept>
 #include <vector>
 #include <map>
+#include <memory>
 
 class Engine {
 public:
 	bool _frameBuffer_resized = false;
+	std::vector<WorldObject*> objectsToDraw;
+	bool running = true;
+	float deltaTime;
+	std::shared_ptr<Material> defaultMaterial;
+	std::shared_ptr<Textured_Material> texturedMaterial;
 
-	void run();
+	void init();
+	void draw();
+	void uploadMeshToEngine(	 std::shared_ptr<Mesh> 		meshPtr);
+	// * Por ahora solo existe para que en el futuro los usuarios puedan crear sus propios materiales
+	void uploadMaterialToEngine(std::shared_ptr<Material> materialPtr);
+	void cleanup();
+	void end();
 
 private:
 	// private members
@@ -39,9 +54,12 @@ private:
 		"VK_LAYER_KHRONOS_validation"
 	};
 
-	bool _enableValidationLayers = false;
+	bool _enableValidationLayers = true;
 
 	VkDebugUtilsMessengerEXT _debugMessenger;
+
+	float fractionsOfSecondPassed = 0;
+	int framesPassed = 0;
 
 	VkCommandPool _commandPool;
 	std::vector<VkCommandBuffer> commandBuffers;
@@ -64,7 +82,6 @@ private:
 	std::unordered_map<std::string, WorldObject*> worldObjectsMap;
 	std::vector<std::string> texturesList;
 	std::vector<Texture> texturesVector;
-	std::vector<WorldObject*> objectsToDraw;
 
 	VkBuffer global_vertex_buffer;
 	VkDeviceMemory global_vertex_buffer_memory;
@@ -79,23 +96,17 @@ private:
 
 	VkSampler _textureSampler;
 
-	float deltaTime;
 	float lastFrame;
 
 	Window _engineWindow;
 	Device _engineDevice;
 	Camera _camera;
 
-	// Noise
-	const siv::PerlinNoise::seed_type seed = 2912929u;
-	const siv::PerlinNoise perlin {seed};
-
 	// private methods
 	// init vulkan and main functions
 	void init_vulkan();
 	void init_scene();
 	void main_loop();
-	void cleanup();
 
 	// initialization
 	void create_instance();
@@ -103,6 +114,7 @@ private:
 	void init_materials();
 	void init_meshes();
 	void init_world();
+	void init_all_textures();
 
 	// extensions
 	std::vector<const char*> getRequiredExtensions();

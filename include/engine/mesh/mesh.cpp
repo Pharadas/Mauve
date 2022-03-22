@@ -28,9 +28,9 @@ void Mesh::addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3) {
 	normal.y = (U.z * V.x) - (U.x * V.z);
 	normal.z = (U.x * V.y) - (U.y * V.x);
 
-	vertices.push_back({v1, normal, {1, 0}});
+	vertices.push_back({v1, normal, {0, 1}});
 	vertices.push_back({v2, normal, {1, 1}});
-	vertices.push_back({v3, normal, {0, 0}});
+	vertices.push_back({v3, normal, {1, 0}});
 
 	// std::cout << "{";
 	// std::cout << "{" << v1.x << ", " << v1.y << ", " << v1.z << "},";
@@ -89,6 +89,10 @@ void Mesh::create_vertex_buffer(VkCommandPool commandPool, VkQueue graphicsQueue
 
 	vkDestroyBuffer(_device, stagingBuffer, nullptr);
 	vkFreeMemory(_device, stagingBufferMemory, nullptr);
+}
+
+void Mesh::setVertices(std::vector<Vertex> inputVertices) {
+	vertices = inputVertices;
 }
 
 void Mesh::cleanup() {

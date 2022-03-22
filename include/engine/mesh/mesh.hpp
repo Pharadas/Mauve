@@ -56,6 +56,7 @@ public:
     void cleanup();
     void build(VkCommandPool commandPool, VkQueue graphicsQueue);
     void addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
+    void setVertices(std::vector<Vertex> inputVertices);
 
     std::vector<Vertex>   vertices;
     std::vector<uint16_t> indices;

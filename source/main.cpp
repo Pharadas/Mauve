@@ -11,76 +11,52 @@
     #include <stdexcept>
     #include <cstdlib>
 
-	// // Noise
-	// const siv::PerlinNoise::seed_type seed = 2912929u;
-	// const siv::PerlinNoise perlin {seed};
+    #include <vector>
+    #include <string>
+
+	// Noise
+	const siv::PerlinNoise::seed_type seed = int(rand() % 100);
+	const siv::PerlinNoise perlin {seed};
 
     int main() {
         Engine mauve;
+        // * Las texturas que vas a cargar
+        // TODO Hacer que cargue todas las texturas de un folder (filesystem no compila)
+        std::vector<std::string> texturesPaths = {
+            "space",
+            "videoman",
+        };
 
         try {
-            mauve.init();
+            mauve.init(texturesPaths);
+            std::vector<TexturedWorldObject> cosas;
+            int chunks = 3;
 
-            std::shared_ptr<Mesh> icosahedro(std::make_shared<Mesh>());
+            for (int x = -chunks; x < chunks; x++) {
+                for (int y = -chunks; y < chunks; y++) {
+                    // std::cout << x << '\n';
+                    Chunk thisChunk(glm::vec2(x, y), perlin);
+                    mauve.uploadMeshToEngine(thisChunk.mesh);
+                    TexturedWorldObject chunk(thisChunk.mesh, mauve.texturedMaterial, 1);
 
-            float phi = (1.0f + sqrt(5.0f)) * 0.5f; // golden ratio
-            float a = 1.0f;
-            float b = 1.0f / phi;
-
-            // add vertices
-            auto v1  = glm::vec3(0, b, -a);
-            auto v2  = glm::vec3(b, a, 0);
-            auto v3  = glm::vec3(-b, a, 0);
-            auto v4  = glm::vec3(0, b, a);
-            auto v5  = glm::vec3(0, -b, a);
-            auto v6  = glm::vec3(-a, 0, b);
-            auto v7  = glm::vec3(0, -b, -a);
-            auto v8  = glm::vec3(a, 0, -b);
-            auto v9  = glm::vec3(a, 0, b);
-            auto v10 = glm::vec3(-a, 0, -b);
-            auto v11 = glm::vec3(b, -a, 0);
-            auto v12 = glm::vec3(-b, -a, 0);
-
-            icosahedro->addTriangle(v3, v2, v1);
-            icosahedro->addTriangle(v2, v3, v4);
-            icosahedro->addTriangle(v6, v5, v4);
-            icosahedro->addTriangle(v5, v9, v4);
-            icosahedro->addTriangle(v8, v7, v1);
-            icosahedro->addTriangle(v7, v10, v1);
-            icosahedro->addTriangle(v12, v11, v5);
-            icosahedro->addTriangle(v11, v12, v7);
-            icosahedro->addTriangle(v10, v6, v3);
-            icosahedro->addTriangle(v6, v10, v12);
-            icosahedro->addTriangle(v9, v8, v2);
-            icosahedro->addTriangle(v8, v9, v11);
-            icosahedro->addTriangle(v3, v6, v4);
-            icosahedro->addTriangle(v9, v2, v4);
-            icosahedro->addTriangle(v10, v3, v1);
-            icosahedro->addTriangle(v2, v8, v1);
-            icosahedro->addTriangle(v12, v10, v7);
-            icosahedro->addTriangle(v8, v11, v7);
-            icosahedro->addTriangle(v6, v12, v5);
-            icosahedro->addTriangle(v11, v9, v5);
-
-            mauve.uploadMeshToEngine(icosahedro);
-
-            WorldObject objeto(icosahedro, mauve.defaultMaterial);
-            WorldObject cosa(icosahedro, mauve.defaultMaterial);
-            cosa.position = glm::vec3(1, 1, 1);
-            objeto.position = glm::vec3(0, 0, 0);
+                    chunk.position = glm::vec3(x * 16, 0, y * 16);
+                    cosas.push_back(chunk);
+                }
+            }
 
             while (mauve.running) {
-                mauve.objectsToDraw.push_back(&objeto);
-                mauve.objectsToDraw.push_back(&cosa);
-                mauve.draw();
+                for (int i = 0; i < cosas.size(); i++) {
+                    mauve.draw(cosas[i]);
+                }
+
+                mauve.render();
             }
 
             vkDeviceWaitIdle(_device);
-            icosahedro.get()->cleanup();
             mauve.cleanup();
 
         } catch (const std::exception& e) {
-            // std::cerr << e.what() << std::endl;
+            std::cerr << e.what() << std::endl;
             return EXIT_FAILURE;
         }
 

@@ -2,32 +2,34 @@
 #include <engine/buffer_helper.hpp>
 #include <engine/helper_functions.hpp>
 
-#define MAX_VERTICES 10000;
+#define MAX_VERTICES 64000;
 
-void Engine::init() {
+void Engine::init(std::vector<std::string> texturePaths) {
 	_engineWindow.init_window("Vulkan Gamin", 800, 600);
 	glfwSetWindowUserPointer(_engineWindow._window, this);
 	glfwSetFramebufferSizeCallback(_engineWindow._window, framebufferResizeCallback);
 	init_vulkan();
 
+	init_textures(texturePaths);
 	init_materials();
 	// init_scene();
 	// main_loop();
 	// cleanup();
 }
 
-void Engine::draw() {
+void Engine::render() {
 	// * Calculos para fps
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 	fractionsOfSecondPassed += deltaTime;
 	framesPassed++;
-	if (fractionsOfSecondPassed > 1) {
-		std::cout << "fps: " << framesPassed << "      \r";
-		fractionsOfSecondPassed = 0;
-		framesPassed = 0;
-	}
+	std::cout << "fps: " << 1 / deltaTime << "             " << '\r';
+	// if (fractionsOfSecondPassed > 1.) {
+	// 	std::cout << "fps: " << framesPassed << "      \r";
+	// 	fractionsOfSecondPassed = 0;
+	// 	framesPassed = 0;
+	// }
 
 	if (glfwWindowShouldClose(_engineWindow._window))
 		running = false;
@@ -37,12 +39,22 @@ void Engine::draw() {
 	glfwPollEvents();
 	// update_materials();
 	draw_frame();
-	objectsToDraw.clear();
+	worldObjectsToDraw.clear();
+	texturedWorldObjectsToDraw.clear();
+}
+
+void Engine::draw(WorldObject objeto) {
+	worldObjectsToDraw.push_back(objeto);
+}
+
+void Engine::draw(TexturedWorldObject objeto) {
+	texturedWorldObjectsToDraw.push_back(objeto);
 }
 
 void Engine::uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr) {
 	// * Asignar memoria este mesh
 	meshPtr->build(_commandPool, _engineDevice._graphicsQueue);
+	meshesList.push_back(meshPtr);
 }
 
 void Engine::uploadMaterialToEngine(std::shared_ptr<Material> materialPtr) {
@@ -72,10 +84,10 @@ void Engine::init_vulkan() {
 }
 
 void Engine::init_scene() {
-	init_textures();
-	init_materials();
-	init_meshes();
-	init_world();
+	// init_textures();
+	// init_materials();
+	// init_meshes();
+	// init_world();
 
 	// worldObjectsMap.insert(std::make_pair("icosahedron_light", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 0)));
 }
@@ -86,8 +98,8 @@ void Engine::init_scene() {
 // 	while (!glfwWindowShouldClose(_engineWindow._window)) {
 		
 
-// 		// objectsToDraw.push_back(worldObjectsMap["worldCube"]);
-// 		objectsToDraw.push_back(thisChunk.chunkRenderableObject.get());
+// 		// worldObjectsToDraw.push_back(worldObjectsMap["worldCube"]);
+// 		worldObjectsToDraw.push_back(thisChunk.chunkRenderableObject.get());
 // 		// objectsToDraw.push_back(worldObjectsMap["icosahedron_light"]);
 // 		// // objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
 // 		// objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman_lit"]);
@@ -106,14 +118,19 @@ void Engine::cleanup() {
 	cleanup_swapchain();
 
 	defaultMaterial.get()->cleanup();
+	texturedMaterial.get()->cleanup();
 
 	// for (auto mesh : meshesMap) {
 	// 	mesh.second->cleanup();
 	// }
 
-	// for (auto material : materialsMap) {
-	// 	material.second->cleanup();
-	// }
+	for (auto mesh : meshesList) {
+		mesh.get()->cleanup();
+	}
+
+	for (auto texture : texturesVector) {
+		texture.cleanup();
+	}
 
 	// for (auto tex : texturesVector) {
 	// 	tex.cleanup();
@@ -153,19 +170,19 @@ void Engine::create_instance() {
 
 	VkApplicationInfo appInfo{};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = "Hello Triangle";
-	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.pEngineName = "No Engine";
-	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.apiVersion = VK_API_VERSION_1_2;
+		appInfo.pApplicationName = "Hello Triangle";
+		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+		appInfo.pEngineName = "No Engine";
+		appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+		appInfo.apiVersion = VK_API_VERSION_1_2;
 
 	VkInstanceCreateInfo createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-	createInfo.pApplicationInfo = &appInfo;
+		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+		createInfo.pApplicationInfo = &appInfo;
 
 	auto extensions = getRequiredExtensions();
-	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-	createInfo.ppEnabledExtensionNames = extensions.data();
+		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+		createInfo.ppEnabledExtensionNames = extensions.data();
 
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
 	if (_enableValidationLayers) {
@@ -425,12 +442,12 @@ void Engine::draw_frame() {
 		GlobalProjectionInfo objectsProjectionsForBuffer[MAX_OBJECTS] = {};
 		LightingInfo 			lightingInfoForBuffer[MAX_OBJECTS] 		  = {};
 
-		for (int i = 0; i < objectsToDraw.size(); i++) {
+		for (int i = 0; i < worldObjectsToDraw.size(); i++) {
 			// * Llenar el buffer de GlobalProjectionInfo
 			glm::mat4 model{1.f};
-				model = glm::rotate(model, glm::radians(objectsToDraw[i]->rotation), glm::vec3(1, 1, 1));
-				model = glm::scale(model, objectsToDraw[i]->scale);
-				model = glm::translate(model, objectsToDraw[i]->position);
+				model = glm::rotate(model, glm::radians(worldObjectsToDraw[i].rotation), glm::vec3(1, 1, 1));
+				model = glm::scale(model, worldObjectsToDraw[i].scale);
+				model = glm::translate(model, worldObjectsToDraw[i].position);
 				meshConstants.render_matrix = mesh_matrix * model; // * Por ahora lo dejo solo por la alineacion, me da flojera moverle xd
 
 			GlobalProjectionInfo gpi = {};
@@ -443,11 +460,27 @@ void Engine::draw_frame() {
 			// // * Llenar el buffer de LightingInfo
 			// LightingInfo li = {};
 			// 	li.viewPos = _camera.Position;
-			// 	li.objectColor = objectsToDraw[i]->color;
+			// 	li.objectColor = worldObjectsToDraw[i].color;
 			// 	li.lightPos = worldObjectsMap["icosahedron_light"]->position;
 			// 	li.lightColor = glm::vec3(1, 1, 1);
 
 			// lightingInfoForBuffer[i] = li;
+		}
+
+		for (int i = 0; i < texturedWorldObjectsToDraw.size(); i++) {
+			// * Llenar el buffer de GlobalProjectionInfo
+			glm::mat4 model{1.f};
+				model = glm::rotate(model, glm::radians(texturedWorldObjectsToDraw[i].rotation), glm::vec3(1, 1, 1));
+				model = glm::scale(model, texturedWorldObjectsToDraw[i].scale);
+				model = glm::translate(model, texturedWorldObjectsToDraw[i].position);
+				meshConstants.render_matrix = mesh_matrix * model; // * Por ahora lo dejo solo por la alineacion, me da flojera moverle xd
+
+			GlobalProjectionInfo gpi = {};
+				gpi.model = model;
+				gpi.proj = proj;
+				gpi.view = view;
+
+			objectsProjectionsForBuffer[i + worldObjectsToDraw.size()] = gpi;
 		}
 
 		void* data;
@@ -461,13 +494,21 @@ void Engine::draw_frame() {
 			memcpy(data, &lightingInfoForBuffer, sizeof(LightingInfo) * MAX_OBJECTS);
 		vkUnmapMemory(_device, global_lighting_info_buffer_memory);
 
-		for (int i = 0; i < objectsToDraw.size(); i++) {
-			objectsToDraw[i]->draw(commandBuffers[imageIndex], i, meshConstants);
-		}
+		// * Lo voy a hacer hard-coded por ahora
+			for (int i = 0; i < worldObjectsToDraw.size(); i++) {
+				worldObjectsToDraw[i].draw(commandBuffers[imageIndex], i, meshConstants);
+			}
 
-		for (auto material : materialsMap) {
-			material.second->currObject = 0;
-		}
+			for (int i = 0; i < texturedWorldObjectsToDraw.size(); i++) {
+				texturedWorldObjectsToDraw[i].draw(commandBuffers[imageIndex], i + worldObjectsToDraw.size(), meshConstants);
+			}
+
+		defaultMaterial.get()->currObject = 0;
+		texturedMaterial.get()->currObject = 0;
+
+		// for (auto material : materialsMap) {
+		// 	material.second->currObject = 0;
+		// }
 
 	vkCmdEndRenderPass(commandBuffers[imageIndex]);
 	vkEndCommandBuffer(commandBuffers[imageIndex]);
@@ -549,6 +590,7 @@ void Engine::recreate_swapchain() {
 	create_command_buffers();
 
 	defaultMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
+	texturedMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
 
 	// // * clear all materials
 	// // materialsMap.clear();
@@ -643,30 +685,24 @@ void Engine::create_vertex_buffer() {
 }
 
 void Engine::add_texture(std::string textureName, const char* texturePath) {
+	texturesNumsMap[textureName] = texturesVector.size();
 	texturesVector.push_back(Texture(texturePath, _commandPool, _engineDevice._graphicsQueue));
-	texturesList.push_back(textureName);
 }
 
-void Engine::init_textures() {
-	// * Inicializar aqui todas  last texturas
-	add_texture("videoman", "textures/videoman.jpg");
-	add_texture("space", "textures/space.jpg");
+void Engine::init_textures(std::vector<std::string> texturePaths) {
+	for (auto name : texturePaths) {
+		// * Inicializar aqui todas  last texturas
+		add_texture(name, ("textures/" + name + ".jpg").c_str());
+	}
+	std::cout << "numero de texturas: " << texturesVector.size() << '\n';
 }
 
 void Engine::init_materials() {
-	// materialsMap.insert(std::make_pair("default", new Material(_engineWindow._renderPass, _engineWindow._swapChainExtent)));
-	// materialsMap.insert(std::make_pair("textured", new Textured_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer)));
-	// materialsMap.insert(std::make_pair("textured_lit", new Textured_Lit_Material(texturesVector, &_textureSampler, _engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer, global_lighting_info_buffer)));
 	defaultMaterial = std::make_shared<Material>();
 	uploadMaterialToEngine(defaultMaterial);
 
-	init_all_textures();
-	// texturedMaterial = std::make_shared<Textured_Material>();
-	// uploadMaterialToEngine(texturedMaterial);
-}
-
-void Engine::init_all_textures() {
-	
+	texturedMaterial = std::make_shared<Textured_Material>(texturesVector, &_textureSampler);
+	uploadMaterialToEngine(texturedMaterial);
 }
 
 void Engine::init_meshes() {

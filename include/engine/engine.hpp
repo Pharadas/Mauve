@@ -33,21 +33,30 @@
 class Engine {
 public:
 	bool _frameBuffer_resized = false;
-	std::vector<WorldObject*> objectsToDraw;
 	bool running = true;
 	float deltaTime;
+
 	std::shared_ptr<Material> defaultMaterial;
 	std::shared_ptr<Textured_Material> texturedMaterial;
+	Camera _camera;
 
-	void init();
-	void draw();
-	void uploadMeshToEngine(	 std::shared_ptr<Mesh> 		meshPtr);
+	void init(std::vector<std::string> texturePaths); 
+	void render();
+
+	void draw(WorldObject objeto);
+	void draw(TexturedWorldObject objeto);
+
+	void uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr);
 	// * Por ahora solo existe para que en el futuro los usuarios puedan crear sus propios materiales
 	void uploadMaterialToEngine(std::shared_ptr<Material> materialPtr);
 	void cleanup();
 	void end();
 
 private:
+	// Renderables
+	std::vector<WorldObject> 		 worldObjectsToDraw;
+	std::vector<TexturedWorldObject> texturedWorldObjectsToDraw;
+
 	// private members
 	VkInstance _instance;
 	const std::vector<const char*> _validationLayers = {
@@ -67,7 +76,7 @@ private:
 	VkSemaphore _imageAvailableSemaphore;
 	VkSemaphore _renderFinishedSemaphore;
 	const int MAX_FRAMES_IN_FLIGHT = 2;
-	const int MAX_OBJECTS = 1000;
+	const unsigned int MAX_OBJECTS = 5000;
 
 	std::vector<VkSemaphore> _imageAvailableSemaphores;
 	std::vector<VkSemaphore> _renderFinishedSemaphores;
@@ -77,11 +86,17 @@ private:
 
 	VkDescriptorSet globalDescriptorSet;
 
+	// TODO: Deshacerme de estas que ya no se usan
 	std::unordered_map<std::string, Mesh*> meshesMap;
 	std::unordered_map<std::string, Material*> materialsMap;
 	std::unordered_map<std::string, WorldObject*> worldObjectsMap;
-	std::vector<std::string> texturesList;
-	std::vector<Texture> texturesVector;
+;
+	std::unordered_map<std::string, int> 		texturesNumsMap;
+	std::vector<Texture> 					 		texturesVector;
+	std::vector<std::shared_ptr<Mesh>> 	 		meshesList;
+	std::vector<std::shared_ptr<WorldObject>> worldObjectsList;
+
+	// std::vector<std::string> texturesList;
 
 	VkBuffer global_vertex_buffer;
 	VkDeviceMemory global_vertex_buffer_memory;
@@ -100,7 +115,6 @@ private:
 
 	Window _engineWindow;
 	Device _engineDevice;
-	Camera _camera;
 
 	// private methods
 	// init vulkan and main functions
@@ -110,11 +124,10 @@ private:
 
 	// initialization
 	void create_instance();
-	void init_textures();
+	void init_textures(std::vector<std::string> texturePaths);
 	void init_materials();
 	void init_meshes();
 	void init_world();
-	void init_all_textures();
 
 	// extensions
 	std::vector<const char*> getRequiredExtensions();

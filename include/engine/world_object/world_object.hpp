@@ -14,7 +14,6 @@ public:
     WorldObject(std::shared_ptr<Mesh> inputMesh, std::shared_ptr<Material> inputMaterial);
     void update_push_constants(glm::mat4 matrix);
     virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
-    void cleanup();
 
     Material* material;
     Mesh* mesh;
@@ -23,20 +22,15 @@ public:
     glm::vec3 scale    = glm::vec3(1, 1, 1);
     glm::vec3 color;
     float rotation = 0.f;
-    int numTex;
-
-private:
-    VkBuffer       globalBuffer;
-    VkDeviceMemory globalBufferMemory;
 };
 
-// class TexturedWorldObject : public WorldObject {
-// public:
-//     TexturedWorldObject(Mesh* inputMesh, Material* inputMaterial, int texNum);
-//     virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
+class TexturedWorldObject : public WorldObject {
+public:
+    TexturedWorldObject(std::shared_ptr<Mesh> inputMesh, std::shared_ptr<Material> inputMaterial, int texNum);
+    virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
 
-// 	int texture;
-// };
+	int texture;
+};
 
 // class TexturedLitWorldObject : public WorldObject {
 // public:

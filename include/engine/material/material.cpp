@@ -23,30 +23,6 @@ void Material::setup_descriptor_set(VkCommandBuffer cmdBffr) {
     vkCmdBindDescriptorSets(cmdBffr, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets, 0, 0);
 }
 
-// void Material::build(VkRenderPass renderPass, VkExtent2D swapchainExtent) {
-    // create buffer to hold all objects info that this material could hold (default is 1000) objects)
-    // create_buffer(sizeof(GlobalBufferObject) * maxObjects,  VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, descriptorBufferInfo.buffer, bufferMemory);
-    // create_buffer(sizeof(GlobalBufferObject) * maxObjects, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, descriptorBufferInfo.buffer, bufferMemory);
-    // descriptorBufferInfo.offset = 0;
-    // descriptorBufferInfo.range = sizeof(GlobalBufferObject) * maxObjects;
-
-    // * Build the descriptor sets
-    // builder = DescriptorBuilder::begin(&descriptorLayoutCache, &descriptorAllocator);
-    // builder.bind_buffer(0, &descriptorBufferInfo, typesAndFlags[0].first, typesAndFlags[0].second);
-    // builder.build(descriptorSets, descriptorSetLayout);
-
-    // build material pipeline
-    // build_material_pipeline("shaders/basic.vert.spv", "shaders/basic.frag.spv", renderPass, swapchainExtent);
-    // vkMapMemory(_device, bufferMemory, 0, sizeof(GlobalBufferObject) * maxObjects, 0, &globalObjectsData);
-// }
-
-// void Material::add_object_to_draw_buffer(GlobalBufferObject ubo) {
-//     GlobalBufferObject* storageBuffer = (GlobalBufferObject*) globalObjectsData;
-//     storageBuffer[1] = ubo;
-//     currObject++;
-//     globalObjectsData = storageBuffer;
-// }
-
 void Material::build_material_pipeline(char const* vertShaderPath, char const* fragShaderPath, VkRenderPass renderPass, VkExtent2D swapchainExtent) {
     auto vertShaderCode = readFile(vertShaderPath);
     auto fragShaderCode = readFile(fragShaderPath);
@@ -109,8 +85,8 @@ void Material::build_material_pipeline(char const* vertShaderPath, char const* f
         rasterizer.rasterizerDiscardEnable = VK_FALSE;
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
         rasterizer.lineWidth = 1.0f;
-        // rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-        rasterizer.cullMode = VK_CULL_MODE_NONE;
+        rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+        // rasterizer.cullMode = VK_CULL_MODE_NONE;
         rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
         rasterizer.depthBiasEnable = VK_FALSE;
 
@@ -216,7 +192,9 @@ VkShaderModule Material::create_shader_module(const std::vector<char>& code) {
     return shaderModule;
 }
 
-Textured_Material::Textured_Material(std::vector<Texture> textures, VkSampler* inputSampler) {
+Textured_Material::Textured_Material() : Material() {}
+
+Textured_Material::Textured_Material(std::vector<Texture> textures, VkSampler* inputSampler) : Material() {
     texturesVector = textures;
     sampler = inputSampler;
 }
@@ -238,11 +216,12 @@ void Textured_Material::build(VkRenderPass renderPass, VkExtent2D swapchainExten
     descriptorLayouts = 1;
     // * Build the descriptor sets
     builder = DescriptorBuilder::begin(&descriptorLayoutCache, &descriptorAllocator);
+        // * Global buffer info
         builder.bind_buffer(0, &descriptorBufferInfo, typesAndFlags[0].first, typesAndFlags[0].second);
-        builder.bind_image(1, imagesInfo, descriptorSets, typesAndFlags[1].first, typesAndFlags[1].second);
+        // * Textures + samplers
+        builder.bind_image( 1, imagesInfo, descriptorSets, typesAndFlags[1].first, typesAndFlags[1].second);
     builder.build(descriptorSets, descriptorSetLayouts);
 
-    // build material pipeline
     build_material_pipeline("shaders/basic_textured.vert.spv", "shaders/basic_textured.frag.spv", renderPass, swapchainExtent);
 }
 

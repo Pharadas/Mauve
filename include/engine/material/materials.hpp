@@ -80,8 +80,6 @@ private:
     std::vector<Texture> texturesVector;
     VkSampler* sampler;
 
-    // * Types y flags especificas de cada material, pero todas tienen transformaciones para 3d, asi que son estas por default
-	
     std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
         {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_ALL}, // * Informacion de transformaciones
         {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT} // * Combined image sampler

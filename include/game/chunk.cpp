@@ -3,86 +3,177 @@
 Chunk::Chunk(glm::vec2 position, siv::PerlinNoise noise) {
    mesh = std::make_shared<Mesh>();
 
-   float vertices[] = {
+   std::vector<Vertex> atras = {
       // * atras ./
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-      -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-      -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-      -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-
-      // * frente ./
-      -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-      -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-      -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-      // * izquierda ./
-      -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-      -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-      -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-      // * Derecha ./
-      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-      // * Abajo ./
-      -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-      -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-      -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-      // * Arriba
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-      -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-      -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+      {{0.5f,  0.5f, -0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
+      {{0.5f, -0.5f, -0.5f}, {1, 1, 1},  {0.0f, 1.0f}},
+      {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+      {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+      {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+      {{0.5f,  0.5f, -0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
    };
 
-   for (int y = 0; y < chunkSize; y++) {
-		for (int x = 0; x < chunkSize; x++) {
-			const double height = noise.octave2D_01((x + (position.x * chunkSize)) * (1. / chunkSize), (y + (position.y * chunkSize)) * (1. / chunkSize), 8);
+   std::vector<Vertex> frente = {
+      // * frente ./
+      {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+      {{0.5f, -0.5f,  0.5f}, {1, 1, 1},  {0.0f, 1.0f}},
+      {{0.5f,  0.5f,  0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
+      {{0.5f,  0.5f,  0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
+      {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+      {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+   };
 
-			world[x][y] = int(height * 10);
+   std::vector<Vertex> izquierda = {
+      // * izquierda ./
+      {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+      {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+      {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+      {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+      {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+      {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+   };
 
-         for (int r = 0; r < world[x][y]; r++) {
-            for (int i = 0; i < 180; i += 5) {
-               glm::vec3 originalPosition = glm::vec3(vertices[i], vertices[i + 1], vertices[i + 2]);
-               glm::vec3 translatedPosition;
+   std::vector<Vertex> derecha = {
+      // * Derecha ./
+      {{0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+      {{0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+      {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+      {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+      {{0.5f, -0.5f,  0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+      {{0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+   };
 
-               translatedPosition.x = originalPosition.x + x;
-               translatedPosition.y = originalPosition.y + r;
-               translatedPosition.z = originalPosition.z + y;
+   std::vector<Vertex> abajo = {
+      // * Abajo ./
+      {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+      {{0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+      {{0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+      {{0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+      {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+      {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+   };
 
-               chunkVertices.push_back({{translatedPosition}, {0, 0, 0}, {vertices[i + 3], vertices[i + 4]}});
+   std::vector<Vertex> arriba = {
+      // * Arriba ./
+      {{0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+      {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+      {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+      {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+      {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+      {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+   };
+
+         // for (int r = 0; r < world[x][y]; r++) {
+         //    for (auto i : vertices) {
+         //       glm::vec3 originalPosition = i.pos;
+         //       glm::vec3 translatedPosition;
+
+         //       translatedPosition.x = originalPosition.x + x;
+         //       translatedPosition.y = originalPosition.y + r;
+         //       translatedPosition.z = originalPosition.z + y;
+
+         //       chunkVertices.push_back({{translatedPosition}, i.normal, i.texCoord});
+         //    }
+         // }
+
+   for (int x = 0; x < chunkSize; x++) {
+      for (int z = 0; z < chunkSize; z++) {
+         const int height = int(noise.octave2D_01((x + (position.x * chunkSize)) * resolution, (z + (position.y * chunkSize)) * resolution, 8) * 10);
+         for (int y = 0; y < chunkHeight; y++) {
+            if (y > height) {
+               chunkMap[x][y][z] = false;
+            } else {
+               chunkMap[x][y][z] = true;
             }
          }
-         // for (auto i : singleCube) {
-         //    glm::vec3 originalPosition = glm::vec3(i.pos.x * 0.5, i.pos.y * 0.5, i.pos.z * 0.5);
-         //    glm::vec3 translatedPosition;
-
-         //    translatedPosition.x = originalPosition.x + x;
-         //    translatedPosition.y = originalPosition.y + world[x][y];
-         //    translatedPosition.z = originalPosition.z + y;
-
-         //    chunkVertices.push_back({{translatedPosition}, i.normal, i.texCoord});
-         // }
 		}
 	}
+
+   for (int x = 0; x < chunkSize; x++) {
+      for (int z = 0; z < chunkSize; z++) {
+         for (int y = 0; y < chunkHeight; y++) {
+            if (chunkMap[x][y][z]) {
+               if (!chunkMap[x + 1][y][z] && x + 1 < chunkSize) {
+                  for (auto i : derecha) {
+                     glm::vec3 originalPosition = i.pos;
+                     glm::vec3 translatedPosition;
+
+                     translatedPosition.x = originalPosition.x + x;
+                     translatedPosition.y = originalPosition.y + y;
+                     translatedPosition.z = originalPosition.z + z;
+
+                     chunkVertices.push_back({{translatedPosition}, i.normal, i.texCoord});
+                  }
+               }
+
+               if (!chunkMap[x - 1][y][z] && x - 1 > 0) {
+                  for (auto i : izquierda) {
+                     glm::vec3 originalPosition = i.pos;
+                     glm::vec3 translatedPosition;
+
+                     translatedPosition.x = originalPosition.x + x;
+                     translatedPosition.y = originalPosition.y + y;
+                     translatedPosition.z = originalPosition.z + z;
+
+                     chunkVertices.push_back({{translatedPosition}, i.normal, i.texCoord});
+                  }
+               }
+
+               if (!chunkMap[x][y + 1][z]) {
+                  for (auto i : arriba) {
+                     glm::vec3 originalPosition = i.pos;
+                     glm::vec3 translatedPosition;
+
+                     translatedPosition.x = originalPosition.x + x;
+                     translatedPosition.y = originalPosition.y + y;
+                     translatedPosition.z = originalPosition.z + z;
+
+                     chunkVertices.push_back({{translatedPosition}, i.normal, i.texCoord});
+                  }
+               }
+
+               if (!chunkMap[x][y - 1][z] && y - 1 > 0) {
+                  for (auto i : abajo) {
+                     glm::vec3 originalPosition = i.pos;
+                     glm::vec3 translatedPosition;
+
+                     translatedPosition.x = originalPosition.x + x;
+                     translatedPosition.y = originalPosition.y + y;
+                     translatedPosition.z = originalPosition.z + z;
+
+                     chunkVertices.push_back({{translatedPosition}, i.normal, i.texCoord});
+                  }
+               }
+
+               if (!chunkMap[x][y][z + 1] && z + 1 < chunkSize) {
+                  for (auto i : frente) {
+                     glm::vec3 originalPosition = i.pos;
+                     glm::vec3 translatedPosition;
+
+                     translatedPosition.x = originalPosition.x + x;
+                     translatedPosition.y = originalPosition.y + y;
+                     translatedPosition.z = originalPosition.z + z;
+
+                     chunkVertices.push_back({{translatedPosition}, i.normal, i.texCoord});
+                  }
+               }
+
+               if (!chunkMap[x][y][z - 1] && z - 1 > 0) {
+                  for (auto i : atras) {
+                     glm::vec3 originalPosition = i.pos;
+                     glm::vec3 translatedPosition;
+
+                     translatedPosition.x = originalPosition.x + x;
+                     translatedPosition.y = originalPosition.y + y;
+                     translatedPosition.z = originalPosition.z + z;
+
+                     chunkVertices.push_back({{translatedPosition}, i.normal, i.texCoord});
+                  }
+               }
+            }
+         }
+      }
+   }
 
    mesh->setVertices(chunkVertices);
 }

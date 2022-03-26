@@ -2,6 +2,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/hash.hpp"
+
 #include<engine/buffer_helper.hpp>
 
 #include <iostream>
@@ -9,6 +12,22 @@
 #include <vector>
 #include <array>
 #include <cstring>
+#include <tuple>
+#include <unordered_map>
+#include <map>
+
+// * Hash function para glm::vec3
+struct KeyFuncs {
+    size_t operator()(const glm::vec3& k)const
+    {
+        return std::hash<int>()(k.x) ^ std::hash<int>()(k.y) ^ std::hash<int>()(k.z);
+    }
+
+    bool operator()(const glm::vec3& a, const glm::vec3& b)const
+    {
+            return a.x == b.x && a.y == b.y && a.z == b.z;
+    }
+};
 
 struct Vertex {
     glm::vec3 pos;
@@ -54,20 +73,23 @@ public:
     // Mesh(std::vector<Vertex> inputVertices, std::vector<uint16_t> inputIndices, VkCommandPool commandPool, VkQueue graphicsQueue);
 
     void cleanup();
-    void build(VkCommandPool commandPool, VkQueue graphicsQueue);
+    void build(VkCommandPool commandPool, VkQueue graphicsQueue, bool autoIndex);
     void addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
     void setVertices(std::vector<Vertex> inputVertices);
 
     std::vector<Vertex>   vertices;
     std::vector<uint16_t> indices;
 
-    bool isIndexed;
+    bool isIndexed = false;
     VkBuffer vertexBuffer = VK_NULL_HANDLE;
     VkBuffer indexBuffer = VK_NULL_HANDLE;
 
 private:
     void create_vertex_buffer(VkCommandPool commandPool, VkQueue graphicsQueue);
     void create_index_buffer(VkCommandPool commandPool, VkQueue graphicsQueue);
+    void create_indices();
+
+    typedef std::unordered_map<glm::vec3, int, KeyFuncs, KeyFuncs> vec3UMap;
 
     VkDeviceSize vertexBufferSize;
     VkDeviceSize indicesBufferSize;

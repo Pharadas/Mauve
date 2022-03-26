@@ -13,8 +13,55 @@ Mesh::Mesh(std::vector<Vertex> inputVertices) {
 	vertices = inputVertices;
 }
 
+void Mesh::create_indices() {
+	std::map<std::tuple<float, float, float>, int> nonRepeatedVertices;
+	std::vector<Vertex> newVertices = {};
+	std::vector<uint16_t> newIndices = {};
+	vec3UMap gaming;
+	gaming[glm::vec3(1, 1, 1)] = 1;
+
+	int currVertex = 0;
+	for (int i = 0; i < vertices.size(); i++) {
+		std::cout << vertices[i].pos.x << " " << vertices[i].pos.y << " " << vertices[i].pos.z << " ";
+		auto it = nonRepeatedVertices.find(std::make_tuple(vertices[i].pos.x, vertices[i].pos.y, vertices[i].pos.z));
+		if (it != nonRepeatedVertices.end()) {
+			// * Si ya existe no agregar el vertice a newVertices, solo agregar el indice a newIndices
+			std::cout << "existe: " << nonRepeatedVertices[std::make_tuple(vertices[i].pos.x, vertices[i].pos.y, vertices[i].pos.z)] << '\n';
+			newIndices.push_back(nonRepeatedVertices[std::make_tuple(vertices[i].pos.x, vertices[i].pos.y, vertices[i].pos.z)]);
+
+		} else {
+			// * Si no existe guardar el numero, agregarlo a newVertices y newIndices
+			std::cout << "no existe" << '\n';
+			nonRepeatedVertices[std::make_tuple(vertices[i].pos.x, vertices[i].pos.y, vertices[i].pos.z)] = currVertex;
+			newVertices.push_back(vertices[i]);
+			newIndices.push_back(currVertex++);
+		}
+	}
+
+	for (auto i : newVertices) {
+		std::cout << i.pos.x << " " << i.pos.y << " " << i.pos.z << '\n';
+	}
+	for (auto i : newIndices) {
+		std::cout << i << ' ';
+	}
+	std::cout << '\n';
+
+	vertices = newVertices;
+	indices = newIndices;
+}
+
 // * Wrapper de create_vertex_buffer para que el usuario no tenga acceso a esta funcion
-void Mesh::build(VkCommandPool commandPool, VkQueue graphicsQueue) {
+void Mesh::build(VkCommandPool commandPool, VkQueue graphicsQueue, bool autoIndex) {
+	if (indices.empty() && autoIndex) {
+		create_indices();
+		create_index_buffer(commandPool, graphicsQueue);
+		isIndexed = true;
+	} else if (!indices.empty()) {
+		create_index_buffer(commandPool, graphicsQueue);
+		isIndexed = true;
+	} else {
+		isIndexed = false;
+	}
 	create_vertex_buffer(commandPool, graphicsQueue);
 }
 

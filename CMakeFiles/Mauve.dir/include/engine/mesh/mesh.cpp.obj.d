@@ -216,17 +216,24 @@ CMakeFiles/Mauve.dir/include/engine/mesh/mesh.cpp.obj: \
  C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_transform.hpp \
  C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/matrix_transform.inl \
  C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/matrix_transform.inl \
- C:/Users/Pharadas/Documents/repos/Mauve/include/engine/buffer_helper.hpp \
- C:/Users/Pharadas/Documents/repos/Mauve/include/engine/device_data.hpp \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/stdexcept \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtx/hash.hpp \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/functional \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_function.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward/binders.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/new \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/exception \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/exception.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/exception_ptr.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/cxxabi_init_exception.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/typeinfo \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/hash_bytes.h \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/new \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/nested_exception.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/tuple \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/utility \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_relops.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/initializer_list \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/array \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/stdexcept \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/string \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stringfwd.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/memoryfwd.h \
@@ -254,10 +261,7 @@ CMakeFiles/Mauve.dir/include/engine/mesh/mesh.cpp.obj: \
  C:/mingw64/x86_64-w64-mingw32/include/ctype.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/ostream_insert.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/cxxabi_forced.h \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_function.h \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward/binders.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/range_access.h \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/initializer_list \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/basic_string.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ext/atomicity.h \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/gthr.h \
@@ -283,6 +287,69 @@ CMakeFiles/Mauve.dir/include/engine/mesh/mesh.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstdio \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cerrno \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/basic_string.tcc \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/uses_allocator.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/invoke.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/refwrap.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/std_function.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/unordered_map \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ext/aligned_buffer.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/hashtable.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/hashtable_policy.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/node_handle.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/optional \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/enable_special_members.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/unordered_map.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/vector \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_construct.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_uninitialized.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_vector.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_bvector.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/vector.tcc \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_algo.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/algorithmfwd.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_heap.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_tempbuf.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/uniform_int_dist.h \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/vec1.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_bool1.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_bool1_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_float1.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_float1_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_double1.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_double1_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_int1.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_int1_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_uint1.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_uint1_sized.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/quaternion.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_relational.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/vector_relational.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_float.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_common.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_geometric.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_geometric.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_common.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_float.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_quat.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_relational.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_relational.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/type_quat.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_float_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_double.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_double_precision.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_trigonometric.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_trigonometric.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_transform.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/ext/quaternion_transform.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/quaternion.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/epsilon.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/detail/setup.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtc/epsilon.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtx/dual_quaternion.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtx/dual_quaternion.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/glm/gtx/hash.inl \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/buffer_helper.hpp \
+ C:/Users/Pharadas/Documents/repos/Mauve/include/engine/device_data.hpp \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/iostream \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ostream \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ios \
@@ -305,15 +372,10 @@ CMakeFiles/Mauve.dir/include/engine/mesh/mesh.cpp.obj: \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/ostream.tcc \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/istream \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/istream.tcc \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/vector \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_construct.h \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_uninitialized.h \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/utility \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_relops.h \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_vector.h \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_bvector.h \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/vector.tcc \
- C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/array \
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstring \
  C:/mingw64/x86_64-w64-mingw32/include/string.h \
- C:/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h
+ C:/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/map \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_tree.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_map.h \
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multimap.h

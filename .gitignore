@@ -108,3 +108,5 @@ dkms.conf
 **/shaders/
 
 CMakeFiles/**
+
+*.kateproject

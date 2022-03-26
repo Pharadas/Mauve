@@ -24,7 +24,9 @@ void Engine::render() {
 	lastFrame = currentFrame;
 	fractionsOfSecondPassed += deltaTime;
 	framesPassed++;
-	std::cout << "fps: " << 1 / deltaTime << "             " << '\r';
+	sumFps += 1. / deltaTime;
+	numFps++;
+	// std::cout << "fps: " << 1 / deltaTime << "             " << '\r';
 	// if (fractionsOfSecondPassed > 1.) {
 	// 	std::cout << "fps: " << framesPassed << "      \r";
 	// 	fractionsOfSecondPassed = 0;
@@ -51,9 +53,9 @@ void Engine::draw(TexturedWorldObject objeto) {
 	texturedWorldObjectsToDraw.push_back(objeto);
 }
 
-void Engine::uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr) {
+void Engine::uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr, bool autoIndex) {
 	// * Asignar memoria este mesh
-	meshPtr->build(_commandPool, _engineDevice._graphicsQueue);
+	meshPtr->build(_commandPool, _engineDevice._graphicsQueue, autoIndex);
 	meshesList.push_back(meshPtr);
 }
 
@@ -110,6 +112,7 @@ void Engine::init_scene() {
 // }
 
 void Engine::cleanup() {
+	std::cout << "ave fps = " << sumFps / numFps << '\n';
 	vkDestroyBuffer(_device, global_projection_buffer, nullptr);
 	vkDestroyBuffer(_device, global_lighting_info_buffer, nullptr);
 	vkFreeMemory(_device, global_projection_buffer_memory, nullptr);
@@ -334,6 +337,9 @@ void Engine::create_swapchain() {
 
 	_engineWindow._swapChainImageFormat = surfaceFormat.format;
 	_engineWindow._swapChainExtent = extent;
+
+	proj = glm::perspective(glm::radians(90.f), (float) _engineWindow._swapChainExtent.width / (float) _engineWindow._swapChainExtent.height, 0.001f, 1000.0f);
+	proj[1][1] *= -1;
 }
 
 void Engine::create_command_pool() {
@@ -430,69 +436,67 @@ void Engine::draw_frame() {
 
 		// * Actualizar el buffer global de los WorldObjects
 		glm::mat4 view = _camera.GetViewMatrix();
-		glm::mat4 proj = glm::perspective(glm::radians(90.f), (float) _engineWindow._swapChainExtent.width / (float) _engineWindow._swapChainExtent.height, 0.001f, 1000.0f);
-		proj[1][1] *= -1;
 
-		// * Calcular mesh_matrix sin el modelo
-		glm::mat4 mesh_matrix = proj * view;
+		VP globalVPBuffer;
+			globalVPBuffer.proj = proj;
+			globalVPBuffer.view = view;
 
 		MeshPushConstants meshConstants;
-		meshConstants.render_matrix = mesh_matrix;
 
-		GlobalProjectionInfo objectsProjectionsForBuffer[MAX_OBJECTS] = {};
-		LightingInfo 			lightingInfoForBuffer[MAX_OBJECTS] 		  = {};
+		// glm::mat4 objectsViewMatrices[MAX_OBJECTS] = {};
+		// LightingInfo lightingInfoForBuffer[MAX_OBJECTS] 		  = {};
 
-		for (int i = 0; i < worldObjectsToDraw.size(); i++) {
-			// * Llenar el buffer de GlobalProjectionInfo
-			glm::mat4 model{1.f};
-				model = glm::rotate(model, glm::radians(worldObjectsToDraw[i].rotation), glm::vec3(1, 1, 1));
-				model = glm::scale(model, worldObjectsToDraw[i].scale);
-				model = glm::translate(model, worldObjectsToDraw[i].position);
-				meshConstants.render_matrix = mesh_matrix * model; // * Por ahora lo dejo solo por la alineacion, me da flojera moverle xd
+		// for (int i = 0; i < worldObjectsToDraw.size(); i++) {
+		// 	// * Llenar el buffer de GlobalProjectionInfo
+		// 	glm::mat4 model{1.f};
+		// 		model = glm::rotate(model, glm::radians(worldObjectsToDraw[i].rotation), glm::vec3(1, 1, 1));
+		// 		model = glm::scale(model, worldObjectsToDraw[i].scale);
+		// 		model = glm::translate(model, worldObjectsToDraw[i].position);
+		// 		meshConstants.modelMatrix = model; // * Por ahora lo dejo solo por la alineacion, me da flojera moverle xd
 
-			GlobalProjectionInfo gpi = {};
-				gpi.model = model;
-				gpi.proj = proj;
-				gpi.view = view;
+		// 	// GlobalProjectionInfo gpi = {};
+		// 	// 	gpi.model = model;
+		// 	// 	gpi.proj = proj;
+		// 	// 	gpi.view = view;
 
-			objectsProjectionsForBuffer[i] = gpi;
+		// 	// objectsViewMatrices[i] = model;
 
-			// // * Llenar el buffer de LightingInfo
-			// LightingInfo li = {};
-			// 	li.viewPos = _camera.Position;
-			// 	li.objectColor = worldObjectsToDraw[i].color;
-			// 	li.lightPos = worldObjectsMap["icosahedron_light"]->position;
-			// 	li.lightColor = glm::vec3(1, 1, 1);
+		// 	// // * Llenar el buffer de LightingInfo
+		// 	// LightingInfo li = {};
+		// 	// 	li.viewPos = _camera.Position;
+		// 	// 	li.objectColor = worldObjectsToDraw[i].color;
+		// 	// 	li.lightPos = worldObjectsMap["icosahedron_light"]->position;
+		// 	// 	li.lightColor = glm::vec3(1, 1, 1);
 
-			// lightingInfoForBuffer[i] = li;
-		}
+		// 	// lightingInfoForBuffer[i] = li;
+		// }
 
-		for (int i = 0; i < texturedWorldObjectsToDraw.size(); i++) {
-			// * Llenar el buffer de GlobalProjectionInfo
-			glm::mat4 model{1.f};
-				model = glm::rotate(model, glm::radians(texturedWorldObjectsToDraw[i].rotation), glm::vec3(1, 1, 1));
-				model = glm::scale(model, texturedWorldObjectsToDraw[i].scale);
-				model = glm::translate(model, texturedWorldObjectsToDraw[i].position);
-				meshConstants.render_matrix = mesh_matrix * model; // * Por ahora lo dejo solo por la alineacion, me da flojera moverle xd
+		// for (int i = 0; i < texturedWorldObjectsToDraw.size(); i++) {
+		// 	// * Llenar el buffer de GlobalProjectionInfo
+		// 	glm::mat4 model{1.f};
+		// 		model = glm::rotate(model, glm::radians(texturedWorldObjectsToDraw[i].rotation), glm::vec3(1, 1, 1));
+		// 		model = glm::scale(model, texturedWorldObjectsToDraw[i].scale);
+		// 		model = glm::translate(model, texturedWorldObjectsToDraw[i].position);
+		// 		meshConstants.modelMatrix = model; // * Por ahora lo dejo solo por la alineacion, me da flojera moverle xd
 
-			GlobalProjectionInfo gpi = {};
-				gpi.model = model;
-				gpi.proj = proj;
-				gpi.view = view;
+		// 	// GlobalProjectionInfo gpi = {};
+		// 	// 	gpi.model = model;
+		// 	// 	gpi.proj = proj;
+		// 	// 	gpi.view = view;
 
-			objectsProjectionsForBuffer[i + worldObjectsToDraw.size()] = gpi;
-		}
+		// 	// objectsProjectionsForBuffer[i + worldObjectsToDraw.size()] = gpi;
+		// }
 
 		void* data;
 		// * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
-		vkMapMemory(_device, global_projection_buffer_memory, 0, sizeof(GlobalProjectionInfo) * MAX_OBJECTS, 0, &data);
-			memcpy(data, &objectsProjectionsForBuffer, sizeof(GlobalProjectionInfo) * MAX_OBJECTS);
+		vkMapMemory(_device, global_projection_buffer_memory, 0, sizeof(VP), 0, &data);
+			memcpy(data, &globalVPBuffer, sizeof(VP));
 		vkUnmapMemory(_device, global_projection_buffer_memory);
 
-		// * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
-		vkMapMemory(_device, global_lighting_info_buffer_memory, 0, sizeof(LightingInfo) * MAX_OBJECTS, 0, &data);
-			memcpy(data, &lightingInfoForBuffer, sizeof(LightingInfo) * MAX_OBJECTS);
-		vkUnmapMemory(_device, global_lighting_info_buffer_memory);
+		// // * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
+		// vkMapMemory(_device, global_lighting_info_buffer_memory, 0, sizeof(LightingInfo) * MAX_OBJECTS, 0, &data);
+		// 	memcpy(data, &lightingInfoForBuffer, sizeof(LightingInfo) * MAX_OBJECTS);
+		// vkUnmapMemory(_device, global_lighting_info_buffer_memory);
 
 		// * Lo voy a hacer hard-coded por ahora
 			for (int i = 0; i < worldObjectsToDraw.size(); i++) {
@@ -827,8 +831,8 @@ void Engine::update_materials() {
 }
 
 void Engine::create_global_projection_buffers() {
-	create_buffer(sizeof(GlobalProjectionInfo) * MAX_OBJECTS, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_projection_buffer, global_projection_buffer_memory);
-	create_buffer(sizeof(LightingInfo) 			 * MAX_OBJECTS, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_lighting_info_buffer, global_lighting_info_buffer_memory);
+	create_buffer(sizeof(VP), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_projection_buffer, global_projection_buffer_memory);
+	create_buffer(sizeof(LightingInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_lighting_info_buffer, global_lighting_info_buffer_memory);
 }
 
 void Engine::init_world() {

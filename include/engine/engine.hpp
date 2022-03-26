@@ -15,7 +15,6 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include <windows.h>
 #include <string>
@@ -39,6 +38,7 @@ public:
 	std::shared_ptr<Material> defaultMaterial;
 	std::shared_ptr<Textured_Material> texturedMaterial;
 	Camera _camera;
+	std::unordered_map<std::string, int> texturesNumsMap;
 
 	void init(std::vector<std::string> texturePaths); 
 	void render();
@@ -46,13 +46,16 @@ public:
 	void draw(WorldObject objeto);
 	void draw(TexturedWorldObject objeto);
 
-	void uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr);
+	void uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr, bool autoIndex);
 	// * Por ahora solo existe para que en el futuro los usuarios puedan crear sus propios materiales
 	void uploadMaterialToEngine(std::shared_ptr<Material> materialPtr);
 	void cleanup();
 	void end();
 
 private:
+	float sumFps = 0;
+	int numFps = 0;
+
 	// Renderables
 	std::vector<WorldObject> 		 worldObjectsToDraw;
 	std::vector<TexturedWorldObject> texturedWorldObjectsToDraw;
@@ -85,13 +88,13 @@ private:
 	size_t _currentFrame = 0;
 
 	VkDescriptorSet globalDescriptorSet;
+	glm::mat4 proj;
 
 	// TODO: Deshacerme de estas que ya no se usan
 	std::unordered_map<std::string, Mesh*> meshesMap;
 	std::unordered_map<std::string, Material*> materialsMap;
 	std::unordered_map<std::string, WorldObject*> worldObjectsMap;
-;
-	std::unordered_map<std::string, int> 		texturesNumsMap;
+
 	std::vector<Texture> 					 		texturesVector;
 	std::vector<std::shared_ptr<Mesh>> 	 		meshesList;
 	std::vector<std::shared_ptr<WorldObject>> worldObjectsList;

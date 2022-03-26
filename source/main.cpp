@@ -25,29 +25,97 @@
         std::vector<std::string> texturesPaths = {
             "space",
             "videoman",
+            "ULTRAKILL"
         };
 
         try {
             mauve.init(texturesPaths);
             std::vector<TexturedWorldObject> cosas;
-            int chunks = 3;
 
+            auto cosaIndices = std::make_shared<Mesh>();
+
+            // std::vector<Vertex> vertices = {
+            //     // * atras ./
+            //     {{0.5f,  0.5f, -0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
+            //     {{0.5f, -0.5f, -0.5f}, {1, 1, 1},  {0.0f, 1.0f}},
+            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+            //     {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+            //     {{0.5f,  0.5f, -0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
+
+            //     // * frente ./
+            //     {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+            //     {{0.5f, -0.5f,  0.5f}, {1, 1, 1},  {0.0f, 1.0f}},
+            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
+            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
+            //     {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+            //     {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+
+            //     // * izquierda ./
+            //     {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+            //     {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+            //     {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+            //     {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+
+            //     // * Derecha ./
+            //     {{0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+            //     {{0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+            //     {{0.5f, -0.5f,  0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+            //     {{0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+
+            //     // * Abajo ./
+            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+            //     {{0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+            //     {{0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+            //     {{0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+            //     {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+
+            //     // * Arriba ./
+            //     {{0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
+            //     {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+            //     {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
+            //     {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
+            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
+            // };
+
+            // cosaIndices->setVertices(vertices);
+            // // cosaIndices->indices = indices;
+            // mauve.uploadMeshToEngine(cosaIndices, true);
+            // TexturedWorldObject cosa(cosaIndices, mauve.texturedMaterial, mauve.texturesNumsMap["videoman"]);
+
+            int chunks = 20;
             for (int x = -chunks; x < chunks; x++) {
                 for (int y = -chunks; y < chunks; y++) {
                     // std::cout << x << '\n';
                     Chunk thisChunk(glm::vec2(x, y), perlin);
-                    mauve.uploadMeshToEngine(thisChunk.mesh);
-                    TexturedWorldObject chunk(thisChunk.mesh, mauve.texturedMaterial, 1);
+                    mauve.uploadMeshToEngine(thisChunk.mesh, false);
+                    TexturedWorldObject chunk(thisChunk.mesh, mauve.texturedMaterial, mauve.texturesNumsMap["videoman"]);
 
                     chunk.position = glm::vec3(x * 16, 0, y * 16);
                     cosas.push_back(chunk);
                 }
             }
 
+            // // std::cout << x << '\n';
+            // Chunk thisChunk(glm::vec2(0, 0), perlin);
+            // mauve.uploadMeshToEngine(thisChunk.mesh, false);
+            // TexturedWorldObject chunk(thisChunk.mesh, mauve.texturedMaterial, 1);
+
+            // chunk.position = glm::vec3(0, 0, 0);
+            // cosas.push_back(chunk);
+
             while (mauve.running) {
                 for (int i = 0; i < cosas.size(); i++) {
                     mauve.draw(cosas[i]);
                 }
+                // mauve.draw(chunk);
+                // mauve.draw(cosa);
 
                 mauve.render();
             }

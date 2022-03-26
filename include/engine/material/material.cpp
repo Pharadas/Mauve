@@ -4,11 +4,12 @@
 Material::Material() {}
 
 void Material::build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer) {
+    std::cout << "no gaming" << '\n';
     // * Guardar globalProjectionBuffer en un struct para poder usarlo
     VkDescriptorBufferInfo bufferInfo {};
         bufferInfo.buffer = globalProjectionBuffer;
         bufferInfo.offset = 0;
-        bufferInfo.range = sizeof(GlobalProjectionInfo) * maxObjects;
+        bufferInfo.range = sizeof(VP);
 
     descriptorLayouts = 1;
     // * Build the descriptor sets
@@ -84,6 +85,7 @@ void Material::build_material_pipeline(char const* vertShaderPath, char const* f
         rasterizer.depthClampEnable = VK_FALSE;
         rasterizer.rasterizerDiscardEnable = VK_FALSE;
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+        // rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
         rasterizer.lineWidth = 1.0f;
         rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
         // rasterizer.cullMode = VK_CULL_MODE_NONE;
@@ -122,7 +124,7 @@ void Material::build_material_pipeline(char const* vertShaderPath, char const* f
 	VkPushConstantRange push_constant;
         push_constant.offset = 0;
         push_constant.size = sizeof(MeshPushConstants);
-        push_constant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+        push_constant.stageFlags = VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT;
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -200,11 +202,12 @@ Textured_Material::Textured_Material(std::vector<Texture> textures, VkSampler* i
 }
 
 void Textured_Material::build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer) {
+    std::cout << "gaming" << '\n';
     // * Crear buffer para el struct GlobalProjectionInfo
     descriptorBufferInfo = {};
         descriptorBufferInfo.buffer = globalProjectionBuffer;
         descriptorBufferInfo.offset = 0;
-        descriptorBufferInfo.range = sizeof(GlobalProjectionInfo) * maxObjects;
+        descriptorBufferInfo.range = sizeof(VP);
 
     std::vector<VkDescriptorImageInfo> imagesInfo(texturesVector.size());
     for (size_t i = 0; i < texturesVector.size(); i++) {

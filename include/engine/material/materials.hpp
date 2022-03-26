@@ -22,11 +22,10 @@ struct LightingInfo {
 struct MeshPushConstants {
     int numOfTexture;
     int numOfObjectWithinMaterial;
-	alignas(16) glm::mat4 render_matrix;
+	alignas(16) glm::mat4 modelMatrix;
 };
 
-struct GlobalProjectionInfo {
-    alignas(16) glm::mat4 model;
+struct VP {
     alignas(16) glm::mat4 view;
     alignas(16) glm::mat4 proj;
 };
@@ -61,7 +60,7 @@ public:
 private:
     VkDeviceMemory         bufferMemory;
     std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
-        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_ALL}, // * Informacion de transformaciones
+        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de transformaciones
     };
 
     VkShaderModule create_shader_module(const std::vector<char>& code);
@@ -81,7 +80,7 @@ private:
     VkSampler* sampler;
 
     std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
-        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_ALL}, // * Informacion de transformaciones
+        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de transformaciones
         {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT} // * Combined image sampler
     };
 };

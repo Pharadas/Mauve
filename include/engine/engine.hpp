@@ -37,6 +37,7 @@ public:
 
 	std::shared_ptr<Material> defaultMaterial;
 	std::shared_ptr<Textured_Material> texturedMaterial;
+	std::shared_ptr<Points_Material> pointsMaterial;
 	Camera _camera;
 	std::unordered_map<std::string, int> texturesNumsMap;
 
@@ -45,6 +46,7 @@ public:
 
 	void draw(WorldObject objeto);
 	void draw(TexturedWorldObject objeto);
+	void draw(PointsWorldObject objeto);
 
 	void uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr, bool autoIndex);
 	// * Por ahora solo existe para que en el futuro los usuarios puedan crear sus propios materiales
@@ -57,8 +59,9 @@ private:
 	int numFps = 0;
 
 	// Renderables
-	std::vector<WorldObject> 		 worldObjectsToDraw;
+	std::vector<WorldObject> 		 	worldObjectsToDraw;
 	std::vector<TexturedWorldObject> texturedWorldObjectsToDraw;
+	std::vector<PointsWorldObject> 	pointsWorldObjectsToDraw;
 
 	// private members
 	VkInstance _instance;

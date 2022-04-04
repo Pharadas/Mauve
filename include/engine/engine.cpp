@@ -26,12 +26,12 @@ void Engine::render() {
 	framesPassed++;
 	sumFps += 1. / deltaTime;
 	numFps++;
-	// std::cout << "fps: " << 1 / deltaTime << "             " << '\r';
-	// if (fractionsOfSecondPassed > 1.) {
-	// 	std::cout << "fps: " << framesPassed << "      \r";
-	// 	fractionsOfSecondPassed = 0;
-	// 	framesPassed = 0;
-	// }
+	std::cout << "fps: " << 1 / deltaTime << "             " << '\r';
+	if (fractionsOfSecondPassed > 1.) {
+		std::cout << "fps: " << framesPassed << "      \r";
+		fractionsOfSecondPassed = 0;
+		framesPassed = 0;
+	}
 
 	if (glfwWindowShouldClose(_engineWindow._window))
 		running = false;
@@ -41,8 +41,9 @@ void Engine::render() {
 	glfwPollEvents();
 	// update_materials();
 	draw_frame();
-	worldObjectsToDraw.clear();
+	worldObjectsToDraw		  .clear();
 	texturedWorldObjectsToDraw.clear();
+	pointsWorldObjectsToDraw  .clear();
 }
 
 void Engine::draw(WorldObject objeto) {
@@ -51,6 +52,10 @@ void Engine::draw(WorldObject objeto) {
 
 void Engine::draw(TexturedWorldObject objeto) {
 	texturedWorldObjectsToDraw.push_back(objeto);
+}
+
+void Engine::draw(PointsWorldObject objeto) {
+	pointsWorldObjectsToDraw.push_back(objeto);
 }
 
 void Engine::uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr, bool autoIndex) {
@@ -122,6 +127,7 @@ void Engine::cleanup() {
 
 	defaultMaterial.get()->cleanup();
 	texturedMaterial.get()->cleanup();
+	pointsMaterial.get()->cleanup();
 
 	// for (auto mesh : meshesMap) {
 	// 	mesh.second->cleanup();
@@ -488,7 +494,7 @@ void Engine::draw_frame() {
 		// }
 
 		void* data;
-		// * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
+		// * Agregar los valores de proyeccion de view y proj
 		vkMapMemory(_device, global_projection_buffer_memory, 0, sizeof(VP), 0, &data);
 			memcpy(data, &globalVPBuffer, sizeof(VP));
 		vkUnmapMemory(_device, global_projection_buffer_memory);
@@ -499,16 +505,27 @@ void Engine::draw_frame() {
 		// vkUnmapMemory(_device, global_lighting_info_buffer_memory);
 
 		// * Lo voy a hacer hard-coded por ahora
+			vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, defaultMaterial.get()->pipeline);
+			defaultMaterial.get()->setup_descriptor_set(commandBuffers[imageIndex]);
 			for (int i = 0; i < worldObjectsToDraw.size(); i++) {
 				worldObjectsToDraw[i].draw(commandBuffers[imageIndex], i, meshConstants);
 			}
 
+			vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, texturedMaterial.get()->pipeline);
+			texturedMaterial.get()->setup_descriptor_set(commandBuffers[imageIndex]);
 			for (int i = 0; i < texturedWorldObjectsToDraw.size(); i++) {
 				texturedWorldObjectsToDraw[i].draw(commandBuffers[imageIndex], i + worldObjectsToDraw.size(), meshConstants);
 			}
 
-		defaultMaterial.get()->currObject = 0;
+			vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pointsMaterial.get()->pipeline);
+			pointsMaterial.get()->setup_descriptor_set(commandBuffers[imageIndex]);
+			for (int i = 0; i < pointsWorldObjectsToDraw.size(); i++) {
+				pointsWorldObjectsToDraw[i].draw(commandBuffers[imageIndex], i + worldObjectsToDraw.size() + texturedWorldObjectsToDraw.size(), meshConstants);
+			}
+
+		defaultMaterial .get()->currObject = 0;
 		texturedMaterial.get()->currObject = 0;
+		pointsMaterial	 .get()->currObject = 0;
 
 		// for (auto material : materialsMap) {
 		// 	material.second->currObject = 0;
@@ -595,6 +612,7 @@ void Engine::recreate_swapchain() {
 
 	defaultMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
 	texturedMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
+	pointsMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
 
 	// // * clear all materials
 	// // materialsMap.clear();
@@ -652,6 +670,9 @@ void Engine::create_texture_sampler() {
 		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
 
 		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerInfo.minLod = .0;
+		samplerInfo.maxLod = static_cast<float>(16);
+		samplerInfo.mipLodBias = .0;
 
 	if (vkCreateSampler(_device, &samplerInfo, nullptr, &_textureSampler) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create texture sampler!");
@@ -707,6 +728,9 @@ void Engine::init_materials() {
 
 	texturedMaterial = std::make_shared<Textured_Material>(texturesVector, &_textureSampler);
 	uploadMaterialToEngine(texturedMaterial);
+
+	pointsMaterial = std::make_shared<Points_Material>();
+	uploadMaterialToEngine(pointsMaterial);
 }
 
 void Engine::init_meshes() {

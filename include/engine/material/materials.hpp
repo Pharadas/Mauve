@@ -63,7 +63,7 @@ private:
         {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de transformaciones
     };
 
-    VkShaderModule create_shader_module(const std::vector<char>& code);
+    // VkShaderModule create_shader_module(const std::vector<char>& code);
 };
 
 // * TEXTURED MATERIAL //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,6 +84,25 @@ private:
         {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT} // * Combined image sampler
     };
 };
+
+// * POINTS MATERIAL //////////////////////////////////////////////////////////////////////////////////////////////////////////
+class Points_Material : public Material {
+public:
+    Points_Material();
+    virtual void setup_descriptor_set(VkCommandBuffer cmdBffr);
+    virtual void build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer);
+    virtual void recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent);
+    virtual void build_material_pipeline(char const* vertShaderPath, char const* fragShaderPath, VkRenderPass renderPass, VkExtent2D swapchainExtent);
+
+private:
+    std::vector<Texture> texturesVector;
+    VkSampler* sampler;
+
+    std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
+        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de transformaciones
+    };
+};
+
 
 // // * TEXTURED LIT MATERIAL ///////////////////////////////////////////////////////////////////////////////////////////////////////
 

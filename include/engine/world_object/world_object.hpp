@@ -33,6 +33,13 @@ public:
 	int texture;
 };
 
+class PointsWorldObject : public WorldObject {
+public:
+    PointsWorldObject(std::shared_ptr<Mesh> inputMesh, std::shared_ptr<Material> inputMaterial);
+    virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
+};
+
+
 // class TexturedLitWorldObject : public WorldObject {
 // public:
 //     TexturedLitWorldObject(Mesh* inputMesh, Textured_Lit_Material* inputMaterial, int texNum, glm::vec3 inputColor);

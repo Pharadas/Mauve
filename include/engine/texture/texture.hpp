@@ -14,4 +14,5 @@ public:
 
 private:
     VkImage _textureImage;
+	uint32_t mipLevels;
 };

@@ -7,11 +7,13 @@
 #include <PerlinNoise.hpp>
 #include <engine/world_object/world_object.hpp>
 
-class Chunk {
+class GameChunk {
 public:
-   Chunk(glm::vec2 position, siv::PerlinNoise noise);
+   GameChunk(glm::vec2 position, siv::PerlinNoise noise, bool puntos);
 
-   std::shared_ptr<Mesh> mesh;
+   std::shared_ptr<Mesh> chunkMesh;
+   std::shared_ptr<Mesh> outSideMesh;
+   std::shared_ptr<Mesh> inSideMesh;
 
 private:
    std::vector<Vertex> chunkVertices;
@@ -20,4 +22,6 @@ private:
    int chunkHeight = 256;
 
    float resolution = 1./chunkSize;
+
+   int cantidadDePuntos = 10000;
 };

@@ -30,92 +30,78 @@
 
         try {
             mauve.init(texturesPaths);
-            std::vector<TexturedWorldObject> cosas;
 
-            auto cosaIndices = std::make_shared<Mesh>();
-
-            // std::vector<Vertex> vertices = {
-            //     // * atras ./
-            //     {{0.5f,  0.5f, -0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
-            //     {{0.5f, -0.5f, -0.5f}, {1, 1, 1},  {0.0f, 1.0f}},
-            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-            //     {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
-            //     {{0.5f,  0.5f, -0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
-
-            //     // * frente ./
-            //     {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-            //     {{0.5f, -0.5f,  0.5f}, {1, 1, 1},  {0.0f, 1.0f}},
-            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
-            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1},  {0.0f, 0.0f}},
-            //     {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
-            //     {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-
-            //     // * izquierda ./
-            //     {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
-            //     {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
-            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-            //     {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
-            //     {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
-
-            //     // * Derecha ./
-            //     {{0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-            //     {{0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
-            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
-            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
-            //     {{0.5f, -0.5f,  0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
-            //     {{0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-
-            //     // * Abajo ./
-            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
-            //     {{0.5f, -0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-            //     {{0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
-            //     {{0.5f, -0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
-            //     {{-0.5f, -0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
-            //     {{-0.5f, -0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
-
-            //     // * Arriba ./
-            //     {{0.5f,  0.5f, -0.5f}, {1, 1, 1}, {1.0f, 1.0f}},
-            //     {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
-            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
-            //     {{-0.5f,  0.5f, -0.5f}, {1, 1, 1}, {0.0f, 1.0f}},
-            //     {{-0.5f,  0.5f,  0.5f}, {1, 1, 1}, {0.0f, 0.0f}},
-            //     {{0.5f,  0.5f,  0.5f}, {1, 1, 1}, {1.0f, 0.0f}},
-            // };
-
-            // cosaIndices->setVertices(vertices);
-            // // cosaIndices->indices = indices;
-            // mauve.uploadMeshToEngine(cosaIndices, true);
-            // TexturedWorldObject cosa(cosaIndices, mauve.texturedMaterial, mauve.texturesNumsMap["videoman"]);
-
-            int chunks = 20;
-            for (int x = -chunks; x < chunks; x++) {
-                for (int y = -chunks; y < chunks; y++) {
-                    // std::cout << x << '\n';
-                    Chunk thisChunk(glm::vec2(x, y), perlin);
-                    mauve.uploadMeshToEngine(thisChunk.mesh, false);
-                    TexturedWorldObject chunk(thisChunk.mesh, mauve.texturedMaterial, mauve.texturesNumsMap["videoman"]);
-
-                    chunk.position = glm::vec3(x * 16, 0, y * 16);
-                    cosas.push_back(chunk);
-                }
-            }
-
-            // // std::cout << x << '\n';
             // Chunk thisChunk(glm::vec2(0, 0), perlin);
+            // std::cout << "gaming" << '\n';
             // mauve.uploadMeshToEngine(thisChunk.mesh, false);
             // TexturedWorldObject chunk(thisChunk.mesh, mauve.texturedMaterial, 1);
 
             // chunk.position = glm::vec3(0, 0, 0);
-            // cosas.push_back(chunk);
+
+            // int numTex = 0;
+            // std::vector<TexturedWorldObject> chunks;
+            // int chunksTotal = 1;
+            // for (int x = -chunksTotal; x < chunksTotal; x++) {
+            //     std::cout << "trabajando en chunk de pos: x-" << x << '\n';
+            //     for (int z = -chunksTotal; z < chunksTotal; z++) {
+            //         // std::cout << x << '\n';
+            //         Chunk thisChunk(glm::vec2(x, z), perlin);
+            //         mauve.uploadMeshToEngine(thisChunk.mesh, false);
+            //         TexturedWorldObject chunk(thisChunk.mesh, mauve.texturedMaterial, numTex);
+            //         numTex == 0 ? numTex = 1 : numTex = 0;
+
+            //         chunk.position = glm::vec3(x * 16, 0, z * 16);
+            //         chunks.push_back(chunk);
+            //     }
+            // }
+
+            // int numTex = 0;
+            // std::vector<PointsWorldObject> chunks;
+            // int chunksTotal =   2;
+            // for (int x = -chunksTotal; x < chunksTotal; x++) {
+            //     std::cout << "trabajando en chunk de pos: x-" << x << '\n';
+            //     for (int z = -chunksTotal; z < chunksTotal; z++) {
+            //         // std::cout << x << '\n';
+            //         Chunk thisChunk(glm::vec2(x, z), perlin);
+            //         mauve.uploadMeshToEngine(thisChunk.chunkMesh, false);
+            //         PointsWorldObject chunk(thisChunk.chunkMesh, mauve.pointsMaterial);
+            //         numTex == 0 ? numTex = 1 : numTex = 0;
+
+            //         chunk.position = glm::vec3(x * 16, 0, z * 16);
+            //         chunks.push_back(chunk);
+            //     }
+            // }
+
+            int numTex = 0;
+            std::vector<TexturedWorldObject> chunks;
+            std::vector<PointsWorldObject> pointChunks;
+            int chunksTotal = 1;
+            for (int x = -chunksTotal; x < chunksTotal; x++) {
+                std::cout << "trabajando en chunk de pos: x-" << x << '\n';
+                for (int z = -chunksTotal; z < chunksTotal; z++) {
+                    GameChunk thisChunk(glm::vec2(x, z), perlin, true);
+                    mauve.uploadMeshToEngine(thisChunk.chunkMesh, false);
+                    PointsWorldObject pointsChunk(thisChunk.chunkMesh, mauve.pointsMaterial);
+
+                    GameChunk thatChunk(glm::vec2(x, z), perlin, false);
+                    mauve.uploadMeshToEngine(thatChunk.chunkMesh, false);
+                    TexturedWorldObject chunk(thatChunk.chunkMesh, mauve.texturedMaterial, 1);
+
+                    chunk.position = glm::vec3(x * 16, 0, z * 16);
+                    pointsChunk.position = glm::vec3(x * 16, 0, z * 16);
+                    chunks.push_back(chunk);
+                    pointChunks.push_back(pointsChunk);
+                }
+            }
+
 
             while (mauve.running) {
-                for (int i = 0; i < cosas.size(); i++) {
-                    mauve.draw(cosas[i]);
+                for (int i = 0; i < chunks.size(); i++) {
+                    mauve.draw(chunks[i]);
+                    mauve.draw(pointChunks[i]);
                 }
                 // mauve.draw(chunk);
-                // mauve.draw(cosa);
+                // mauve.draw(newChunk);
 
                 mauve.render();
             }

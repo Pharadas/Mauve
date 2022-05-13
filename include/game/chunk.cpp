@@ -52,7 +52,7 @@ GameChunk::GameChunk(glm::vec2 position, siv::PerlinNoise noise, bool puntos) {
          }
       }
 
-      std::cout << (16.*16.)*(float(puntosDentro) / float(cantidadDePuntos)) << '\n';
+      // std::cout << (16.*16.)*(float(puntosDentro) / float(cantidadDePuntos)) << '\n';
    }
 
    // std::vector<Vertex> atras = {

@@ -7,16 +7,10 @@ WorldObject::WorldObject(std::shared_ptr<Mesh> inputMesh, std::shared_ptr<Materi
 }
 
 void WorldObject::draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants) {
-	// * La funcion draw() del objeto se encarga de actualizar el pushConstant con el numero de textura correcto
-	// * Preparar la push constant
-	pushConstants.numOfObjectWithinMaterial = material->currObject;
-	material->currObject++;
-
-	glm::mat4 model{1.f};
-		model = glm::rotate(model, glm::radians(rotation), glm::vec3(1, 1, 1));
-		model = glm::scale(model, scale);
-		model = glm::translate(model, position);
-		pushConstants.modelMatrix = model;
+	// // * La funcion draw() del objeto se encarga de actualizar el pushConstant con el numero de textura correcto
+	// // * Preparar la push constant
+	// pushConstants.numOfObjectWithinMaterial = material->currObject;
+	// material->currObject++;
 
 	vkCmdPushConstants(cmdBffr, material->pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(MeshPushConstants), &pushConstants);
 	VkDeviceSize offset = 0;
@@ -37,19 +31,7 @@ TexturedWorldObject::TexturedWorldObject(std::shared_ptr<Mesh> inputMesh, std::s
 }
 
 void TexturedWorldObject::draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants) {
-	// * La funcion draw() del objeto se encarga de actualizar el pushConstant con el numero de textura correcto
-	// * Preparar la push constant
-	pushConstants.numOfTexture = texture;
-	pushConstants.numOfObjectWithinMaterial = material->currObject;
-	material->currObject++;
-
-	glm::mat4 model{1.f};
-		model = glm::rotate(model, glm::radians(rotation), glm::vec3(1, 1, 1));
-		model = glm::scale(model, scale);
-		model = glm::translate(model, position);
-		pushConstants.modelMatrix = model;
-
-	material->setup_descriptor_set(cmdBffr);
+	// material->currObject++;
 
 	vkCmdPushConstants(cmdBffr, material->pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(MeshPushConstants), &pushConstants);
 	VkDeviceSize offset = 0;
@@ -74,12 +56,12 @@ void PointsWorldObject::draw(VkCommandBuffer cmdBffr, int instance, MeshPushCons
 	material->currObject++;
 
 	glm::mat4 model{1.f};
-		model = glm::rotate(model, glm::radians(rotation), glm::vec3(1, 1, 1));
+		model = glm::rotate(model, glm::radians(xRotation), glm::vec3(1, 0, 0));
+		model = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
+		model = glm::rotate(model, glm::radians(zRotation), glm::vec3(0, 0, 1));
 		model = glm::scale(model, scale);
 		model = glm::translate(model, position);
 		pushConstants.modelMatrix = model;
-
-	material->setup_descriptor_set(cmdBffr);
 
 	vkCmdPushConstants(cmdBffr, material->pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(MeshPushConstants), &pushConstants);
 	VkDeviceSize offset = 0;

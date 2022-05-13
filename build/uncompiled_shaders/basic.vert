@@ -13,25 +13,14 @@ layout(binding = 0) uniform VP {
     mat4 projection;
 } vp;
 
-// struct ObjectData{
-//     mat4 model;
-//     mat4 view;
-//     mat4 proj;
-// };
-
-// //all object matrices
-// layout(std140,set = 0, binding = 0) readonly buffer ObjectBuffer{
-// 	ObjectData objects[];
-// } objectBuffer;
-
-layout(push_constant) uniform constants {
-    int numOfTexture;
-    int numOfObjectWithinMaterial;
-    mat4 modelMatrix;
-} PushConstants;
+//all object matrices
+layout(std140,set = 0, binding = 1) readonly buffer ObjectBuffer{
+	mat4 modelMatrices[];
+} objectBuffer;
 
 void main() {
-    FragPos = vec3(PushConstants.modelMatrix * vec4(inPosition, 1.0));
+    FragPos = vec3(objectBuffer.modelMatrices[gl_BaseInstance] * vec4(inPosition, 1.));
+    // FragPos = vec3(PushConstants.modelMatrix * vec4(inPosition, 1.0));
     // Normal = mat3(transpose(inverse(objectBuffer.objects[gl_BaseInstance].model))) * inNormal;  
     gl_Position = vp.projection * vp.view * vec4(FragPos, 1.0);
 

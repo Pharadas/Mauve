@@ -29,7 +29,9 @@ file(GLOB SOURCES "*/.cpp"
 				  "include/engine/world_object/*.cpp"
 				  "include/engine/material/*.cpp")
 
+# set(CMAKE_BUILD_TYPE Release)
 set (CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 LINK_DIRECTORIES(lib/)
 

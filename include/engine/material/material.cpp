@@ -17,18 +17,22 @@ VkShaderModule create_shader_module(const std::vector<char>& code) {
 
 Material::Material() {}
 
-void Material::build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer) {
-    std::cout << "no gaming" << '\n';
-    // * Guardar globalProjectionBuffer en un struct para poder usarlo
-    VkDescriptorBufferInfo bufferInfo {};
-        bufferInfo.buffer = globalProjectionBuffer;
-        bufferInfo.offset = 0;
-        bufferInfo.range = sizeof(VP);
+void Material::build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer, VkBuffer globalModelMatrixBuffer, VkBuffer globalMaterialObjectNumberBuffer) {
+    VkDescriptorBufferInfo projectionViewBuffer {};
+        projectionViewBuffer.buffer = globalProjectionBuffer;
+        projectionViewBuffer.offset = 0;
+        projectionViewBuffer.range = sizeof(VP);
+
+    VkDescriptorBufferInfo modelMatrixBuffer {};
+        modelMatrixBuffer.buffer = globalModelMatrixBuffer;
+        modelMatrixBuffer.offset = 0;
+        modelMatrixBuffer.range = sizeof(glm::mat4) * maxObjects;
 
     descriptorLayouts = 1;
     // * Build the descriptor sets
     builder = DescriptorBuilder::begin(&descriptorLayoutCache, &descriptorAllocator);
-        builder.bind_buffer(0, &bufferInfo, typesAndFlags[0].first, typesAndFlags[0].second);
+        builder.bind_buffer(0, &projectionViewBuffer,       typesAndFlags[0].first, typesAndFlags[0].second);
+        builder.bind_buffer(1, &modelMatrixBuffer,          typesAndFlags[1].first, typesAndFlags[1].second);
     builder.build(descriptorSets, descriptorSetLayouts);
 
     build_material_pipeline("shaders/basic.vert.spv", "shaders/basic.frag.spv", renderPass, swapchainExtent);
@@ -39,6 +43,7 @@ void Material::setup_descriptor_set(VkCommandBuffer cmdBffr) {
 }
 
 void Material::build_material_pipeline(char const* vertShaderPath, char const* fragShaderPath, VkRenderPass renderPass, VkExtent2D swapchainExtent) {
+    std::cout << "Creating material pipeline for shader: " << vertShaderPath << '\n';
     auto vertShaderCode = readFile(vertShaderPath);
     auto fragShaderCode = readFile(fragShaderPath);
 
@@ -203,13 +208,28 @@ Textured_Material::Textured_Material(std::vector<Texture> textures, VkSampler* i
     sampler = inputSampler;
 }
 
-void Textured_Material::build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer) {
-    std::cout << "gaming" << '\n';
+void Textured_Material::build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer, VkBuffer globalModelMatrixBuffer, VkBuffer globalMaterialObjectNumberBuffer) {
+	create_buffer(sizeof(int) * maxObjects, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, localTextureNumberBuffer, localTextureNumberBufferMemory);
     // * Crear buffer para el struct GlobalProjectionInfo
-    descriptorBufferInfo = {};
-        descriptorBufferInfo.buffer = globalProjectionBuffer;
-        descriptorBufferInfo.offset = 0;
-        descriptorBufferInfo.range = sizeof(VP);
+    VkDescriptorBufferInfo projectionViewBuffer {};
+        projectionViewBuffer.buffer = globalProjectionBuffer;
+        projectionViewBuffer.offset = 0;
+        projectionViewBuffer.range = sizeof(VP);
+
+    VkDescriptorBufferInfo modelMatrixBuffer {};
+        modelMatrixBuffer.buffer = globalModelMatrixBuffer;
+        modelMatrixBuffer.offset = 0;
+        modelMatrixBuffer.range = sizeof(glm::mat4) * maxObjects;
+
+    VkDescriptorBufferInfo materialObjectNumberBuffer {};
+        materialObjectNumberBuffer.buffer = globalMaterialObjectNumberBuffer;
+        materialObjectNumberBuffer.offset = 0;
+        materialObjectNumberBuffer.range = sizeof(int) * maxObjects;
+
+    VkDescriptorBufferInfo objectsTexturesNumbers {};
+        objectsTexturesNumbers.buffer = localTextureNumberBuffer;
+        objectsTexturesNumbers.offset = 0;
+        objectsTexturesNumbers.range = sizeof(int) * maxObjects;
 
     std::vector<VkDescriptorImageInfo> imagesInfo(texturesVector.size());
     for (size_t i = 0; i < texturesVector.size(); i++) {
@@ -222,9 +242,12 @@ void Textured_Material::build(VkRenderPass renderPass, VkExtent2D swapchainExten
     // * Build the descriptor sets
     builder = DescriptorBuilder::begin(&descriptorLayoutCache, &descriptorAllocator);
         // * Global buffer info
-        builder.bind_buffer(0, &descriptorBufferInfo, typesAndFlags[0].first, typesAndFlags[0].second);
+        builder.bind_buffer(0, &projectionViewBuffer,       typesAndFlags[0].first, typesAndFlags[0].second);
+        builder.bind_buffer(1, &modelMatrixBuffer,          typesAndFlags[1].first, typesAndFlags[1].second);
+        builder.bind_buffer(2, &materialObjectNumberBuffer, typesAndFlags[2].first, typesAndFlags[2].second);
+        builder.bind_buffer(3, &objectsTexturesNumbers,     typesAndFlags[3].first, typesAndFlags[3].second);
         // * Textures + samplers
-        builder.bind_image( 1, imagesInfo, descriptorSets, typesAndFlags[1].first, typesAndFlags[1].second);
+        builder.bind_image(4, imagesInfo, descriptorSets,   typesAndFlags[4].first, typesAndFlags[4].second);
     builder.build(descriptorSets, descriptorSetLayouts);
 
     build_material_pipeline("shaders/basic_textured.vert.spv", "shaders/basic_textured.frag.spv", renderPass, swapchainExtent);

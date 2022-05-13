@@ -38,7 +38,7 @@ public:
     void rebuild_material();
     virtual void setup_descriptor_set(VkCommandBuffer cmdBffr);
     virtual void recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent);
-    virtual void build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer);
+    virtual void build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer, VkBuffer globalModelMatrixBuffer, VkBuffer globalMaterialObjectNumberBuffer);
     virtual void cleanup();
     void resize_cleanup();
 
@@ -53,14 +53,16 @@ public:
     VkDescriptorBufferInfo descriptorBufferInfo;
 
     int descriptorLayouts = 0;
-    int maxObjects = 1000;
+    int maxObjects = 500;
 
     int currObject = 0;
 
 private:
     VkDeviceMemory         bufferMemory;
     std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
-        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de transformaciones
+        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de view y projection
+        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT}, // * Informacion de transformaciones del modelo
+        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT}, // * Informacion de numero de objeto dentro del material
     };
 
     // VkShaderModule create_shader_module(const std::vector<char>& code);
@@ -72,8 +74,11 @@ public:
     Textured_Material();
     Textured_Material(std::vector<Texture> textures, VkSampler* sampler);
     virtual void setup_descriptor_set(VkCommandBuffer cmdBffr);
-    virtual void build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer);
+    virtual void build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer, VkBuffer globalModelMatrixBuffer, VkBuffer globalMaterialObjectNumberBuffer);
     virtual void recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent);
+
+	VkBuffer localTextureNumberBuffer;
+	VkDeviceMemory localTextureNumberBufferMemory;
 
 private:
     std::vector<Texture> texturesVector;
@@ -81,6 +86,9 @@ private:
 
     std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
         {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de transformaciones
+        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de transformaciones del modelo
+        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de numero de objeto dentro del material
+        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Numero de la textura
         {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT} // * Combined image sampler
     };
 };

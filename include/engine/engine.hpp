@@ -33,7 +33,7 @@ class Engine {
 public:
 	bool _frameBuffer_resized = false;
 	bool running = true;
-	float deltaTime;
+	double deltaTime;
 
 	std::shared_ptr<Material> defaultMaterial;
 	std::shared_ptr<Textured_Material> texturedMaterial;
@@ -58,6 +58,10 @@ private:
 	float sumFps = 0;
 	int numFps = 0;
 
+	// Shadow mapping
+	glm::mat4 shadowMapProjectionMatrix;
+	glm::mat4 shadowMapClipMatrix;
+
 	// Renderables
 	std::vector<WorldObject> 		 	worldObjectsToDraw;
 	std::vector<TexturedWorldObject> texturedWorldObjectsToDraw;
@@ -73,7 +77,7 @@ private:
 
 	VkDebugUtilsMessengerEXT _debugMessenger;
 
-	float fractionsOfSecondPassed = 0;
+	double fractionsOfSecondPassed = 0;
 	int framesPassed = 0;
 
 	VkCommandPool _commandPool;
@@ -82,7 +86,7 @@ private:
 	VkSemaphore _imageAvailableSemaphore;
 	VkSemaphore _renderFinishedSemaphore;
 	const int MAX_FRAMES_IN_FLIGHT = 2;
-	const unsigned int MAX_OBJECTS = 5000;
+	const unsigned int MAX_OBJECTS = 500;
 
 	std::vector<VkSemaphore> _imageAvailableSemaphores;
 	std::vector<VkSemaphore> _renderFinishedSemaphores;
@@ -107,8 +111,15 @@ private:
 	VkBuffer global_vertex_buffer;
 	VkDeviceMemory global_vertex_buffer_memory;
 
+	VkBuffer global_model_matrix_buffer;
+	VkDeviceMemory global_model_matrix_buffer_memory;
+
+	VkBuffer global_material_object_number_buffer;
+	VkDeviceMemory global_material_object_number_buffer_memory;
+
 	VkBuffer global_projection_buffer;
 	VkDeviceMemory global_projection_buffer_memory;
+
 	VkBuffer global_lighting_info_buffer;
 	VkDeviceMemory global_lighting_info_buffer_memory;
 

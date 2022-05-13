@@ -57,6 +57,7 @@ VkExtent2D Window::choose_swap_extent(const VkSurfaceCapabilitiesKHR& capabiliti
 }
 
 void Window::create_image_views() {
+	// * Create swapchain image views
 	_swapChainImageViews.resize(_swapChainImages.size());
 
 	for (size_t i = 0; i < _swapChainImages.size(); i++) {
@@ -78,6 +79,39 @@ void Window::create_image_views() {
 		if (vkCreateImageView(_device, &createInfo, nullptr, &_swapChainImageViews[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image views!");
 		}
+	}
+
+	// * Create shadowmap image
+	create_image(_swapChainExtent.width,
+					 _swapChainExtent.height,
+					 1,
+					 VK_FORMAT_D32_SFLOAT,
+					 VK_IMAGE_TILING_OPTIMAL,
+					 VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+					 VK_IMAGE_ASPECT_DEPTH_BIT,
+					 _shadowMapImage,
+					 _shadowMapImageMemory);
+
+	// * ShadowMap image view creation
+	VkImageViewCreateInfo view_info = {};
+		view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		view_info.pNext = NULL;
+		view_info.image = _shadowMapImage;
+		view_info.format = VK_FORMAT_D32_SFLOAT;
+		view_info.components.r = VK_COMPONENT_SWIZZLE_R;
+		view_info.components.g = VK_COMPONENT_SWIZZLE_G;
+		view_info.components.b = VK_COMPONENT_SWIZZLE_B;
+		view_info.components.a = VK_COMPONENT_SWIZZLE_A;
+		view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		view_info.subresourceRange.baseMipLevel = 0;
+		view_info.subresourceRange.levelCount = 1;
+		view_info.subresourceRange.baseArrayLayer = 0;
+		view_info.subresourceRange.layerCount = 1;
+		view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		view_info.flags = 0;
+
+	if (vkCreateImageView(_device, &view_info, VK_NULL_HANDLE, &_shadowMapImageView) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create shadowmap image view!");
 	}
 }
 
@@ -102,6 +136,23 @@ void Window::create_framebuffers(VkDevice device) {
 		if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &_swapchainFrameBuffers[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create framebuffer!");
 		}
+	}
+}
+
+void Window::create_offscreen_framebuffer() {
+	VkFramebufferCreateInfo fb_info;
+		fb_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		fb_info.pNext = NULL;
+		fb_info.renderPass = _shadowMappingRenderPass;
+		fb_info.attachmentCount = 1;
+		fb_info.pAttachments = &_shadowMapImageView;
+		fb_info.width = _swapChainExtent.width;
+		fb_info.height = _swapChainExtent.height;
+		fb_info.layers = 1;
+		fb_info.flags = 0;
+
+	if (vkCreateFramebuffer(_device, &fb_info, NULL, &shadow_map_fb) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create shadow mapping framebuffer!");
 	}
 }
 
@@ -163,6 +214,54 @@ void Window::create_renderpass() {
 	}
 }
 
+void Window::create_offscreen_renderpass() {
+	VkAttachmentDescription attachments[2];
+		// Depth attachment (shadow map)
+		attachments[0].format = VK_FORMAT_D32_SFLOAT;
+		attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
+		attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		attachments[0].flags = 0;
+
+   // Attachment references from subpasses
+   VkAttachmentReference depth_ref;
+		depth_ref.attachment = 0;
+		depth_ref.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+   // Subpass 0: shadow map rendering
+   VkSubpassDescription subpass[1];
+		subpass[0].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpass[0].flags = 0;
+		subpass[0].inputAttachmentCount = 0;
+		subpass[0].pInputAttachments = NULL;
+		subpass[0].colorAttachmentCount = 0;
+		subpass[0].pColorAttachments = NULL;
+		subpass[0].pResolveAttachments = NULL;
+		subpass[0].pDepthStencilAttachment = &depth_ref;
+		subpass[0].preserveAttachmentCount = 0;
+		subpass[0].pPreserveAttachments = NULL;
+
+   // Create render pass
+   VkRenderPassCreateInfo rp_info;
+		rp_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		rp_info.pNext = NULL;
+		rp_info.attachmentCount = 1;
+		rp_info.pAttachments = attachments;
+		rp_info.subpassCount = 1;
+		rp_info.pSubpasses = subpass;
+		rp_info.dependencyCount = 0;
+		rp_info.pDependencies = NULL;
+		rp_info.flags = 0;
+
+   if (vkCreateRenderPass(_device, &rp_info, NULL, &_shadowMappingRenderPass) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create shadow mapping pass!");
+	}
+}
+
 void Window::create_depth_resources() {
 	VkFormat depthFormat = find_depth_format();
 
@@ -174,4 +273,8 @@ void Window::cleanup_depth_image(){
 	vkDestroyImageView(_device, _depthImageView, nullptr);
 	vkDestroyImage(_device, _depthImage, nullptr);
 	vkFreeMemory(_device, _depthImageMemory, nullptr);
+
+	vkDestroyImageView(_device, _shadowMapImageView, nullptr);
+	vkDestroyImage(_device, _shadowMapImage, nullptr);
+	vkFreeMemory(_device, _shadowMapImageMemory, nullptr);
 }

@@ -74,60 +74,62 @@
 
             mauve.uploadMeshToEngine(icosahedro, false);
 
-            WorldObject objeto(icosahedro, mauve.defaultMaterial);
+            // WorldObject objeto(icosahedro, mauve.defaultMaterial);
 
-            // TexturedWorldObject objetoConTextura(icosahedro, mauve.texturedMaterial, 0);
+            TexturedWorldObject objetoConTextura(icosahedro, mauve.texturedMaterial, 0);
 
-            int numTex = 0;
-            std::vector<TexturedWorldObject> chunks;
-            // std::vector<WorldObject> chunks;
-            // std::vector<PointsWorldObject> pointChunks;
-            int chunksTotal = 10;
-            for (int x = -chunksTotal; x < chunksTotal; x++) {
-                for (int z = -chunksTotal; z < chunksTotal; z++) {
-                    // std::cout << "trabajando en chunk de pos: x = " << x << " z = " << z << "           \r";
+            // int numTex = 0;
+            // std::vector<TexturedWorldObject> chunks;
+            // // std::vector<WorldObject> chunks;
+            // // std::vector<PointsWorldObject> pointChunks;
+            // int chunksTotal = 10;
+            // for (int x = -chunksTotal; x < chunksTotal; x++) {
+            //     for (int z = -chunksTotal; z < chunksTotal; z++) {
+            //         // std::cout << "trabajando en chunk de pos: x = " << x << " z = " << z << "           \r";
 
-                    // GameChunk thatChunk(glm::vec2(x, z), perlin, false);
-                    // mauve.uploadMeshToEngine(thatChunk.chunkMesh, false);
+            //         // GameChunk thatChunk(glm::vec2(x, z), perlin, false);
+            //         // mauve.uploadMeshToEngine(thatChunk.chunkMesh, false);
 
-                    // TexturedWorldObject chunk(thatChunk.chunkMesh, mauve.texturedMaterial, 1);
-                    // chunk.position = glm::vec3(x * 16, 0, z * 16);
-                    // chunks.push_back(chunk);
-                    // // WorldObject chunk(thatChunk.chunkMesh, mauve.defaultMaterial);
+            //         // TexturedWorldObject chunk(thatChunk.chunkMesh, mauve.texturedMaterial, 1);
+            //         // chunk.position = glm::vec3(x * 16, 0, z * 16);
+            //         // chunks.push_back(chunk);
+            //         // // WorldObject chunk(thatChunk.chunkMesh, mauve.defaultMaterial);
 
-                    // // pointsChunk.position = glm::vec3(x * 16, 0, z * 16);
-                    // // chunks.push_back(chunk);
-                    // // pointChunks.push_back(pointsChunk);
-                    TexturedWorldObject cosa(icosahedro, mauve.texturedMaterial, 1);
-                    cosa.position = glm::vec3(x, 0, z);
-                    chunks.push_back(cosa);
-                }
-            }
+            //         // // pointsChunk.position = glm::vec3(x * 16, 0, z * 16);
+            //         // // chunks.push_back(chunk);
+            //         // // pointChunks.push_back(pointsChunk);
+            //         TexturedWorldObject cosa(icosahedro, mauve.texturedMaterial, 1);
+            //         cosa.position = glm::vec3(x, 0, z);
+            //         chunks.push_back(cosa);
+            //     }
+            // }
 
-            // std::cout << '\n' << "Cantidad de puntos total: " << 2 * pow(chunksTotal, 2) * 10000 << '\n';
-            // chunks[0].position += glm::vec3(0, 0, 100);
-            objeto.position = glm::vec3(0, 0, 0);
+            // // std::cout << '\n' << "Cantidad de puntos total: " << 2 * pow(chunksTotal, 2) * 10000 << '\n';
+            // // chunks[0].position += glm::vec3(0, 0, 100);
+            // objeto.position = glm::vec3(0, 0, 0);
 
-            int counter = 0;
+            // int counter = 0;
             while (mauve.running) {
-                for (int i = 0; i < chunks.size(); i++) {
-                    mauve.draw(chunks[i]);
-                    // mauve.draw(pointChunks[i]);
-                }
+                // mauve.draw(objeto);
+                // for (int i = 0; i < chunks.size(); i++) {
+                //     mauve.draw(chunks[i]);
+                //     // mauve.draw(pointChunks[i]);
+                // }
+                mauve.draw(objetoConTextura);
 
-                if (counter > 100) {
-                    int cosa = 0;
-                    std::cout << "Changing texture of chunk: " << cosa << '\n';
-                    chunks[cosa].texture = (chunks[cosa].texture + 1) % 3;
-                    counter = 0;
-                }
+                // if (counter > 100) {
+                //     int cosa = 0;
+                //     std::cout << "Changing texture of chunk: " << cosa << '\n';
+                //     chunks[cosa].texture = (chunks[cosa].texture + 1) % 3;
+                //     counter = 0;
+                // }
 
                 // mauve.draw(chunk);
                 // mauve.draw(newChunk);
                 // mauve.draw(objeto);
                 // mauve.draw(objetoConTextura);
 
-                counter++;
+                // counter++;
                 mauve.render();
             }
 

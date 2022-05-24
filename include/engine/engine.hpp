@@ -33,11 +33,10 @@ class Engine {
 public:
 	bool _frameBuffer_resized = false;
 	bool running = true;
-	double deltaTime;
+	float deltaTime;
 
 	std::shared_ptr<Material> defaultMaterial;
 	std::shared_ptr<Textured_Material> texturedMaterial;
-	std::shared_ptr<Points_Material> pointsMaterial;
 	Camera _camera;
 	std::unordered_map<std::string, int> texturesNumsMap;
 
@@ -46,7 +45,6 @@ public:
 
 	void draw(WorldObject objeto);
 	void draw(TexturedWorldObject objeto);
-	void draw(PointsWorldObject objeto);
 
 	void uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr, bool autoIndex);
 	// * Por ahora solo existe para que en el futuro los usuarios puedan crear sus propios materiales
@@ -58,14 +56,9 @@ private:
 	float sumFps = 0;
 	int numFps = 0;
 
-	// Shadow mapping
-	glm::mat4 shadowMapProjectionMatrix;
-	glm::mat4 shadowMapClipMatrix;
-
 	// Renderables
-	std::vector<WorldObject> 		 	worldObjectsToDraw;
+	std::vector<WorldObject> 		 worldObjectsToDraw;
 	std::vector<TexturedWorldObject> texturedWorldObjectsToDraw;
-	std::vector<PointsWorldObject> 	pointsWorldObjectsToDraw;
 
 	// private members
 	VkInstance _instance;
@@ -77,7 +70,7 @@ private:
 
 	VkDebugUtilsMessengerEXT _debugMessenger;
 
-	double fractionsOfSecondPassed = 0;
+	float fractionsOfSecondPassed = 0;
 	int framesPassed = 0;
 
 	VkCommandPool _commandPool;
@@ -86,7 +79,7 @@ private:
 	VkSemaphore _imageAvailableSemaphore;
 	VkSemaphore _renderFinishedSemaphore;
 	const int MAX_FRAMES_IN_FLIGHT = 2;
-	const unsigned int MAX_OBJECTS = 500;
+	const unsigned int MAX_OBJECTS = 5000;
 
 	std::vector<VkSemaphore> _imageAvailableSemaphores;
 	std::vector<VkSemaphore> _renderFinishedSemaphores;
@@ -111,15 +104,8 @@ private:
 	VkBuffer global_vertex_buffer;
 	VkDeviceMemory global_vertex_buffer_memory;
 
-	VkBuffer global_model_matrix_buffer;
-	VkDeviceMemory global_model_matrix_buffer_memory;
-
-	VkBuffer global_material_object_number_buffer;
-	VkDeviceMemory global_material_object_number_buffer_memory;
-
 	VkBuffer global_projection_buffer;
 	VkDeviceMemory global_projection_buffer_memory;
-
 	VkBuffer global_lighting_info_buffer;
 	VkDeviceMemory global_lighting_info_buffer_memory;
 

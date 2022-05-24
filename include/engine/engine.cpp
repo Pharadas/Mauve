@@ -2,12 +2,7 @@
 #include <engine/buffer_helper.hpp>
 #include <engine/helper_functions.hpp>
 
-// * DEBUGGING
-#include <glm/gtx/string_cast.hpp>
-
 #define MAX_VERTICES 64000;
-
-// gaming time
 
 void Engine::init(std::vector<std::string> texturePaths) {
 	_engineWindow.init_window("Vulkan Gamin", 800, 600);
@@ -17,28 +12,26 @@ void Engine::init(std::vector<std::string> texturePaths) {
 
 	init_textures(texturePaths);
 	init_materials();
+	// init_scene();
+	// main_loop();
+	// cleanup();
 }
 
 void Engine::render() {
 	// * Calculos para fps
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
-	if (deltaTime < 0)
-		deltaTime = 0.;
 	lastFrame = currentFrame;
 	fractionsOfSecondPassed += deltaTime;
 	framesPassed++;
 	sumFps += 1. / deltaTime;
 	numFps++;
 	// std::cout << "fps: " << 1 / deltaTime << "             " << '\r';
-	// std::cout << fractionsOfSecondPassed << "																		\n";
-	// std::cout << deltaTime << '\n';
-
-	if (fractionsOfSecondPassed > 1) {
-		std::cout << "fps: " << framesPassed << "      															\r";
-		fractionsOfSecondPassed = 0.;
-		framesPassed = 0;
-	}
+	// if (fractionsOfSecondPassed > 1.) {
+	// 	std::cout << "fps: " << framesPassed << "      \r";
+	// 	fractionsOfSecondPassed = 0;
+	// 	framesPassed = 0;
+	// }
 
 	if (glfwWindowShouldClose(_engineWindow._window))
 		running = false;
@@ -48,9 +41,8 @@ void Engine::render() {
 	glfwPollEvents();
 	// update_materials();
 	draw_frame();
-	worldObjectsToDraw		  .clear();
+	worldObjectsToDraw.clear();
 	texturedWorldObjectsToDraw.clear();
-	pointsWorldObjectsToDraw  .clear();
 }
 
 void Engine::draw(WorldObject objeto) {
@@ -61,20 +53,16 @@ void Engine::draw(TexturedWorldObject objeto) {
 	texturedWorldObjectsToDraw.push_back(objeto);
 }
 
-void Engine::draw(PointsWorldObject objeto) {
-	pointsWorldObjectsToDraw.push_back(objeto);
-}
-
 void Engine::uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr, bool autoIndex) {
 	// * Asignar memoria este mesh
 	meshPtr->build(_commandPool, _engineDevice._graphicsQueue, autoIndex);
 	meshesList.push_back(meshPtr);
 }
 
-// void Engine::uploadMaterialToEngine(std::shared_ptr<Material> materialPtr) {
-// 	// * Asignar memoria este mesh
-// 	materialPtr->build(_engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer, global_model_matrix_buffer, global_material_object_number_buffer);
-// }
+void Engine::uploadMaterialToEngine(std::shared_ptr<Material> materialPtr) {
+	// * Asignar memoria este mesh
+	materialPtr->build(_engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer);
+}
 
 void Engine::init_vulkan() {
 	create_instance();
@@ -85,12 +73,10 @@ void Engine::init_vulkan() {
 	create_swapchain();
 	_engineWindow.create_image_views();
 	_engineWindow.create_renderpass();
-	_engineWindow.create_offscreen_renderpass();
 
 	create_command_pool();
 	_engineWindow.create_depth_resources();
 	_engineWindow.create_framebuffers(_device);
-	_engineWindow.create_offscreen_framebuffer();
 
 	create_texture_sampler();
 
@@ -99,7 +85,31 @@ void Engine::init_vulkan() {
 	create_sync_objects();
 }
 
-void Engine::init_scene() {}
+void Engine::init_scene() {
+	// init_textures();
+	// init_materials();
+	// init_meshes();
+	// init_world();
+
+	// worldObjectsMap.insert(std::make_pair("icosahedron_light", new TexturedWorldObject(meshesMap["icosahedron"], materialsMap["textured"], 0)));
+}
+
+// void Engine::main_loop() {
+// 	Chunk thisChunk(glm::vec2(0, 0), perlin, _commandPool, _engineDevice._graphicsQueue, materialsMap["textured"]);
+
+// 	while (!glfwWindowShouldClose(_engineWindow._window)) {
+		
+
+// 		// worldObjectsToDraw.push_back(worldObjectsMap["worldCube"]);
+// 		worldObjectsToDraw.push_back(thisChunk.chunkRenderableObject.get());
+// 		// objectsToDraw.push_back(worldObjectsMap["icosahedron_light"]);
+// 		// // objectsToDraw.push_back(worldObjectsMap["icosahedron_space"]);
+// 		// objectsToDraw.push_back(worldObjectsMap["icosahedron_videoman_lit"]);
+// 		// worldObjectsMap["icosahedron_videoman_lit"]->rotation += 1;
+// 	}
+
+// 	vkDeviceWaitIdle(_device);
+// }
 
 void Engine::cleanup() {
 	std::cout << "ave fps = " << sumFps / numFps << '\n';
@@ -111,8 +121,7 @@ void Engine::cleanup() {
 	cleanup_swapchain();
 
 	defaultMaterial.get()->cleanup();
-	// texturedMaterial.get()->cleanup();
-	// pointsMaterial.get()->cleanup();
+	texturedMaterial.get()->cleanup();
 
 	// for (auto mesh : meshesMap) {
 	// 	mesh.second->cleanup();
@@ -408,118 +417,104 @@ void Engine::draw_frame() {
 
 	vkBeginCommandBuffer(commandBuffers[imageIndex], &bufferBeginInfo);
 
-		VkRenderPassBeginInfo renderPassInfo{};
-			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			renderPassInfo.renderPass = _engineWindow._renderPass;
-			renderPassInfo.framebuffer = _engineWindow._swapchainFrameBuffers[imageIndex];
-			renderPassInfo.renderArea.offset = {0, 0};
-			renderPassInfo.renderArea.extent = _engineWindow._swapChainExtent;
+	VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = _engineWindow._renderPass;
+		renderPassInfo.framebuffer = _engineWindow._swapchainFrameBuffers[imageIndex];
+		renderPassInfo.renderArea.offset = {0, 0};
+		renderPassInfo.renderArea.extent = _engineWindow._swapChainExtent;
 
-			std::array<VkClearValue, 2> clearValues{};
-				clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
-				clearValues[1].depthStencil = {1.0f, 0};
+		std::array<VkClearValue, 2> clearValues{};
+			clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+			clearValues[1].depthStencil = {1.0f, 0};
 
-			renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-			renderPassInfo.pClearValues = clearValues.data();
+		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassInfo.pClearValues = clearValues.data();
 
-		// now we begin the renderpass so that we can record commands to the command buffer
-		vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+	// now we begin the renderpass so that we can record commands to the command buffer
+	vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-			// * Actualizar el buffer global de los WorldObjects
-			glm::mat4 view = _camera.GetViewMatrix();
+		// * Actualizar el buffer global de los WorldObjects
+		glm::mat4 view = _camera.GetViewMatrix();
 
-			VP globalVP;
-				globalVP.proj = proj;
-				globalVP.view = view;
+		VP globalVPBuffer;
+			globalVPBuffer.proj = proj;
+			globalVPBuffer.view = view;
 
-			void* data;
-			// * Agregar los valores de proyeccion de view y proj
-			vkMapMemory(_device, global_projection_buffer_memory, 0, sizeof(VP), 0, &data);
-				memcpy(data, &globalVP, sizeof(VP));
-			vkUnmapMemory(_device, global_projection_buffer_memory);
+		MeshPushConstants meshConstants;
 
-			MeshPushConstants meshConstants;
+		// glm::mat4 objectsViewMatrices[MAX_OBJECTS] = {};
+		// LightingInfo lightingInfoForBuffer[MAX_OBJECTS] 		  = {};
 
-			// * Actualizar el global_model_matrix_buffer con todas las matrices de modelo de los objetos
-			glm::mat4 globalModelMatrices[MAX_OBJECTS];
-			int 		 objectsMaterialsNums[MAX_OBJECTS];
-			int		 objectsTexturesNums[MAX_OBJECTS];
+		// for (int i = 0; i < worldObjectsToDraw.size(); i++) {
+		// 	// * Llenar el buffer de GlobalProjectionInfo
+		// 	glm::mat4 model{1.f};
+		// 		model = glm::rotate(model, glm::radians(worldObjectsToDraw[i].rotation), glm::vec3(1, 1, 1));
+		// 		model = glm::scale(model, worldObjectsToDraw[i].scale);
+		// 		model = glm::translate(model, worldObjectsToDraw[i].position);
+		// 		meshConstants.modelMatrix = model; // * Por ahora lo dejo solo por la alineacion, me da flojera moverle xd
 
+		// 	// GlobalProjectionInfo gpi = {};
+		// 	// 	gpi.model = model;
+		// 	// 	gpi.proj = proj;
+		// 	// 	gpi.view = view;
+
+		// 	// objectsViewMatrices[i] = model;
+
+		// 	// // * Llenar el buffer de LightingInfo
+		// 	// LightingInfo li = {};
+		// 	// 	li.viewPos = _camera.Position;
+		// 	// 	li.objectColor = worldObjectsToDraw[i].color;
+		// 	// 	li.lightPos = worldObjectsMap["icosahedron_light"]->position;
+		// 	// 	li.lightColor = glm::vec3(1, 1, 1);
+
+		// 	// lightingInfoForBuffer[i] = li;
+		// }
+
+		// for (int i = 0; i < texturedWorldObjectsToDraw.size(); i++) {
+		// 	// * Llenar el buffer de GlobalProjectionInfo
+		// 	glm::mat4 model{1.f};
+		// 		model = glm::rotate(model, glm::radians(texturedWorldObjectsToDraw[i].rotation), glm::vec3(1, 1, 1));
+		// 		model = glm::scale(model, texturedWorldObjectsToDraw[i].scale);
+		// 		model = glm::translate(model, texturedWorldObjectsToDraw[i].position);
+		// 		meshConstants.modelMatrix = model; // * Por ahora lo dejo solo por la alineacion, me da flojera moverle xd
+
+		// 	// GlobalProjectionInfo gpi = {};
+		// 	// 	gpi.model = model;
+		// 	// 	gpi.proj = proj;
+		// 	// 	gpi.view = view;
+
+		// 	// objectsProjectionsForBuffer[i + worldObjectsToDraw.size()] = gpi;
+		// }
+
+		void* data;
+		// * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
+		vkMapMemory(_device, global_projection_buffer_memory, 0, sizeof(VP), 0, &data);
+			memcpy(data, &globalVPBuffer, sizeof(VP));
+		vkUnmapMemory(_device, global_projection_buffer_memory);
+
+		// // * Agregar los valores de proyeccion de este objeto al buffer de proyeccion global
+		// vkMapMemory(_device, global_lighting_info_buffer_memory, 0, sizeof(LightingInfo) * MAX_OBJECTS, 0, &data);
+		// 	memcpy(data, &lightingInfoForBuffer, sizeof(LightingInfo) * MAX_OBJECTS);
+		// vkUnmapMemory(_device, global_lighting_info_buffer_memory);
+
+		// * Lo voy a hacer hard-coded por ahora
 			for (int i = 0; i < worldObjectsToDraw.size(); i++) {
-				glm::mat4 model{1.f};
-					model = glm::translate(model, worldObjectsToDraw[i].position);
-					model = glm::scale(model, worldObjectsToDraw[i].scale);
-					model = glm::rotate(model, glm::radians(worldObjectsToDraw[i].xRotation), glm::vec3(1, 0, 0));
-					model = glm::rotate(model, glm::radians(worldObjectsToDraw[i].yRotation), glm::vec3(0, 1, 0));
-					model = glm::rotate(model, glm::radians(worldObjectsToDraw[i].zRotation), glm::vec3(0, 0, 1));
-
-				globalModelMatrices[i] = model;
-				objectsMaterialsNums[i] = defaultMaterial.get()->currObject++;
+				worldObjectsToDraw[i].draw(commandBuffers[imageIndex], i, meshConstants);
 			}
 
-			// * Hacerlo tambien para TexturedWorldObjectsToDraw
 			for (int i = 0; i < texturedWorldObjectsToDraw.size(); i++) {
-				glm::mat4 model{1.f};
-					model = glm::translate(model, texturedWorldObjectsToDraw[i].position);
-					model = glm::scale(model, texturedWorldObjectsToDraw[i].scale);
-					model = glm::rotate(model, glm::radians(texturedWorldObjectsToDraw[i].xRotation), glm::vec3(1, 0, 0));
-					model = glm::rotate(model, glm::radians(texturedWorldObjectsToDraw[i].yRotation), glm::vec3(0, 1, 0));
-					model = glm::rotate(model, glm::radians(texturedWorldObjectsToDraw[i].zRotation), glm::vec3(0, 0, 1));
-
-				// * Tambien guardar la informacion de los numeros de texturas del material
-				objectsTexturesNums[i] = texturedWorldObjectsToDraw[i].texture;
-
-				globalModelMatrices [i + worldObjectsToDraw.size()] = model;
-				objectsMaterialsNums[i + worldObjectsToDraw.size()] = texturedMaterial.get()->currObject++;
+				texturedWorldObjectsToDraw[i].draw(commandBuffers[imageIndex], i + worldObjectsToDraw.size(), meshConstants);
 			}
 
-			// * Agregar los valores de proyeccion de view y proj
-			vkMapMemory(_device, global_model_matrix_buffer_memory, 0, sizeof(glm::mat4) * MAX_OBJECTS, 0, &data);
-				memcpy(data, &globalModelMatrices, sizeof(glm::mat4) * MAX_OBJECTS);
-			vkUnmapMemory(_device, global_model_matrix_buffer_memory);
+		defaultMaterial.get()->currObject = 0;
+		texturedMaterial.get()->currObject = 0;
 
-			// * Agregar los numeros de objeto
-			vkMapMemory(_device, global_material_object_number_buffer_memory, 0, sizeof(int) * MAX_OBJECTS, 0, &data);
-				memcpy(data, &objectsMaterialsNums, sizeof(int) * MAX_OBJECTS);
-			vkUnmapMemory(_device, global_material_object_number_buffer_memory);
+		// for (auto material : materialsMap) {
+		// 	material.second->currObject = 0;
+		// }
 
-			// * Agregar los valores de texturas del material
-			void* newData;
-			vkMapMemory(_device, texturedMaterial.get()->localTextureNumberBufferMemory, 0, sizeof(int) * MAX_OBJECTS, 0, &newData);
-				memcpy(newData, &objectsTexturesNums, sizeof(int) * MAX_OBJECTS);
-			vkUnmapMemory(_device, texturedMaterial.get()->localTextureNumberBufferMemory);
-
-			// std::cout << worldObjectsToDraw.size() << ", " << texturedWorldObjectsToDraw.size() << '\n';
-
-			// // * Lo voy a hacer hard-coded por ahora
-			// 	vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, defaultMaterial.get()->pipeline);
-			// 	defaultMaterial.get()->setup_descriptor_set(commandBuffers[imageIndex]);
-			// 	for (int i = 0; i < worldObjectsToDraw.size(); i++) {
-			// 		worldObjectsToDraw[i].draw(commandBuffers[imageIndex], i, meshConstants);
-			// 	}
-
-				vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, texturedMaterial.get()->pipeline);
-				texturedMaterial.get()->setup_descriptor_set(commandBuffers[imageIndex]);
-				for (int i = 0; i < texturedWorldObjectsToDraw.size(); i++) {
-					// std::cout << i + worldObjectsToDraw.size() << ", " << objectsTexturesNums[objectsMaterialsNums[i + worldObjectsToDraw.size()]] << '\n';
-					texturedWorldObjectsToDraw[i].draw(commandBuffers[imageIndex], i + worldObjectsToDraw.size(), meshConstants);
-				}
-
-				// vkCmdBindPipeline(commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, pointsMaterial.get()->pipeline);
-				// pointsMaterial.get()->setup_descriptor_set(commandBuffers[imageIndex]);
-				// for (int i = 0; i < pointsWorldObjectsToDraw.size(); i++) {
-				// 	pointsWorldObjectsToDraw[i].draw(commandBuffers[imageIndex], i + worldObjectsToDraw.size() + texturedWorldObjectsToDraw.size(), meshConstants);
-				// }
-
-			defaultMaterial .get()->currObject = 0;
-			texturedMaterial.get()->currObject = 0;
-			// pointsMaterial	 .get()->currObject = 0;
-
-			// for (auto material : materialsMap) {
-			// 	material.second->currObject = 0;
-			// }
-
-		vkCmdEndRenderPass(commandBuffers[imageIndex]);
+	vkCmdEndRenderPass(commandBuffers[imageIndex]);
 	vkEndCommandBuffer(commandBuffers[imageIndex]);
 
 	if (vkQueueSubmit(_engineDevice._graphicsQueue, 1, &submitInfo, _inFlightFences[_currentFrame]) != VK_SUCCESS) {
@@ -600,7 +595,6 @@ void Engine::recreate_swapchain() {
 
 	defaultMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
 	texturedMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
-	// pointsMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
 
 	// // * clear all materials
 	// // materialsMap.clear();
@@ -658,9 +652,6 @@ void Engine::create_texture_sampler() {
 		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
 
 		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-		samplerInfo.minLod = .0;
-		samplerInfo.maxLod = static_cast<float>(16);
-		samplerInfo.mipLodBias = .0;
 
 	if (vkCreateSampler(_device, &samplerInfo, nullptr, &_textureSampler) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create texture sampler!");
@@ -712,27 +703,125 @@ void Engine::init_textures(std::vector<std::string> texturePaths) {
 
 void Engine::init_materials() {
 	defaultMaterial = std::make_shared<Material>();
-	defaultMaterial.get()->build(_engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer, global_model_matrix_buffer, global_material_object_number_buffer);
-	// uploadMaterialToEngine(defaultMaterial);
+	uploadMaterialToEngine(defaultMaterial);
 
 	texturedMaterial = std::make_shared<Textured_Material>(texturesVector, &_textureSampler);
-	texturedMaterial.get()->build(_engineWindow._renderPass, _engineWindow._swapChainExtent, global_projection_buffer, global_model_matrix_buffer, global_material_object_number_buffer);
-	// uploadMaterialToEngine(texturedMaterial);
-
-// void main() {
-// 	vec2 st = fragTexCoord.xy * 0.032;
-// 	// float angle = 1;
-// 	// mat2 rot = mat2(cos(angle), -sin(angle),sin(angle), cos(angle));
-// 	// st = rot * st;
-
-// 	vec3 color=vec3(abs(step(0.5,fract(st.x))-step(0.5,fract(st.y))),0.1,0.2);
-// 	outColor = vec4(color, 1.0);
-// }
-	// pointsMaterial = std::make_shared<Points_Material>();
-	// uploadMaterialToEngine(pointsMaterial);
+	uploadMaterialToEngine(texturedMaterial);
 }
 
 void Engine::init_meshes() {
+	std::vector<Vertex> vertices = {
+		{{-1, -1,  1}, {1, 0, 1}, {0, 1}}, // 0
+		{{ 1, -1,  1}, {1, 0, 1}, {1, 1}}, // 1
+		{{-1,  1,  1}, {1, 0, 1}, {0, 0}}, // 2
+		{{ 1,  1,  1}, {1, 0, 1}, {1, 0}}, // 3
+		{{ 1, -1,  1}, {1, 0, 1}, {0, 1}}, // 4
+		{{ 1, -1, -1}, {1, 0, 1}, {1, 1}}, // 5
+		{{ 1,  1,  1}, {1, 0, 1}, {0, 0}}, // 6
+		{{ 1,  1, -1}, {1, 0, 1}, {1, 0}}, // 7
+		{{ 1, -1, -1}, {1, 0, 1}, {0, 1}}, // 8
+		{{-1, -1, -1}, {1, 0, 1}, {1, 1}}, // 9
+		{{ 1,  1, -1}, {1, 0, 1}, {0, 0}}, // 10
+		{{-1,  1, -1}, {1, 0, 1}, {1, 0}}, // 11
+		{{-1, -1, -1}, {1, 0, 1}, {0, 1}}, // 12
+		{{-1, -1,  1}, {1, 0, 1}, {1, 1}}, // 13
+		{{-1,  1, -1}, {1, 0, 1}, {0, 0}}, // 14
+		{{-1,  1,  1}, {1, 0, 1}, {1, 0}}, // 15
+		{{ 1,  1, -1}, {1, 0, 1}, {0, 1}}, // 16
+		{{-1,  1, -1}, {1, 0, 1}, {1, 1}}, // 17
+		{{ 1,  1,  1}, {1, 0, 1}, {0, 0}}, // 18
+		{{-1,  1,  1}, {1, 0, 1}, {1, 0}}, // 19
+		{{ 1, -1,  1}, {1, 0, 1}, {0, 1}}, // 20
+		{{-1, -1,  1}, {1, 0, 1}, {1, 1}}, // 21
+		{{ 1, -1, -1}, {1, 0, 1}, {0, 0}}, // 22
+		{{-1, -1, -1}, {1, 0, 1}, {1, 0}}, // 23
+	};
+	std::vector<Vertex> icosahedron = {};
+	std::vector<Vertex> cube = {};
+
+	glm::vec3 list[] = {
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f,-1.0f, 1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{1.0f, 1.0f,-1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f, 1.0f,-1.0f},
+		{1.0f,-1.0f, 1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{1.0f,-1.0f,-1.0f},
+		{1.0f, 1.0f,-1.0f},
+		{1.0f,-1.0f,-1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{-1.0f, 1.0f,-1.0f},
+		{1.0f,-1.0f, 1.0f},
+		{-1.0f,-1.0f, 1.0f},
+		{-1.0f,-1.0f,-1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{-1.0f,-1.0f, 1.0f},
+		{1.0f,-1.0f, 1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{1.0f,-1.0f,-1.0f},
+		{1.0f, 1.0f,-1.0f},
+		{1.0f,-1.0f,-1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{1.0f,-1.0f, 1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{1.0f, 1.0f,-1.0f},
+		{-1.0f, 1.0f,-1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{-1.0f, 1.0f,-1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{1.0f, 1.0f, 1.0f},
+		{-1.0f, 1.0f, 1.0f},
+		{1.0f,-1.0f, 1.0},
+	};
+
+	// for (int i = 0; i < 36; i += 3) {
+	// 	addTriangle(list[i], list[i + 1], list[i + 2], cube);
+	// }
+
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f,-1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{-1.0f, 1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+	// cube.push_back({{1.0f,-1.0f, 1.0f}, {1., 1., 1.}, {1, 0}});
+
+	// meshesMap.insert(std::make_pair("cube", new Mesh(vertices, _commandPool, _engineDevice._graphicsQueue)));
+	// meshesMap.insert(std::make_pair("icosahedron", new Mesh(icosahedron, _commandPool, _engineDevice._graphicsQueue)));
+	// meshesMap.insert(std::make_pair("cube", 		  new Mesh(cube, 			_commandPool, _engineDevice._graphicsQueue)));
 }
 
 // * Actualiza la informacion que es independiente del world object
@@ -742,10 +831,8 @@ void Engine::update_materials() {
 }
 
 void Engine::create_global_projection_buffers() {
-	create_buffer(sizeof(VP)							, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_projection_buffer, global_projection_buffer_memory);
-	create_buffer(sizeof(glm::mat4) * MAX_OBJECTS, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_model_matrix_buffer, global_model_matrix_buffer_memory);
-	create_buffer(sizeof(int) * MAX_OBJECTS, 		  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_material_object_number_buffer, global_material_object_number_buffer_memory);
-	create_buffer(sizeof(LightingInfo)				, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_lighting_info_buffer, global_lighting_info_buffer_memory);
+	create_buffer(sizeof(VP), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_projection_buffer, global_projection_buffer_memory);
+	create_buffer(sizeof(LightingInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, global_lighting_info_buffer, global_lighting_info_buffer_memory);
 }
 
 void Engine::init_world() {

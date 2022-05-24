@@ -22,9 +22,7 @@ public:
     glm::vec3 position = glm::vec3(0, 0, 0);
     glm::vec3 scale    = glm::vec3(1, 1, 1);
     glm::vec3 color;
-    float xRotation = 0.f;
-    float yRotation = 0.f;
-    float zRotation = 0.f;
+    float rotation = 0.f;
 };
 
 class TexturedWorldObject : public WorldObject {
@@ -34,13 +32,6 @@ public:
 
 	int texture;
 };
-
-class PointsWorldObject : public WorldObject {
-public:
-    PointsWorldObject(std::shared_ptr<Mesh> inputMesh, std::shared_ptr<Material> inputMaterial);
-    virtual void draw(VkCommandBuffer cmdBffr, int instance, MeshPushConstants pushConstants);
-};
-
 
 // class TexturedLitWorldObject : public WorldObject {
 // public:

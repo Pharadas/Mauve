@@ -1276,12 +1276,7 @@ CMakeFiles/Mauve.dir/include/engine/engine.cpp.obj: include/engine/engine.cpp \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ctime \
   C:/mingw64/x86_64-w64-mingw32/include/time.h \
   C:/mingw64/x86_64-w64-mingw32/include/pthread_time.h \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/parse_numbers.h \
-  include/glm/gtx/string_cast.hpp \
-  include/glm/gtc/type_precision.hpp \
-  include/glm/gtc/type_precision.inl \
-  include/glm/gtx/string_cast.inl \
-  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstdarg
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/parse_numbers.h
 
 CMakeFiles/Mauve.dir/include/engine/helper_functions.cpp.obj: include/engine/helper_functions.cpp \
   include/engine/helper_functions.hpp \
@@ -5211,8 +5206,6 @@ C:/mingw64/x86_64-w64-mingw32/include/psdk_inc/_socket_types.h:
 
 include/engine/world_object/world_object.cpp:
 
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstdarg:
-
 C:/mingw64/x86_64-w64-mingw32/include/psdk_inc/_ip_types.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/psdk_inc/_xmitfile.h:
@@ -5268,14 +5261,6 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ratio:
 C:/mingw64/x86_64-w64-mingw32/include/time.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/pthread_time.h:
-
-include/glm/gtx/string_cast.hpp:
-
-include/glm/gtc/type_precision.hpp:
-
-include/glm/gtc/type_precision.inl:
-
-include/glm/gtx/string_cast.inl:
 
 include/engine/material/material.cpp:
 

@@ -37,6 +37,6 @@ LINK_DIRECTORIES(lib/)
 
 add_executable("${PROJECT_NAME}" "${SOURCES}")
 
-TARGET_LINK_LIBRARIES(Mauve libglfw3.a)
-TARGET_LINK_LIBRARIES(Mauve vulkan-1.lib)
-TARGET_LINK_LIBRARIES(Mauve tinyobjloader.lib)
+TARGET_LINK_LIBRARIES(Mauve glfw)
+TARGET_LINK_LIBRARIES(Mauve vulkan)
+TARGET_LINK_LIBRARIES(Mauve tinyobjloader)

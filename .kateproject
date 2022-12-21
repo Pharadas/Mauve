@@ -1,19 +1,19 @@
 {
-	"name": "Mauve-Debug@Mauve",
-	"directory": "C:/Users/Pharadas/Documents/repos/Mauve",
+	"name": "Mauve@Mauve",
+	"directory": "/home/pharadas/Repos/Mauve",
 	"files": [ { "git": 1 } ],
 	"build": {
-		"directory": "C:/Users/Pharadas/Documents/repos/Mauve",
+		"directory": "/home/pharadas/Repos/Mauve",
 		"default_target": "all",
 		"clean_target": "clean",
-		"build": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  all",
-		"clean": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  clean",
-		"quick": "C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  install",
+		"build": "/usr/bin/gmake -C \"/home/pharadas/Repos/Mauve\" -j12 all",
+		"clean": "/usr/bin/gmake -C \"/home/pharadas/Repos/Mauve\" -j12 clean",
+		"quick": "/usr/bin/gmake -C \"/home/pharadas/Repos/Mauve\" -j12 install",
 		"targets":[
-			 {"name":"all", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  all"}
-			,{"name":"clean", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  clean"}
-			,{"name":"Mauve", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  Mauve"}
-			,{"name":"Mauve/fast", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  Mauve/fast"}
-			,{"name":"rebuild_cache", "build_cmd":"C:/mingw64/bin/mingw32-make.exe -C \"C:/Users/Pharadas/Documents/repos/Mauve\"  rebuild_cache"}
+			 {"name":"all", "build_cmd":"/usr/bin/gmake -C \"/home/pharadas/Repos/Mauve\" -j12 all"}
+			,{"name":"clean", "build_cmd":"/usr/bin/gmake -C \"/home/pharadas/Repos/Mauve\" -j12 clean"}
+			,{"name":"Mauve", "build_cmd":"/usr/bin/gmake -C \"/home/pharadas/Repos/Mauve\" -j12 Mauve"}
+			,{"name":"Mauve/fast", "build_cmd":"/usr/bin/gmake -C \"/home/pharadas/Repos/Mauve\" -j12 Mauve/fast"}
+			,{"name":"rebuild_cache", "build_cmd":"/usr/bin/gmake -C \"/home/pharadas/Repos/Mauve\" -j12 rebuild_cache"}
 	] }
 }

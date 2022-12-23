@@ -1,5 +1,6 @@
 #pragma once
 
+#include "materials.hpp"
 #include <vulkan/vulkan.h>
 
 #include <engine/window/window.hpp>
@@ -16,7 +17,10 @@
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #include <glm/glm.hpp>
 
-#include <windows.h>
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+  #include <windows.h>
+#endif
+
 #include <string>
 #include <limits.h>
 
@@ -36,15 +40,17 @@ public:
 	float deltaTime;
 
 	std::shared_ptr<Material> defaultMaterial;
+	std::shared_ptr<Point_Material> pointMaterial;
 	std::shared_ptr<Textured_Material> texturedMaterial;
 	Camera _camera;
-	std::unordered_map<std::string, int> texturesNumsMap;
 
 	void init(std::vector<std::string> texturePaths); 
 	void render();
 
 	void draw(WorldObject objeto);
 	void draw(TexturedWorldObject objeto);
+
+  int getTexture(std::string textura);
 
 	void uploadMeshToEngine(std::shared_ptr<Mesh> meshPtr, bool autoIndex);
 	// * Por ahora solo existe para que en el futuro los usuarios puedan crear sus propios materiales
@@ -91,15 +97,14 @@ private:
 	glm::mat4 proj;
 
 	// TODO: Deshacerme de estas que ya no se usan
-	std::unordered_map<std::string, Mesh*> meshesMap;
-	std::unordered_map<std::string, Material*> materialsMap;
+	std::unordered_map<std::string, Mesh*>        meshesMap;
+	std::unordered_map<std::string, Material*>    materialsMap;
 	std::unordered_map<std::string, WorldObject*> worldObjectsMap;
 
-	std::vector<Texture> 					 		texturesVector;
-	std::vector<std::shared_ptr<Mesh>> 	 		meshesList;
+	std::unordered_map<std::string, int>      texturesNumsMap;
+	std::vector<Texture> 					 		        texturesVector;
+	std::vector<std::shared_ptr<Mesh>> 	 		  meshesList;
 	std::vector<std::shared_ptr<WorldObject>> worldObjectsList;
-
-	// std::vector<std::string> texturesList;
 
 	VkBuffer global_vertex_buffer;
 	VkDeviceMemory global_vertex_buffer_memory;

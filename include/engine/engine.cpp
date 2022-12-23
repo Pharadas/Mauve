@@ -1,3 +1,4 @@
+#include "materials.hpp"
 #include <engine/engine.hpp>
 #include <engine/buffer_helper.hpp>
 #include <engine/helper_functions.hpp>
@@ -12,9 +13,6 @@ void Engine::init(std::vector<std::string> texturePaths) {
 
 	init_textures(texturePaths);
 	init_materials();
-	// init_scene();
-	// main_loop();
-	// cleanup();
 }
 
 void Engine::render() {
@@ -26,12 +24,13 @@ void Engine::render() {
 	framesPassed++;
 	sumFps += 1. / deltaTime;
 	numFps++;
-	// std::cout << "fps: " << 1 / deltaTime << "             " << '\r';
-	// if (fractionsOfSecondPassed > 1.) {
-	// 	std::cout << "fps: " << framesPassed << "      \r";
-	// 	fractionsOfSecondPassed = 0;
-	// 	framesPassed = 0;
-	// }
+
+	std::cout << "fps: " << 1 / deltaTime << "             " << '\r';
+	if (fractionsOfSecondPassed > 1.) {
+		std::cout << "fps: " << framesPassed << "      \r";
+		fractionsOfSecondPassed = 0;
+		framesPassed = 0;
+	}
 
 	if (glfwWindowShouldClose(_engineWindow._window))
 		running = false;
@@ -121,6 +120,7 @@ void Engine::cleanup() {
 	cleanup_swapchain();
 
 	defaultMaterial.get()->cleanup();
+	pointMaterial.get()->cleanup();
 	texturedMaterial.get()->cleanup();
 
 	// for (auto mesh : meshesMap) {
@@ -594,6 +594,7 @@ void Engine::recreate_swapchain() {
 	create_command_buffers();
 
 	defaultMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
+	pointMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
 	texturedMaterial.get()->recreate(_engineWindow._renderPass, _engineWindow._swapChainExtent);
 
 	// // * clear all materials
@@ -690,13 +691,14 @@ void Engine::create_vertex_buffer() {
 
 void Engine::add_texture(std::string textureName, const char* texturePath) {
 	texturesNumsMap[textureName] = texturesVector.size();
+  std::cout << "loading texture named: " << textureName << " with path: " << texturePath << std::endl;
 	texturesVector.push_back(Texture(texturePath, _commandPool, _engineDevice._graphicsQueue));
 }
 
 void Engine::init_textures(std::vector<std::string> texturePaths) {
 	for (auto name : texturePaths) {
 		// * Inicializar aqui todas  last texturas
-		add_texture(name, ("textures/" + name + ".jpg").c_str());
+		add_texture(name, ("/home/pharadas/Repos/Mauve/build/textures/" + name + ".jpg").c_str());
 	}
 	std::cout << "numero de texturas: " << texturesVector.size() << '\n';
 }
@@ -704,6 +706,9 @@ void Engine::init_textures(std::vector<std::string> texturePaths) {
 void Engine::init_materials() {
 	defaultMaterial = std::make_shared<Material>();
 	uploadMaterialToEngine(defaultMaterial);
+
+	pointMaterial = std::make_shared<Point_Material>();
+	uploadMaterialToEngine(pointMaterial);
 
 	texturedMaterial = std::make_shared<Textured_Material>(texturesVector, &_textureSampler);
 	uploadMaterialToEngine(texturedMaterial);
@@ -828,6 +833,15 @@ void Engine::init_meshes() {
 void Engine::update_materials() {
 	// dynamic_cast<Textured_Lit_Material&>(*materialsMap["textured_lit"]).lightInfo.lightPos = (worldObjectsMap["icosahedron_light"])->position;
 	// dynamic_cast<Textured_Lit_Material&>(*materialsMap["textured_lit"]).lightInfo.viewPos = _camera.Position;
+}
+
+int Engine::getTexture(std::string textura) {
+  if (texturesNumsMap.find(textura) == texturesNumsMap.end()) {
+    // textura no encontrada, dar error
+    throw std::runtime_error("Failed to load texture" + textura);
+  } else {
+    return texturesNumsMap[textura];
+  }
 }
 
 void Engine::create_global_projection_buffers() {

@@ -41,6 +41,7 @@ public:
     virtual void build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer);
     virtual void cleanup();
     void resize_cleanup();
+    VkShaderModule create_shader_module(const std::vector<char>& code);
 
     VkPipeline       pipeline;
     VkPipelineLayout pipelineLayout;
@@ -63,7 +64,6 @@ private:
         {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de transformaciones
     };
 
-    VkShaderModule create_shader_module(const std::vector<char>& code);
 };
 
 // * TEXTURED MATERIAL //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,6 +84,28 @@ private:
         {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT} // * Combined image sampler
     };
 };
+
+// POINT MATERIAL
+class Point_Material : public Material {
+public:
+  // the point material will take the same data as the default one,
+  // the only change will be in how to pipeline processes it
+  Point_Material();
+  Point_Material(std::vector<Texture> textures, VkSampler* sampler);
+  virtual void build_material_pipeline(char const* vertShaderPath, char const* fragShaderPath, VkRenderPass renderPass, VkExtent2D swapchainExtent);
+  virtual void build(VkRenderPass renderPass, VkExtent2D swapchainExtent, VkBuffer globalProjectionBuffer);
+  virtual void recreate(VkRenderPass renderPass, VkExtent2D swapchainExtent);
+
+private:
+  std::vector<Texture> texturesVector;
+  VkSampler* sampler;
+
+  std::vector<std::pair<VkDescriptorType, VkShaderStageFlags>> typesAndFlags = {
+      {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT || VK_SHADER_STAGE_FRAGMENT_BIT}, // * Informacion de transformaciones
+      {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT} // * Combined image sampler
+  };
+};
+
 
 // // * TEXTURED LIT MATERIAL ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
